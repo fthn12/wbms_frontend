@@ -8,6 +8,7 @@ import {
   TextField,
   Box,
   Typography,
+  Tooltip,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import dayjs from "dayjs";
@@ -30,10 +31,10 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import EditIcon from "@mui/icons-material/Edit";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import GantiPassword from "../../../views/pages/profile/gantiPassword";
+import EditPassword from "../../../views/pages/profile/editPassword";
 import Config from "../../../configs";
 import * as TransactionAPI from "../../../api/transactionApi";
 
@@ -104,82 +105,115 @@ const Profile = () => {
                         flexDirection: "column", // Mengatur tampilan secara vertikal
                       }}
                     >
-                      <div
-                        style={{
-                          position: "relative",
-                          width: "200px",
-                          height: "200px",
-                          borderRadius: "50%",
-                          overflow: "hidden",
-                          marginBottom: "15px",
-                          marginTop: "47px",
-                          border: "2px solid #9e9e9e",
-                        }}
-                      >
-                        {/* Gambar ditampilkan terlebih dahulu */}
-                        {image === null && (
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              width: "200px",
-                              height: "200px",
-                            }}
-                          >
-                            <img
-                              src={`../../assets/user.jpg`}
-                              alt="Uploaded Preview"
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                              }}
-                            />
-                          </div>
-                        )}
+                      {/* Tambahkan div kontainer untuk mengatur posisi */}
+                      <div style={{ position: "relative" }}>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "55px",
+                            right: "10px",
+                            cursor: "pointer",
+                            zIndex: "1",
+                            background: "#fff",
+                            padding: "5px",
+                            border: "1px solid #9e9e9e",
+                            borderRadius: "50%",
+                            boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+                          }}
+                        >
+                          <Tooltip title="Edit Profile">
+                            <label htmlFor="imageInput">
+                              <input
+                                id="imageInput"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                value={values.profile}
+                                style={{ display: "none" }}
+                              />
+                              <EditIcon
+                                style={{ fontSize: "24px", color: "#3f51b5" }}
+                              />
+                            </label>
+                          </Tooltip>
+                        </div>
 
-                        {/* Jika gambar baru dipilih melalui input file, gambar yang baru akan ditampilkan */}
-                        {image && (
-                          <div>
-                            <img
-                              src={image}
-                              alt="Uploaded Preview"
+                        <div
+                          style={{
+                            width: "200px",
+                            height: "200px",
+                            borderRadius: "50%",
+                            overflow: "hidden",
+                            marginBottom: "15px",
+                            marginTop: "47px",
+                            border: "2px solid #9e9e9e",
+                          }}
+                        >
+                          {/* Gambar ditampilkan terlebih dahulu */}
+                          {image === null && (
+                            <div
                               style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
                                 width: "200px",
                                 height: "200px",
-                                cursor: "move",
-
-                                objectFit: "cover",
                               }}
-                              id="uploadedImage"
-                            />
-                          </div>
-                        )}
+                            >
+                              <img
+                                src={`../../assets/user.jpg`}
+                                alt="Uploaded Preview"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            </div>
+                          )}
 
-                        {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
-                        {image === null && !initialImage && (
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              width: "200px",
-                              height: "200px",
-                            }}
-                          >
-                            <img
-                              src={`../../assets/user.jpg`}
-                              alt="Uploaded Preview"
+                          {/* Jika gambar baru dipilih melalui input file, gambar yang baru akan ditampilkan */}
+                          {image && (
+                            <div>
+                              <img
+                                src={image}
+                                alt="Uploaded Preview"
+                                style={{
+                                  width: "200px",
+                                  height: "200px",
+                                  cursor: "move",
+                                  objectFit: "cover",
+                                }}
+                                id="uploadedImage"
+                              />
+                            </div>
+                          )}
+
+                          {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
+                          {image === null && !initialImage && (
+                            <div
                               style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                width: "200px",
+                                height: "200px",
                               }}
-                            />
-                          </div>
-                        )}
+                            >
+                              <img
+                                src={`../../assets/user.jpg`}
+                                alt="Uploaded Preview"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
+
                       <Typography
                         sx={{ fontSize: "24px", fontWeight: "bold", mb: 1 }}
                       >
@@ -188,17 +222,8 @@ const Profile = () => {
                       <Typography sx={{ fontSize: "15px", mb: 6 }}>
                         PKS
                       </Typography>
-                      <input
-                        id="imageInput"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        value={values.profile}
-                        style={{ display: "none" }}
-                      />
+
                       <Button
-                        component="label"
-                        htmlFor="imageInput"
                         fullwidth
                         variant="contained"
                         sx={{
@@ -393,7 +418,7 @@ const Profile = () => {
           </form>
         )}
       </Formik>
-      <GantiPassword isOpen={isOpen} onClose={setIsOpen} />
+      <EditPassword isOpen={isOpen} onClose={setIsOpen} />
     </>
   );
 };

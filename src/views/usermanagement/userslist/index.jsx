@@ -43,39 +43,38 @@ const UsersList = () => {
   const gridRef = useRef();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
 
-  const fetcher = () =>
-    UsersAPI.getAll().then((res) => res.data.province.records);
+  const fetcher = () => UsersAPI.getAll().then((res) => res.data.user.records);
 
   // search
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: dtProvince } = useSWR(
-    searchQuery ? `province?name_like=${searchQuery}` : "province",
+  const { data: dtUser } = useSWR(
+    searchQuery ? `user?name_like=${searchQuery}` : "user",
     fetcher,
     { refreshInterval: 1000 }
   );
 
   //filter
-  const updateGridData = useCallback((Province) => {
+  const updateGridData = useCallback((user) => {
     if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.setRowData(Province);
+      gridRef.current.api.setRowData(user);
     }
   }, []);
 
   useEffect(() => {
-    if (dtProvince) {
-      const filteredData = dtProvince.filter((province) => {
-        const provinceData = Object.values(province).join(" ").toLowerCase();
-        return provinceData.includes(searchQuery.toLowerCase());
+    if (dtUser) {
+      const filteredData = dtUser.filter((user) => {
+        const userData = Object.values(user).join(" ").toLowerCase();
+        return userData.includes(searchQuery.toLowerCase());
       });
       updateGridData(filteredData);
     }
-  }, [searchQuery, dtProvince, updateGridData]);
+  }, [searchQuery, dtUser, updateGridData]);
 
   // delete
   const deleteById = (id, name) => {
@@ -144,14 +143,7 @@ const UsersList = () => {
       hide: false,
       flex: 3,
     },
-    {
-      headerName: "No Telepon",
-      field: "phone",
-      filter: true,
-      sortable: true,
-      hide: false,
-      flex: 3,
-    },
+
     {
       headerName: "Action",
       field: "id",
@@ -159,27 +151,6 @@ const UsersList = () => {
       cellRenderer: (params) => {
         return (
           <Box display="flex" justifyContent="center">
-            <Box
-              width="25%"
-              display="flex"
-              m="0 3px"
-              bgcolor={indigo[700]}
-              borderRadius="5px"
-              padding="10px 10px"
-              justifyContent="center"
-              color="white"
-              style={{
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                setSelectedProvince(params.data);
-                setIsViewOpen(true);
-              }}
-            >
-              <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
-            </Box>
-
             <Box
               width="25%"
               display="flex"
@@ -194,7 +165,7 @@ const UsersList = () => {
                 cursor: "pointer",
               }}
               onClick={() => {
-                setSelectedProvince(params.data);
+                setSelectedUser(params.data);
                 setIsEditOpen(true);
               }}
             >
@@ -282,8 +253,8 @@ const UsersList = () => {
                     type="button"
                     sx={{ p: 1 }}
                     onClick={() => {
-                      const filteredData = dtProvince.filter((province) =>
-                        province.name
+                      const filteredData = dtUser.filter((User) =>
+                        User.name
                           .toLowerCase()
                           .includes(searchQuery.toLowerCase())
                       );
@@ -296,7 +267,7 @@ const UsersList = () => {
               </Box>
             </div>
             <Tables
-              name={"province"}
+              name={"user"}
               fetcher={fetcher}
               colDefs={columnDefs}
               gridRef={gridRef}
@@ -309,17 +280,17 @@ const UsersList = () => {
       <CreateUsers isOpen={isOpen} onClose={setIsOpen} />
 
       {/* edit */}
-      {/* <EditProvinces
+      {/* <Editusers
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        dtProvince={selectedProvince}
+        dtuser={selecteduser}
       /> */}
 
       {/* View */}
-      {/* <ViewProvinces
+      {/* <Viewusers
         isViewOpen={isViewOpen}
         onClose={() => setIsViewOpen(false)}
-        dtProvince={selectedProvince}
+        dtuser={selecteduser}
       /> */}
     </>
   );

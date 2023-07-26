@@ -4,7 +4,8 @@ import {
   DialogContent,
   DialogTitle,
   FormControlLabel,
-  Checkbox,
+  Select,
+  MenuItem,
   Typography,
   Button,
   Box,
@@ -13,6 +14,7 @@ import {
   FormLabel,
   TextField,
   Radio,
+  Checkbox,
   RadioGroup,
   Tooltip,
 } from "@mui/material";
@@ -48,6 +50,14 @@ const CreateUsers = ({ isOpen, onClose }) => {
 
   const initialValues = {
     name: "",
+    username: "",
+    nik: "",
+    position: "",
+    email: "",
+    division: "",
+    phone: "",
+    password: "",
+    role: "",
   };
 
   const checkoutSchema = yup.object().shape({
@@ -61,7 +71,11 @@ const CreateUsers = ({ isOpen, onClose }) => {
     division: yup.string().required("required"),
     position: yup.string().required("required"),
     phone: yup.string().required("required"),
-    password: yup.string().required("required"),
+    password: yup
+      .string()
+      .required("Kata sandi harus diisi")
+      .min(8, "Kata sandi minimal terdiri dari 8 karakter")
+      .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
     role: yup.string().required("required"),
   });
 
@@ -129,15 +143,13 @@ const CreateUsers = ({ isOpen, onClose }) => {
                   <FormLabel
                     sx={{
                       color: "black",
-                      marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
                     }}
                   >
                     Profile
                   </FormLabel>
-                  <Box mt={2} mb={1} position="relative">
-                    {/* Ikon "cancel" pada gambar yang dipilih */}
+                  <Box mt={1} mb={1} position="relative">
                     {image && (
                       <label
                         htmlFor="cancelImage"
@@ -145,7 +157,7 @@ const CreateUsers = ({ isOpen, onClose }) => {
                         style={{
                           position: "absolute",
                           bottom: "-17px",
-                          left: "132px",
+                          left: "138px",
                           cursor: "pointer",
                           zIndex: "1",
                           background: "#fff",
@@ -170,7 +182,7 @@ const CreateUsers = ({ isOpen, onClose }) => {
                       style={{
                         position: "absolute",
                         top: "-17px",
-                        left: "132px",
+                        left: "140px",
                         cursor: "pointer",
                         zIndex: "1",
                         background: "#fff",
@@ -186,7 +198,7 @@ const CreateUsers = ({ isOpen, onClose }) => {
                           type="file"
                           accept="image/*"
                           onChange={handleImageChange}
-                          value={values.profile}
+                          value={values.profilePic}
                           style={{ display: "none" }}
                         />
                         <AddCircleIcon
@@ -198,8 +210,8 @@ const CreateUsers = ({ isOpen, onClose }) => {
                     <div
                       style={{
                         position: "relative",
-                        width: "150px",
-                        height: "150px",
+                        width: "160px",
+                        height: "160px",
                         overflow: "hidden",
                         border: "2px solid #9e9e9e",
                       }}
@@ -210,8 +222,8 @@ const CreateUsers = ({ isOpen, onClose }) => {
                           src={`../../assets/user.jpg`}
                           alt="Uploaded Preview"
                           style={{
-                            width: "150px",
-                            height: "150px",
+                            width: "160px",
+                            height: "160px",
                           }}
                         />
                       )}
@@ -223,8 +235,8 @@ const CreateUsers = ({ isOpen, onClose }) => {
                             src={image}
                             alt="Uploaded Preview"
                             style={{
-                              width: "150px",
-                              height: "150px",
+                              width: "160px",
+                              height: "160px",
                               cursor: "move",
                             }}
                             id="uploadedImage"
@@ -238,8 +250,8 @@ const CreateUsers = ({ isOpen, onClose }) => {
                           src={`../../assets/user.jpg`}
                           alt="Uploaded Preview"
                           style={{
-                            width: "150px",
-                            height: "150px",
+                            width: "160px",
+                            height: "160px",
                           }}
                         />
                       )}
@@ -303,13 +315,13 @@ const CreateUsers = ({ isOpen, onClose }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    Phone
+                    No Telepon
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Phone"
+                    placeholder="Masukkan No Telepon"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.phone}
@@ -342,6 +354,7 @@ const CreateUsers = ({ isOpen, onClose }) => {
                     helperText={touched.nik && errors.nik}
                   />
                 </FormControl>
+
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -438,30 +451,77 @@ const CreateUsers = ({ isOpen, onClose }) => {
                     helperText={touched.position && errors.position}
                   />
                 </FormControl>
-
-                <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "24px",
-                  }}
-                >
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       color: "black",
+                      marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
                     }}
                   >
-                    LDAP User
+                    Role id
                   </FormLabel>
-                  <FormControlLabel
-                    sx={{ marginLeft: "50px" }}
-                    control={<Checkbox />}
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    type="number" // Ubah type menjadi "number" agar nilai dianggap sebagai tipe number
+                    placeholder="Masukkan roleId"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.roleId}
+                    name="roleId"
+                    error={!!touched.roleId && !!errors.roleId}
+                    helperText={touched.roleId && errors.roleId}
                   />
                 </FormControl>
+
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      marginBottom: "8px",
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Role
+                  </FormLabel>
+                  <TextField
+                    fullWth
+                    variant="outlined"
+                    type="text"
+                    placeholder="Masukkan role"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.role}
+                    name="role"
+                    error={!!touched.role && !!errors.role}
+                    helperText={touched.role && errors.role}
+                  />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      marginBottom: "8px",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    isLDAPUser
+                  </FormLabel>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={values.isLDAPUser}
+                        onChange={handleChange}
+                        name="isLDAPUser"
+                      />
+                    }
+                  />
+                </FormControl>
+
                 <FormControl
                   sx={{
                     gridColumn: "span 4",

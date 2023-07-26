@@ -208,12 +208,16 @@ const Provinces = () => {
     <>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Paper sx={{ p: 3,
+          <Paper
+            sx={{
+              p: 3,
               mx: 3,
               mb: 5,
               mt: 2,
               borderTop: "5px solid #000",
-              borderRadius: "10px 10px 10px 10px", }}>
+              borderRadius: "10px 10px 10px 10px",
+            }}
+          >
             <div style={{ marginBottom: "5px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">Data Province</Typography>

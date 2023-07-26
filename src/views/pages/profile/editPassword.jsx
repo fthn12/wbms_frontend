@@ -21,7 +21,7 @@ import * as yup from "yup";
 import { grey, red } from "@mui/material/colors";
 import * as ProvinceApi from "../../../api/provinceApi";
 
-const GantiPassword = ({ isOpen, onClose }) => {
+const EditPassword = ({ isOpen, onClose }) => {
   // Create
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     ProvinceApi.create(values)
@@ -47,7 +47,19 @@ const GantiPassword = ({ isOpen, onClose }) => {
   };
 
   const checkoutSchema = yup.object().shape({
-    name: yup.string().required("required"),
+    password: yup
+      .string()
+      .required("Password lama harus diisi")
+      .min(6, "Password harus memiliki minimal 6 karakter"),
+    passwordNew: yup
+      .string()
+      .required("Password baru harus diisi")
+      .min(6, "Password harus memiliki minimal 6 karakter"),
+
+    confirmPassword: yup
+      .string()
+      .required("Konfirmasi password harus diisi")
+      .oneOf([yup.ref("password"), null], "Password tidak cocok"),
   });
 
   return (
@@ -91,7 +103,7 @@ const GantiPassword = ({ isOpen, onClose }) => {
                 p={1}
                 pt={3}
                 pb={3}
-                gap="40px"
+                gap="35px"
                 gridTemplateColumns="repeat(4, minmax(0, 1fr))"
               >
                 <FormControl sx={{ gridColumn: "span 4" }}>
@@ -107,9 +119,9 @@ const GantiPassword = ({ isOpen, onClose }) => {
                   </FormLabel>
                   <TextField
                     fullWidth
-                    size="small"
+                    size="medium"
                     variant="outlined"
-                    type="text"
+                    type="password"
                     placeholder="Masukkan Password Lama"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -132,16 +144,16 @@ const GantiPassword = ({ isOpen, onClose }) => {
                   </FormLabel>
                   <TextField
                     fullWidth
-                    size="small"
+                    size="medium"
                     variant="outlined"
-                    type="text"
+                    type="password"
                     placeholder="Masukkan Password Baru"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.password}
-                    name="password"
-                    error={!!touched.password && !!errors.password}
-                    helperText={touched.password && errors.password}
+                    value={values.passwordNew}
+                    name="passwordNew"
+                    error={!!touched.passwordNew && !!errors.passwordNew}
+                    helperText={touched.passwordNew && errors.passwordNew}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 4" }}>
@@ -157,16 +169,20 @@ const GantiPassword = ({ isOpen, onClose }) => {
                   </FormLabel>
                   <TextField
                     fullWidth
-                    size="small"
+                    size="medium"
                     variant="outlined"
-                    type="text"
+                    type="password"
                     placeholder="Masukkan Ulang Password Baru"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.password}
-                    name="password"
-                    error={!!touched.password && !!errors.password}
-                    helperText={touched.password && errors.password}
+                    value={values.confirmPassword}
+                    name="confirmPassword"
+                    error={
+                      !!touched.confirmPassword && !!errors.confirmPassword
+                    }
+                    helperText={
+                      touched.confirmPassword && errors.confirmPassword
+                    }
                   />
                 </FormControl>
               </Box>
@@ -208,4 +224,4 @@ const GantiPassword = ({ isOpen, onClose }) => {
   );
 };
 
-export default GantiPassword;
+export default EditPassword;

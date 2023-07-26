@@ -18,12 +18,13 @@ import { toast } from "react-toastify";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
-import * as ProvinceApi from "../../../api/provinceApi";
+import * as RolesApi from "../../../api/roleApi";
+import * as CustomerTypesAPI from "../../../api/customertypesApi";
 
 const CreateRoles = ({ isOpen, onClose }) => {
   // Create
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
-    ProvinceApi.create(values)
+    CustomerTypesAPI.create(values)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
         toast.success("Data Berhasil Disimpan"); // Tampilkan toast sukses
@@ -118,6 +119,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     helperText={touched.name && errors.name}
                   />
                 </FormControl>
+
                 <FormLabel
                   sx={{
                     color: "black",

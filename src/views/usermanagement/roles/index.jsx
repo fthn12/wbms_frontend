@@ -1,24 +1,5 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
-import {
-  Grid,
-  Paper,
-  Button,
-  FormControl,
-  Select,
-  MenuItem,
-  TextField,
-  Box,
-  Typography,
-} from "@mui/material";
-import dayjs from "dayjs";
-import { DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Formik } from "formik";
-import useSWR from "swr";
-import { red, blue } from "@mui/material/colors";
-import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
+import React, { useState, useEffect } from "react";
+import { Grid, Paper, Button, Box, Typography } from "@mui/material";
 import "ag-grid-enterprise";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -30,14 +11,10 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
+import * as RolesAPI from "../../../api/roleApi";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AddCircle";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CreateRole from "../../../views/usermanagement/roles/createRole";
-import Config from "../../../configs";
-import * as TransactionAPI from "../../../api/transactionApi";
 
-import PageHeader from "../../../components/PageHeader";
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RangeSelectionModule,
@@ -47,59 +24,60 @@ ModuleRegistry.registerModules([
 
 const RoleList = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [roles, setRoles] = useState([]);
+
+  const fetcher = () =>
+    RolesAPI.getAll().then((res) => res.data.role.records);
+  useEffect(() => {
+    fetcher().then((dataRole) => {
+      setRoles(dataRole);
+    });
+  }, []);
+
   return (
     <div style={{ paddingLeft: 120, paddingRight: 120, paddingBottom: 60 }}>
       <Box sx={{ pt: 2, pb: 2, pl: 2 }}>
         <h4>Roles List</h4>
       </Box>
       <Grid container spacing={4}>
-        <Grid item xs={12} sm={6} md={4} lg={4}>
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 4,
-              borderRadius: "10px 10px 10px 10px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <div
-              className="ag-theme-alpine"
-              style={{ width: "auto", height: "auto" }}
+        {roles.map((role) => (
+          <Grid key={role.id} item xs={12} sm={6} md={4} lg={4}>
+            <Paper
+              variant="outlined"
+              sx={{
+                p: 4,
+                borderRadius: "10px 10px 10px 10px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
             >
-              <h4 ml={3}>Administrator</h4>
-              <br />
-              <h6 sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}>
-                Total users with this role: 5
-              </h6>
-              <br />
-              <Typography
-                sx={{
-                  fontSize: "15px",
-                  color: "gray",
-                  display: "flex",
-                  alignItems: "center",
-                }}
+              <div
+                className="ag-theme-alpine"
+                style={{ width: "auto", height: "29vh" }}
               >
-                <ul>
-                  <li className="listItemStyle">All Admin Controls</li>
-                  <li className="listItemStyle">
-                    View and Edit Financial Summaries
-                  </li>
-                  <li className="listItemStyle">Enabled Bulk Reports</li>
-                  <li className="listItemStyle">View and Edit Payouts</li>
-                  <li className="listItemStyle">View and Edit Disputes</li>
-                </ul>
-              </Typography>
-              <Box
-                display="flex"
-                sx={{
-                  pt: 2,
-                  pl: 2,
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  gap: "10px",
-                }}
-              >
+                <h4 ml={3}>{role.name}</h4>
+                <br />
+                <h6
+                  sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}
+                >
+                  Total users with this role: 5
+                </h6>
+                <br />
+                <Typography
+                  sx={{
+                    fontSize: "15px",
+                    color: "gray",
+                    display: "flex",
+                    alignItems: "center",
+                    flex: 1,
+                  }}
+                >
+                  {role.description}
+                </Typography>
+              </div>
+              <Box display="flex" justifyContent="flex-start" gap="15px" mt={2}>
                 <Button
                   type="submit"
                   variant="contained"
@@ -107,267 +85,16 @@ const RoleList = () => {
                 >
                   View Role
                 </Button>
-              </Box>
-            </div>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={4}>
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 4,
-
-              borderRadius: "10px 10px 10px 10px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <div
-              className="ag-theme-alpine"
-              style={{ width: "auto", height: "auto" }}
-            >
-              <h4 ml={3}>Mill Head</h4>
-              <br />
-              <h6 sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}>
-                Total users with this role: 5
-              </h6>
-              <br />
-              <Typography
-                sx={{
-                  fontSize: "15px",
-                  color: "gray",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <ul>
-                  <li className="listItemStyle">All Admin Controls</li>
-                  <li className="listItemStyle">
-                    View and Edit Financial Summaries
-                  </li>
-                  <li className="listItemStyle">Enabled Bulk Reports</li>
-                  <li className="listItemStyle">View and Edit Payouts</li>
-                  <li className="listItemStyle">View and Edit Disputes</li>
-                </ul>
-              </Typography>
-              <Box
-                display="flex"
-                sx={{
-                  pt: 2,
-                  pl: 2,
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  gap: "10px",
-                }}
-              >
-                <Button
-                  type="submit"
-                  variant="contained"
-                  style={{ textTransform: "none" }}
-                >
-                  View Role
-                </Button>
-                <Box>
+                {!["Administrator", "administrator"].includes(role.name) && (
                   <Button variant="outlined" style={{ textTransform: "none" }}>
                     Edit Role
                   </Button>
-                </Box>
+                )}
               </Box>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={4}>
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 4,
+            </Paper>
+          </Grid>
+        ))}
 
-              borderRadius: "10px 10px 10px 10px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <div
-              className="ag-theme-alpine"
-              style={{ width: "auto", height: "auto" }}
-            >
-              <h4 ml={3}>Manager</h4>
-              <br />
-              <h6 sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}>
-                Total users with this role: 5
-              </h6>
-              <br />
-              <Typography
-                sx={{
-                  fontSize: "15px",
-                  color: "gray",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <ul>
-                  <li className="listItemStyle">All Admin Controls</li>
-                  <li className="listItemStyle">
-                    View and Edit Financial Summaries
-                  </li>
-                  <li className="listItemStyle">Enabled Bulk Reports</li>
-                  <li className="listItemStyle">View and Edit Payouts</li>
-                  <li className="listItemStyle">View and Edit Disputes</li>
-                </ul>
-              </Typography>
-              <Box
-                display="flex"
-                sx={{
-                  pt: 2,
-                  pl: 2,
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  gap: "10px",
-                }}
-              >
-                <Button
-                  type="submit"
-                  variant="contained"
-                  style={{ textTransform: "none" }}
-                >
-                  View Role
-                </Button>
-                <Box>
-                  <Button variant="outlined" style={{ textTransform: "none" }}>
-                    Edit Role
-                  </Button>
-                </Box>
-              </Box>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={4}>
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 4,
-
-              borderRadius: "10px 10px 10px 10px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <div
-              className="ag-theme-alpine"
-              style={{ width: "auto", height: "auto" }}
-            >
-              <h4 ml={3}>Supervisor</h4>
-              <br />
-              <h6 sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}>
-                Total users with this role: 5
-              </h6>
-              <br />
-              <Typography
-                sx={{
-                  fontSize: "15px",
-                  color: "gray",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <ul>
-                  <li className="listItemStyle">All Admin Controls</li>
-                  <li className="listItemStyle">
-                    View and Edit Financial Summaries
-                  </li>
-                  <li className="listItemStyle">Enabled Bulk Reports</li>
-                  <li className="listItemStyle">View and Edit Payouts</li>
-                  <li className="listItemStyle">View and Edit Disputes</li>
-                </ul>
-              </Typography>
-              <Box
-                display="flex"
-                sx={{
-                  pt: 2,
-                  pl: 2,
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  gap: "10px",
-                }}
-              >
-                <Button
-                  type="submit"
-                  variant="contained"
-                  style={{ textTransform: "none" }}
-                >
-                  View Role
-                </Button>
-                <Box>
-                  <Button variant="outlined" style={{ textTransform: "none" }}>
-                    Edit Role
-                  </Button>
-                </Box>
-              </Box>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={4}>
-          <Paper
-            variant="outlined"
-            sx={{
-              p: 4,
-
-              borderRadius: "10px 10px 10px 10px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <div
-              className="ag-theme-alpine"
-              style={{ width: "auto", height: "auto" }}
-            >
-              <h4 ml={3}>Staf</h4>
-              <br />
-              <h6 sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}>
-                Total users with this role: 5
-              </h6>
-              <br />
-              <Typography
-                sx={{
-                  fontSize: "15px",
-                  color: "gray",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <ul>
-                  <li className="listItemStyle">All Admin Controls</li>
-                  <li className="listItemStyle">
-                    View and Edit Financial Summaries
-                  </li>
-                  <li className="listItemStyle">Enabled Bulk Reports</li>
-                  <li className="listItemStyle">View and Edit Payouts</li>
-                  <li className="listItemStyle">View and Edit Disputes</li>
-                </ul>
-              </Typography>
-              <Box
-                display="flex"
-                sx={{
-                  pt: 2,
-                  pl: 2,
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  gap: "10px",
-                }}
-              >
-                <Button
-                  type="submit"
-                  variant="contained"
-                  style={{ textTransform: "none" }}
-                >
-                  View Role
-                </Button>
-                <Box>
-                  <Button variant="outlined" style={{ textTransform: "none" }}>
-                    Edit Role
-                  </Button>
-                </Box>
-              </Box>
-            </div>
-          </Paper>
-        </Grid>
         <Grid item xs={12} sm={6} md={4} lg={4}>
           <Paper
             variant="outlined"
