@@ -61,7 +61,7 @@ const Driver = () => {
     CompaniesAPI.getAll().then((res) => {
       setDtCompanies(res.data.company.records);
     });
-  }, [isOpen]);
+  }, []);
 
   // search
 

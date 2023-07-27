@@ -27,9 +27,9 @@ import * as yup from "yup";
 import { grey } from "@mui/material/colors";
 import * as UserApi from "../../../api/usersApi";
 
-const CreateUsers = ({ isOpen, onClose }) => {
+const CreateUsers = ({ isEditOpen, onClose, dtuser }) => {
   // Create
-  const handleSubmit = (values, { setSubmitting, resetForm }) => {
+  const handleFormSubmit = (values, { setSubmitting, resetForm }) => {
     UserApi.create(values)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
@@ -48,35 +48,23 @@ const CreateUsers = ({ isOpen, onClose }) => {
       });
   };
 
-  const initialValues = {
-    name: "",
-    username: "",
-    nik: "",
-    position: "",
-    email: "",
-    division: "",
-    phone: "",
-    password: "",
-    role: "",
-  };
-
-  const checkoutSchema = yup.object().shape({
+  const userSchema = yup.object().shape({
     name: yup.string().required("required"),
-    // username: yup.string().required("required"),
-    // nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
-    // email: yup
-    //   .string()
-    //   .email("Enter a valid email")
-    //   .required("Email is required"),
-    // division: yup.string().required("required"),
-    // position: yup.string().required("required"),
-    // phone: yup.string().required("required"),
-    // password: yup
-    //   .string()
-    //   .required("Kata sandi harus diisi")
-    //   .min(8, "Kata sandi minimal terdiri dari 8 karakter")
-    //   .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
-    // role: yup.string().required("required"),
+    username: yup.string().required("required"),
+    nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
+    email: yup
+      .string()
+      .email("Enter a valid email")
+      .required("Email is required"),
+    division: yup.string().required("required"),
+    position: yup.string().required("required"),
+    phone: yup.string().required("required"),
+    password: yup
+      .string()
+      .required("Kata sandi harus diisi")
+      .min(8, "Kata sandi minimal terdiri dari 8 karakter")
+      .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
+    role: yup.string().required("required"),
   });
 
   const [image, setImage] = useState(null);
@@ -94,12 +82,14 @@ const CreateUsers = ({ isOpen, onClose }) => {
     setInitialImage(true);
   };
 
+
+
   return (
-    <Dialog open={isOpen} fullWidth maxWidth={"md"}>
+    <Dialog open={isEditOpen} fullWidth maxWidth={"md"}>
       <DialogTitle
         sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}
       >
-        Tambah User
+        Edit User
         <IconButton
           sx={{
             color: "black",
@@ -117,9 +107,9 @@ const CreateUsers = ({ isOpen, onClose }) => {
 
       <DialogContent dividers>
         <Formik
-          onSubmit={handleSubmit}
-          initialValues={initialValues}
-          validationSchema={checkoutSchema}
+          onSubmit={handleFormSubmit}
+          initialValues={dtuser}
+          validationSchema={userSchema}
         >
           {({
             values,
@@ -129,7 +119,7 @@ const CreateUsers = ({ isOpen, onClose }) => {
             handleChange,
             handleSubmit,
           }) => (
-            <form onSubmit={handleSubmit} >
+            <form onSubmit={handleSubmit}>
               <Box
                 display="grid"
                 padding={2}
@@ -217,9 +207,9 @@ const CreateUsers = ({ isOpen, onClose }) => {
                       }}
                     >
                       {/* Gambar ditampilkan terlebih dahulu */}
-                      {image === null && (
+                      {image === null && dtuser.file && (
                         <img
-                          src={`../../assets/user.jpg`}
+                        src={`http://localhost:6005/images/${dtuser.file}`}
                           alt="Uploaded Preview"
                           style={{
                             width: "160px",
@@ -243,11 +233,10 @@ const CreateUsers = ({ isOpen, onClose }) => {
                           />
                         </div>
                       )}
-
                       {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
-                      {image === null && !initialImage && (
+                      {image === null && !initialImage && dtuser.file && (
                         <img
-                          src={`../../assets/user.jpg`}
+                          src={`http://localhost:6005/img/${dtuser.file}`}
                           alt="Uploaded Preview"
                           style={{
                             width: "160px",
@@ -527,7 +516,6 @@ const CreateUsers = ({ isOpen, onClose }) => {
                     onBlur={handleBlur}
                     onChange={handleChange}
                     displayEmpty
-                 
                   >
                     <MenuItem value="" disabled>
                       -- LDAP User --

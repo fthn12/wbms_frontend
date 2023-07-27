@@ -2,8 +2,16 @@ import { lazy } from "react";
 
 const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
 const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
+const PksTransactionTbs = lazy(() =>
+  import(
+    "./views/PksTransactionInternal/pksWbTbsinternal/TbsInternalTimbangMasuk"
+  )
+);
 const ReportPksTransactions = lazy(() =>
   import("./views/reports/PksTransactions")
+);
+const PksTransactionManual = lazy(() =>
+  import("./views/pages/PksTransaction/PksManualEntry/timbangMasuk")
 );
 const Cities = lazy(() => import("./views/masterdata/cities"));
 const Provinces = lazy(() => import("./views/masterdata/provinces"));
@@ -25,7 +33,9 @@ const Transportvehicle = lazy(() =>
 );
 const UsersList = lazy(() => import("./views/usermanagement/userslist"));
 const RolesList = lazy(() => import("./views/usermanagement/roles"));
-const Config = lazy(() => import("./views/usermanagement/config"));
+const ViewRole = lazy(() => import("./views/usermanagement/roles/viewRole"));
+const Config = lazy(() => import("./views/usermanagement/config/config"));
+const ConfigRequest = lazy(() => import("./views/usermanagement/config"));
 
 // Base
 // const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
@@ -82,6 +92,19 @@ const routes = [
     element: PksTransaction,
     exact: true,
   },
+  {
+    path: "/pks-transaction-ManualEntry",
+    name: "PKS Transaction Manual Entry",
+    element: PksTransactionManual,
+    exact: true,
+  },
+  {
+    path: "/pks-transaction-TBS-Internal",
+    name: "PKS Transaction TBS Internal",
+    element: PksTransactionTbs,
+    exact: true,
+  },
+
   {
     path: "/reports/pks-transactions",
     name: "Report PKS Transactions",
@@ -183,6 +206,16 @@ const routes = [
     path: "/config",
     name: "Config",
     element: Config,
+  },
+  {
+    path: "/configrequest",
+    name: "Config Request",
+    element: ConfigRequest,
+  },
+  {
+    path: "/viewrole",
+    name: "View Role",
+    element: ViewRole,
   },
   // { path: "/theme/typography", name: "Typography", element: Typography },
   // { path: "/base", name: "Base", element: Cards, exact: true },

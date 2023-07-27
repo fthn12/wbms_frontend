@@ -20,7 +20,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import AddIcon from "@mui/icons-material/Add";
 import * as React from "react";
-import * as ProvinceAPI from "../../../api/provinceApi";
+import * as UsersAPI from "../../../api/usersApi";
 
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
@@ -28,10 +28,10 @@ import InputBase from "@mui/material/InputBase";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import CreateProvinces from "../../../views/masterdata/provinces/createProvince";
-import EditProvinces from "../../../views/masterdata/provinces/editProvince";
-import ViewProvinces from "../../../views/masterdata/provinces/viewProvince";
+import CreateUsers from "../../../views/usermanagement/userslist/createUser";
+import EditUsers from "../../../views/usermanagement/userslist/editUser";
 import Swal from "sweetalert2";
+import * as RolesAPI from "../../../api/provinceApi";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -40,44 +40,53 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const Provinces = () => {
-  console.clear();
+const ViewRole = () => {
+  // console.clear();
   const gridRef = useRef();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [roles, setRoles] = useState([]);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
 
-  const fetcher = () =>
-    ProvinceAPI.getAll().then((res) => res.data.province.records);
+  const fetcher = () => UsersAPI.getAll().then((res) => res.data.user.records);
 
+  useEffect(() => {
+    RolesAPI.getAll().then((res) => {
+      setRoles(res.data.province.records);
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log(roles);
+  }, []);
   // search
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: dtProvince } = useSWR(
-    searchQuery ? `province?name_like=${searchQuery}` : "province",
+  const { data: dtUser } = useSWR(
+    searchQuery ? `user?name_like=${searchQuery}` : "user",
     fetcher,
     { refreshInterval: 1000 }
   );
 
   //filter
-  const updateGridData = useCallback((Province) => {
+  const updateGridData = useCallback((user) => {
     if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.setRowData(Province);
+      gridRef.current.api.setRowData(user);
     }
   }, []);
 
   useEffect(() => {
-    if (dtProvince) {
-      const filteredData = dtProvince.filter((province) => {
-        const provinceData = Object.values(province).join(" ").toLowerCase();
-        return provinceData.includes(searchQuery.toLowerCase());
+    if (dtUser) {
+      const filteredData = dtUser.filter((user) => {
+        const userData = Object.values(user).join(" ").toLowerCase();
+        return userData.includes(searchQuery.toLowerCase());
       });
       updateGridData(filteredData);
     }
-  }, [searchQuery, dtProvince, updateGridData]);
+  }, [searchQuery, dtUser, updateGridData]);
 
   // delete
   const deleteById = (id, name) => {
@@ -93,7 +102,7 @@ const Provinces = () => {
       confirmButtonText: "Hapus",
     }).then((result) => {
       if (result.isConfirmed) {
-        ProvinceAPI.deleteById(id)
+        UsersAPI.deleteById(id)
           .then((res) => {
             console.log("Data berhasil dihapus:", res.data);
             toast.success("Data berhasil dihapus"); // Tampilkan toast sukses
@@ -127,6 +136,22 @@ const Provinces = () => {
       hide: false,
       flex: 3,
     },
+    {
+      headerName: "Role",
+      field: "role",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 3,
+    },
+    {
+      headerName: "Email",
+      field: "email",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 3,
+    },
 
     {
       headerName: "Action",
@@ -135,27 +160,6 @@ const Provinces = () => {
       cellRenderer: (params) => {
         return (
           <Box display="flex" justifyContent="center">
-            <Box
-              width="25%"
-              display="flex"
-              m="0 3px"
-              bgcolor={indigo[700]}
-              borderRadius="5px"
-              padding="10px 10px"
-              justifyContent="center"
-              color="white"
-              style={{
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                setSelectedProvince(params.data);
-                setIsViewOpen(true);
-              }}
-            >
-              <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
-            </Box>
-
             <Box
               width="25%"
               display="flex"
@@ -170,7 +174,7 @@ const Provinces = () => {
                 cursor: "pointer",
               }}
               onClick={() => {
-                setSelectedProvince(params.data);
+                setSelectedUser(params.data);
                 setIsEditOpen(true);
               }}
             >
@@ -203,12 +207,49 @@ const Provinces = () => {
 
   return (
     <>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
+      <Grid container spacing={2} pl={8} pr={8}>
+      {roles.map((role) => (
+        <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 3,
+              mb: 5,
+              mx: 2,
+              mt: 2,
+              borderTop: "5px solid #000",
+              borderRadius: "10px 10px 10px 10px",
+            }}
+          >
+            <div
+              className="ag-theme-alpine"
+              style={{ width: "auto", height: "29vh" }}
+            >
+              <h4 ml={3}>{role.name}</h4>
+              <br />
+              <h6 sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}>
+                Total users with this role: 5
+              </h6>
+              <br />
+              <Typography
+                sx={{
+                  fontSize: "15px",
+                  color: "gray",
+                  display: "flex",
+                  alignItems: "center",
+                  flex: 1,
+                }}
+              >
+                {role.description}
+              </Typography>
+            </div>
+          </Paper>
+        </Grid>
+ ))}
+        <Grid item xs={12} sm={6} md={4} lg={9}>
           <Paper
             sx={{
               p: 3,
-              mx: 3,
               mb: 5,
               mt: 2,
               borderTop: "5px solid #000",
@@ -217,24 +258,25 @@ const Provinces = () => {
           >
             <div style={{ marginBottom: "5px" }}>
               <Box display="flex">
-                <Typography fontSize="20px">Data Province</Typography>
+                <Typography fontSize="20px">Users </Typography>
                 <Box display="flex" ml="auto">
                   <Button
                     variant="contained"
                     sx={{
                       backgroundColor: blue[800],
-                      fontSize: "11px",
+                      fontSize: "12px",
                       padding: "8px 8px",
                       fontWeight: "bold",
                       color: "white",
                       marginLeft: "8px",
+                      textTransform: "none",
                     }}
                     onClick={() => {
                       setIsOpen(true);
                     }}
                   >
-                    <AddIcon sx={{ mr: "5px", fontSize: "16px" }} />
-                    Tambah Data
+                    <AddIcon sx={{ mr: "5px", fontSize: "19px" }} />
+                    Tambah User
                   </Button>
                 </Box>
               </Box>
@@ -257,8 +299,8 @@ const Provinces = () => {
                     type="button"
                     sx={{ p: 1 }}
                     onClick={() => {
-                      const filteredData = dtProvince.filter((province) =>
-                        province.name
+                      const filteredData = dtUser.filter((User) =>
+                        User.name
                           .toLowerCase()
                           .includes(searchQuery.toLowerCase())
                       );
@@ -271,7 +313,7 @@ const Provinces = () => {
               </Box>
             </div>
             <Tables
-              name={"province"}
+              name={"user"}
               fetcher={fetcher}
               colDefs={columnDefs}
               gridRef={gridRef}
@@ -281,23 +323,16 @@ const Provinces = () => {
       </Grid>
 
       {/* Create */}
-      <CreateProvinces isOpen={isOpen} onClose={setIsOpen} />
+      <CreateUsers isOpen={isOpen} onClose={setIsOpen} />
 
       {/* edit */}
-      <EditProvinces
+      <EditUsers
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        dtProvince={selectedProvince}
-      />
-
-      {/* View */}
-      <ViewProvinces
-        isViewOpen={isViewOpen}
-        onClose={() => setIsViewOpen(false)}
-        dtProvince={selectedProvince}
+        dtuser={selectedUser}
       />
     </>
   );
 };
 
-export default Provinces;
+export default ViewRole;

@@ -21,10 +21,10 @@ import { grey } from "@mui/material/colors";
 import * as RolesApi from "../../../api/roleApi";
 import * as CustomerTypesAPI from "../../../api/provinceApi";
 
-const CreateRoles = ({ isOpen, onClose }) => {
-  // Create
-  const handleSubmit = (values, { setSubmitting, resetForm }) => {
-    CustomerTypesAPI.create(values)
+const CreateRoles = ({ isEditOpen, onClose, dtRole }) => {
+
+  const handleFormSubmit  = (values, { setSubmitting, resetForm }) => {
+    CustomerTypesAPI.update(values)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
         toast.success("Data Berhasil Disimpan"); // Tampilkan toast sukses
@@ -42,20 +42,16 @@ const CreateRoles = ({ isOpen, onClose }) => {
       });
   };
 
-  const initialValues = {
-    name: "",
-  };
-
-  const checkoutSchema = yup.object().shape({
+  const userSchema = yup.object().shape({
     name: yup.string().required("required"),
   });
 
   return (
-    <Dialog open={isOpen} fullWidth maxWidth={"md"}>
+    <Dialog open={isEditOpen} fullWidth maxWidth={"md"}>
       <DialogTitle
         sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}
       >
-        Tambah Roles
+        Edit Roles
         <IconButton
           sx={{
             color: "black",
@@ -73,9 +69,9 @@ const CreateRoles = ({ isOpen, onClose }) => {
 
       <DialogContent dividers>
         <Formik
-          onSubmit={handleSubmit}
-          initialValues={initialValues}
-          validationSchema={checkoutSchema}
+          onSubmit={handleFormSubmit }
+          initialValues={dtRole}
+          validationSchema={userSchema}
         >
           {({
             values,

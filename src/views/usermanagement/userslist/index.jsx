@@ -29,6 +29,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import CreateUsers from "../../../views/usermanagement/userslist/createUser";
+import EditUsers from "../../../views/usermanagement/userslist/editUser";
 import Swal from "sweetalert2";
 
 ModuleRegistry.registerModules([
@@ -39,7 +40,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const UsersList = () => {
-  console.clear();
+  // console.clear();
   const gridRef = useRef();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -105,8 +106,6 @@ const UsersList = () => {
     });
   };
 
-  //open create dialog
-  useEffect(() => {}, [isOpen]);
 
   const [columnDefs] = useState([
     {
@@ -280,18 +279,13 @@ const UsersList = () => {
       <CreateUsers isOpen={isOpen} onClose={setIsOpen} />
 
       {/* edit */}
-      {/* <Editusers
+      <EditUsers
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        dtuser={selecteduser}
-      /> */}
+        dtuser={selectedUser}
+      />
 
-      {/* View */}
-      {/* <Viewusers
-        isViewOpen={isViewOpen}
-        onClose={() => setIsViewOpen(false)}
-        dtuser={selecteduser}
-      /> */}
+ 
     </>
   );
 };

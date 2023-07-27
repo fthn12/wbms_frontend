@@ -11,9 +11,11 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
-import * as RolesAPI from "../../../api/roleApi";
+import * as RolesAPI from "../../../api/provinceApi";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CreateRole from "../../../views/usermanagement/roles/createRole";
+import EditRole from "../../../views/usermanagement/roles/editRole";
+import { LinkContainer } from "react-router-bootstrap";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -25,9 +27,11 @@ ModuleRegistry.registerModules([
 const RoleList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [roles, setRoles] = useState([]);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const fetcher = () =>
-    RolesAPI.getAll().then((res) => res.data.role.records);
+    RolesAPI.getAll().then((res) => res.data.province.records);
   useEffect(() => {
     fetcher().then((dataRole) => {
       setRoles(dataRole);
@@ -78,15 +82,23 @@ const RoleList = () => {
                 </Typography>
               </div>
               <Box display="flex" justifyContent="flex-start" gap="15px" mt={2}>
+                <LinkContainer to="/viewrole"  style={{ textTransform: "none" }}>
                 <Button
                   type="submit"
                   variant="contained"
-                  style={{ textTransform: "none" }}
+                 
                 >
                   View Role
-                </Button>
+                </Button></LinkContainer>
                 {!["Administrator", "administrator"].includes(role.name) && (
-                  <Button variant="outlined" style={{ textTransform: "none" }}>
+                  <Button
+                    variant="outlined"
+                    style={{ textTransform: "none" }}
+                    onClick={() => {
+                      setSelectedRole(role);
+                      setIsEditOpen(true);
+                    }}
+                  >
                     Edit Role
                   </Button>
                 )}
@@ -97,62 +109,67 @@ const RoleList = () => {
 
         <Grid item xs={12} sm={6} md={4} lg={4}>
           <Paper
-            variant="outlined"
-            sx={{
-              p: 4,
+  variant="outlined"
+  sx={{
+    p: 4,
+    borderRadius: "10px",
+    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+    position: "relative", // Tambahkan properti posisi relatif pada Paper
+  }}
+>
+  <div
+    className="ag-theme-alpine"
+    style={{ width: "auto", height: "34vh" }}
+  >
+    <Box
+      display="flex"
+      sx={{
+        position: "absolute", 
+        top: "50%", // Posisikan di tengah vertikal (50% dari atas)
+        left: "50%", // Posisikan di tengah horizontal (50% dari kiri)
+        transform: "translate(-50%, -50%)", // Geser posisi ke tengah (50% dari lebar dan tinggi elemen)
+        flexDirection: "column", // Susun konten dalam kolom
+        alignItems: "center", // Posisikan konten di tengah secara horizontal
+        gap: "10px",
+      }}
+    >
+      <Button
+        type="submit"
+        variant="text"
+        style={{
+          textTransform: "none",
+          fontSize: "23px",
+          fontWeight: "bold",
+          color: "gray",
+        }}
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        <AddCircleIcon
+          sx={{
+            fontSize: "25px",
+            color: "gray",
+            mr: 1,
+          }}
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        />
+        Tambah Role 
+      </Button>
+    </Box>
+  </div>
+</Paper>
 
-              pt: 22.5,
-              pb: 22.5,
-              borderRadius: "10px 10px 10px 10px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-              display: "flex",
-              justifyContent: "center", // Center the content horizontally
-              alignItems: "center", // Center the content vertically
-              flexDirection: "column", // Arrange the content in a column
-            }}
-          >
-            <div
-              className="ag-theme-alpine"
-              style={{ width: "auto", height: "auto" }}
-            >
-              <Box
-                display="flex"
-                sx={{
-                  gap: "10px",
-                }}
-              >
-                <Button
-                  type="submit"
-                  variant="text"
-                  style={{
-                    textTransform: "none",
-                    fontSize: "23px",
-                    fontWeight: "bold",
-                    color: "gray",
-                    justifyContent: "center",
-                  }}
-                  onClick={() => {
-                    setIsOpen(true);
-                  }}
-                >
-                  <AddCircleIcon
-                    sx={{
-                      fontSize: "25px",
-                      color: "gray",
-                      mr: 1,
-                    }}
-                    onClick={() => {
-                      setIsOpen(true);
-                    }}
-                  />
-                  Tambah Role Baru
-                </Button>
-              </Box>
-            </div>
-          </Paper>
         </Grid>
       </Grid>
       <CreateRole isOpen={isOpen} onClose={setIsOpen} />
+      <EditRole
+        isEditOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        dtRole={selectedRole}
+      />
     </div>
   );
 };

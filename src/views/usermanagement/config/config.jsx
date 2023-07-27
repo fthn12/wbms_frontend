@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import useSWR from "swr";
-import { orange, blue, red, indigo, green } from "@mui/material/colors";
+import { yellow } from "@mui/material/colors";
 import "ag-grid-enterprise";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -24,8 +24,8 @@ import * as ConfigAPI from "../../../api/provinceApi";
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import CancelIcon from "@mui/icons-material/CancelOutlined";
+import EditDataConfig from "../../../views/usermanagement/config/editConfig";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import Swal from "sweetalert2";
 
 ModuleRegistry.registerModules([
@@ -35,14 +35,12 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const ConfigRequest = () => {
+const Config = () => {
   console.clear();
   const gridRef = useRef();
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedConfig, setSelectedConfig] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isViewOpen, setIsViewOpen] = useState(false);
 
   const fetcher = () =>
     ConfigAPI.getAll().then((res) => res.data.province.records);
@@ -51,60 +49,28 @@ const ConfigRequest = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: dtProvince } = useSWR(
-    searchQuery ? `province?name_like=${searchQuery}` : "province",
+  const { data: dtConfig } = useSWR(
+    searchQuery ? `config?name_like=${searchQuery}` : "config",
     fetcher,
     { refreshInterval: 1000 }
   );
 
   //filter
-  const updateGridData = useCallback((Province) => {
+  const updateGridData = useCallback((config) => {
     if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.setRowData(Province);
+      gridRef.current.api.setRowData(config);
     }
   }, []);
 
   useEffect(() => {
-    if (dtProvince) {
-      const filteredData = dtProvince.filter((province) => {
-        const provinceData = Object.values(province).join(" ").toLowerCase();
-        return provinceData.includes(searchQuery.toLowerCase());
+    if (dtConfig) {
+      const filteredData = dtConfig.filter((config) => {
+        const configData = Object.values(config).join(" ").toLowerCase();
+        return configData.includes(searchQuery.toLowerCase());
       });
       updateGridData(filteredData);
     }
-  }, [searchQuery, dtProvince, updateGridData]);
-
-  // delete
-  const deleteById = (id, name) => {
-    Swal.fire({
-      title: `Yakin Ingin Menghapus?`,
-      html: `<span style="font-weight: bold; font-size: 28px;">"${name}"</span>`,
-      icon: "question",
-      showConfirmButton: true,
-      showCancelButton: true,
-      confirmButtonColor: "#D80B0B",
-      cancelButtonColor: "grey",
-      cancelButtonText: "Cancel",
-      confirmButtonText: "Hapus",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        ConfigAPI.deleteById(id)
-          .then((res) => {
-            console.log("Data berhasil dihapus:", res.data);
-            toast.success("Data berhasil dihapus"); // Tampilkan toast sukses
-            // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
-          })
-          .catch((error) => {
-            console.error("Data Gagal dihapus:", error);
-            toast.error("Data Gagal dihapus"); // Tampilkan toast error
-            // Tangani error atau tampilkan pesan error
-          });
-      }
-    });
-  };
-
-  //open create dialog
-  useEffect(() => {}, [isOpen]);
+  }, [searchQuery, dtConfig, updateGridData]);
 
   const [columnDefs] = useState([
     {
@@ -143,6 +109,14 @@ const ConfigRequest = () => {
       flex: 3,
     },
     {
+      headerName: "Site",
+      field: "site",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 3,
+    },
+    {
       headerName: "Action",
       field: "id",
       sortable: true,
@@ -153,7 +127,7 @@ const ConfigRequest = () => {
               width="25%"
               display="flex"
               m="0 3px"
-              bgcolor={green[500]}
+              bgcolor={yellow[900]}
               borderRadius="50%"
               justifyContent="center"
               padding="10px 10px"
@@ -163,30 +137,11 @@ const ConfigRequest = () => {
                 cursor: "pointer",
               }}
               onClick={() => {
-                setSelectedProvince(params.data);
+                setSelectedConfig(params.data);
                 setIsEditOpen(true);
               }}
             >
-              <TaskAltIcon sx={{ fontSize: "20px" }} />
-            </Box>
-
-            <Box
-              width="25%"
-              display="flex"
-              m="0 3px"
-              bgcolor={red[500]}
-              borderRadius="50%"
-              padding="10px 10px"
-              justifyContent="center"
-              color="white"
-              onClick={() => deleteById(params.value, params.data.name)}
-              style={{
-                color: "white",
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-            >
-              <CancelIcon sx={{ fontSize: "20px" }} />
+              <DriveFileRenameOutlineIcon sx={{ fontSize: "20px" }} />
             </Box>
           </Box>
         );
@@ -210,7 +165,7 @@ const ConfigRequest = () => {
           >
             <div style={{ marginBottom: "5px" }}>
               <Box display="flex">
-                <Typography fontSize="20px">WBMS Config Request</Typography>
+                <Typography fontSize="20px">WBMS Config </Typography>
               </Box>
               <hr sx={{ width: "100%" }} />
               <Box display="flex" pb={1}>
@@ -231,8 +186,8 @@ const ConfigRequest = () => {
                     type="button"
                     sx={{ p: 1 }}
                     onClick={() => {
-                      const filteredData = dtProvince.filter((province) =>
-                        province.name
+                      const filteredData = dtConfig.filter((config) =>
+                        config.name
                           .toLowerCase()
                           .includes(searchQuery.toLowerCase())
                       );
@@ -245,7 +200,7 @@ const ConfigRequest = () => {
               </Box>
             </div>
             <Tables
-              name={"WBMS Config Request"}
+              name={"config"}
               fetcher={fetcher}
               colDefs={columnDefs}
               gridRef={gridRef}
@@ -253,8 +208,13 @@ const ConfigRequest = () => {
           </Paper>
         </Grid>
       </Grid>
+      <EditDataConfig
+        isEditOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        dtProvince={selectedConfig}
+      />
     </>
   );
 };
 
-export default ConfigRequest;
+export default Config;
