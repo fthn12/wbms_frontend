@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { w3cwebsocket } from "websocket";
-import { Grid, Paper } from "@mui/material";
+import { Grid, Paper, Button } from "@mui/material";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -129,7 +129,7 @@ const PksTransaction = () => {
         <Grid item xs={12}>
           <Grid container spacing={2}>
             <Grid item xs="auto">
-              <Paper sx={{ p: 2, width: "220px", height: "70vh" }}>
+              <Paper sx={{ p: 2, width: "220px", height: "auto" }}>
                 <ProgressStatus />
                 <QRCodeScanner
                   onClose={handleCloseQRCodeScanner}
@@ -137,8 +137,15 @@ const PksTransaction = () => {
                 />
               </Paper>
             </Grid>
-            <Grid item xs>
-              <Paper sx={{ p: 2 }}>
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                variant="contained"
+                style={{ width: "10vh", fontSize: "13px", borderRadius:"10%" }}
+              >
+                New
+              </Button>
+              <Paper sx={{ p: 2, mt: 1 }}>
                 <TransactionGrid tType={tType} />
               </Paper>
             </Grid>
