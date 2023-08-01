@@ -2,16 +2,20 @@ import { lazy } from "react";
 
 const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
 const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
-const PksTransactionTbs = lazy(() =>
-  import(
-    "./views/PksTransactionInternal/pksWbTbsinternal/TbsInternalTimbangMasuk"
-  )
-);
 const ReportPksTransactions = lazy(() =>
   import("./views/reports/PksTransactions")
 );
-const PksTransactionManual = lazy(() =>
-  import("./views/pages/PksTransaction/PksManualEntry/timbangMasuk")
+const PksTransactionManualOthers = lazy(() =>
+  import("./views/PksManualEntry/manualentryothers/timbangMasuk")
+);
+const PksTransactionManualTbsInternal = lazy(() =>
+  import("./views/PksManualEntry/manualentryTBSInternal/timbangMasuk")
+);
+const PksTransactionManualTbsEksternal = lazy(() =>
+  import("./views/PksManualEntry/manualentryTBSEksternal/timbangMasuk")
+);
+const PksTransactionManualCpoPko = lazy(() =>
+  import("./views/PksManualEntry/manualentryCpoPko/timbangMasuk")
 );
 const Cities = lazy(() => import("./views/masterdata/cities"));
 const Provinces = lazy(() => import("./views/masterdata/provinces"));
@@ -93,18 +97,30 @@ const routes = [
     exact: true,
   },
   {
-    path: "/pks-transaction-ManualEntry",
-    name: "PKS Transaction Manual Entry",
-    element: PksTransactionManual,
-    exact: true,
-  },
-  {
-    path: "/pks-transaction-TBS-Internal",
-    name: "PKS Transaction TBS Internal",
-    element: PksTransactionTbs,
+    path: "/pks-transaction-ManualEntry-Others",
+    name: "PKS Transaction Manual Entry Others",
+    element: PksTransactionManualOthers,
     exact: true,
   },
 
+  {
+    path: "/pks-transaction-ManualEntry-TBSInternal",
+    name: "PKS Transaction Manual Entry TBS Internal",
+    element: PksTransactionManualTbsInternal,
+    exact: true,
+  },
+  {
+    path: "/pks-transaction-ManualEntry-TBSEksternal",
+    name: "PKS Transaction Manual Entry TBS Eksternal",
+    element: PksTransactionManualTbsEksternal,
+    exact: true,
+  },
+  {
+    path: "/pks-transaction-ManualEntry-CpoPko",
+    name: "PKS Transaction Manual Entry CPO PKO",
+    element: PksTransactionManualCpoPko,
+    exact: true,
+  },
   {
     path: "/reports/pks-transactions",
     name: "Report PKS Transactions",
@@ -213,10 +229,11 @@ const routes = [
     element: ConfigRequest,
   },
   {
-    path: "/viewrole",
+    path: "/viewrole/:id",
     name: "View Role",
-    element: ViewRole,
+    element: <ViewRole />,
   },
+
   // { path: "/theme/typography", name: "Typography", element: Typography },
   // { path: "/base", name: "Base", element: Cards, exact: true },
   // { path: "/base/accordion", name: "Accordion", element: Accordion },

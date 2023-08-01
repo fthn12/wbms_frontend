@@ -31,6 +31,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import CreateUsers from "../../../views/usermanagement/userslist/createUser";
 import EditUsers from "../../../views/usermanagement/userslist/editUser";
 import Swal from "sweetalert2";
+import * as RoleAPI from "../../../api/roleApi";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -46,9 +47,15 @@ const UsersList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [dtRole, setDtRole] = useState([]);
 
   const fetcher = () => UsersAPI.getAll().then((res) => res.data.user.records);
+
+  useEffect(() => {
+    RoleAPI.getAll().then((res) => {
+      setDtRole(res);
+    });
+  }, []);
 
   // search
 
@@ -105,7 +112,6 @@ const UsersList = () => {
       }
     });
   };
-
 
   const [columnDefs] = useState([
     {
@@ -276,16 +282,15 @@ const UsersList = () => {
       </Grid>
 
       {/* Create */}
-      <CreateUsers isOpen={isOpen} onClose={setIsOpen} />
+      <CreateUsers isOpen={isOpen} onClose={setIsOpen} dtRole={dtRole} />
 
       {/* edit */}
       <EditUsers
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         dtuser={selectedUser}
+        dtRole={dtRole} 
       />
-
- 
     </>
   );
 };

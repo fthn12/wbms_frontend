@@ -11,30 +11,63 @@ import {
   Typography,
   Paper,
   Box,
+  Select,
+  MenuItem,
+  InputLabel,
 } from "@mui/material";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
-import { ProgressStatusContext } from "../../../../context/ProgressStatusContext";
+import { ProgressStatusContext } from "../../../context/ProgressStatusContext";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import { useForm } from "../../../../utils/useForm";
-import { setWb, clearWb, setWbTransaction } from "../../../../slices/appSlice";
-import GetWeightWB from "../../../../components/GetWeightWB";
-import BonTripPrint from "../../../../components/BonTripPrint";
-import * as TransactionAPI from "../../../../api/transactionApi";
-import Config from "../../../../configs";
-import TransactionGrid from "../../../../components/TransactionGrid";
-import PageHeader from "../../../../components/PageHeader";
+import { useForm } from "../../../utils/useForm";
+import { setWb, clearWb, setWbTransaction } from "../../../slices/appSlice";
+import GetWeightWB from "../../../components/GetWeightWB";
+
+import BonTripPrint from "../../../components/BonTripPrint";
+import * as TransactionAPI from "../../../api/transactionApi";
+import Config from "../../../configs";
+import TransactionGrid from "../../../components/TransactionGrid";
+import PageHeader from "../../../components/PageHeader";
+import * as ProductAPI from "../../../api/productsApi";
+import * as CompaniesAPI from "../../../api/companiesApi";
+import * as DriverAPI from "../../../api/driverApi";
+import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
+import * as CustomerAPI from "../../../api/customerApi";
 
 const tType = 1;
 let wsClient;
 
-const PksTBSInternal = () => {
+const PksManualOthersTimbangMasuk = () => {
   const { values, setValues } = useForm({ ...TransactionAPI.InitialData });
   const navigate = useNavigate();
 
-  let bonTripNo = `P041${moment().format("YYMMDDHHmmss")}`;
+  const handleChange = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const [bonTripNo, setBonTripNo] = useState(""); // State untuk menyimpan Nomor BON Trip
+
+  useEffect(() => {
+    // Fungsi untuk menghasilkan Nomor BON Trip dengan format P041YYMMDDHHmmss
+    const generateBonTripNo = () => {
+      const dateNow = moment().format("YYMMDDHHmmss");
+      return `P041${dateNow}`;
+    };
+
+    const generatedBonTripNo = generateBonTripNo(); // Panggil fungsi untuk menghasilkan Nomor BON Trip
+    setBonTripNo(generatedBonTripNo); // Simpan Nomor BON Trip dalam state
+
+    // Set nilai Nomor BON Trip ke dalam form values
+    setValues({
+      ...values,
+      bonTripNo: generatedBonTripNo,
+    });
+  }, []);
 
   const handleClose = () => {
     // setProgressStatus("-");
@@ -42,6 +75,32 @@ const PksTBSInternal = () => {
 
     navigate("/pks-transaction");
   };
+  const [dtCompany, setDtCompany] = useState([]);
+  const [dtProduct, setDtProduct] = useState([]);
+  const [dtDriver, setDtDriver] = useState([]);
+  const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
+  const [dtCustomer, setDtCustomer] = useState([]);
+
+  useEffect(() => {
+    CompaniesAPI.getAll().then((res) => {
+      setDtCompany(res.data.company.records);
+    });
+
+    ProductAPI.getAll().then((res) => {
+      setDtProduct(res.data.product.records);
+    });
+    DriverAPI.getAll().then((res) => {
+      setDtDriver(res.data.driver.records);
+    });
+
+    TransportVehicleAPI.getAll().then((res) => {
+      setDtTransportVehicle(res.data.transportVehicle.records);
+    });
+
+    CustomerAPI.getAll().then((res) => {
+      setDtCustomer(res.data.customer.records);
+    });
+  }, []);
 
   return (
     <>
@@ -53,8 +112,8 @@ const PksTBSInternal = () => {
       />
 
       <Grid container spacing={3}>
-        <Grid item xs={2}>
-          <Paper elevation={2} sx={{ px: 5, py: 3 }}>
+        <Grid item xs={1.5}>
+          <Paper elevation={2} sx={{ p: 2 }}>
             <TextField
               variant="outlined"
               inputProps={{
@@ -86,8 +145,8 @@ const PksTBSInternal = () => {
             />
           </Paper>
         </Grid>
-        <Grid item xs={10}>
-          <Paper elevation={3} sx={{ p: 3, px: 5 }}>
+        <Grid item xs={10.5}>
+          <Paper elevation={1} sx={{ p: 3, px: 5 }}>
             <Box
               display="grid"
               gap="20px"
@@ -95,34 +154,42 @@ const PksTBSInternal = () => {
             >
               <FormControl sx={{ gridColumn: "span 4" }}>
                 <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
+                  variant="outlined" // Variasi TextField dengan style "outlined"
+                  size="small" // Ukuran TextField kecil
+                  fullWidth // TextField akan memiliki lebar penuh
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   sx={{
-                    mb: 2,
+                    mb: 2, // Margin bawah dengan jarak 2 unit
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
+                      borderRadius: "10px", // Set radius border untuk bagian input
                     },
                   }}
                   label={
                     <>
                       <Typography
                         sx={{
-                          bgcolor: "white",
-                          px: 1,
+                          bgcolor: "white", // Background color teks label
+                          px: 1, // Padding horizontal teks label 1 unit
                         }}
                       >
                         Nomor BON Trip
                       </Typography>
                     </>
                   }
-                  name="bonTripNo"
-                  // value={values?.bonTripNo || ""}
+                  name="bonTripNo" // Nama properti/form field untuk data Nomor BON Trip
+                  value={values?.bonTripNo || ""} // Nilai data Nomor BON Trip yang diambil dari state 'values'
                 />
+
                 <TextField
                   variant="outlined"
                   size="small"
                   fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  placeholder="Masukkan No. DO/NPB"
                   sx={{
                     my: 2,
                     "& .MuiOutlinedInput-root": {
@@ -141,88 +208,105 @@ const PksTBSInternal = () => {
                       </Typography>
                     </>
                   }
-                  name="transportVehiclePlateNo"
-                  // value={values?.transportVehiclePlateNo || ""}
+                  name="deliveryOrderNo"
+                  value={values.deliveryOrderNo}
                 />
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
+                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                  <InputLabel
+                    id="select-label"
+                    shrink
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
+                    Nomor Polisi
+                  </InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    onChange={handleChange}
+                    name="Nopol"
+                    value={values.Nopol || ""}
+                    displayEmpty
+                    sx={{
                       borderRadius: "10px",
-                    },
-                  }}
-                  label={
-                    <>
-                      <Typography
-                        sx={{
-                          bgcolor: "white",
-                          px: 1.5,
-                        }}
-                      >
-                        Nomor Polisi
-                      </Typography>
-                    </>
-                  }
-                  name="transportVehiclePlateNo"
-                  // value={values?.transportVehiclePlateNo || ""}
-                />
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
+                      color: MenuItem ? "gray" : "black",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      -- Pilih Kendaraan --
+                    </MenuItem>
+                    {dtTransportVehicle.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.plateNo}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                  <InputLabel
+                    id="select-label"
+                    shrink
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
+                    Nama Supir
+                  </InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    onChange={handleChange}
+                    name="driver"
+                    value={values.driver || ""}
+                    displayEmpty
+                    sx={{
                       borderRadius: "10px",
-                    },
-                  }}
-                  label={
-                    <>
-                      <Typography
-                        sx={{
-                          bgcolor: "white",
-                          px: 1,
-                        }}
-                      >
-                        Nama Supir
-                      </Typography>
-                    </>
-                  }
-                  name="driverFullName"
-                  // value={values?.jsonData?.driverFullName || ""}
-                />
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
+                      color: MenuItem ? "gray" : "black",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      -- Pilih Supir --
+                    </MenuItem>
+                    {dtDriver.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                  <InputLabel
+                    id="select-label"
+                    shrink
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
+                    Nama Vendor
+                  </InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    onChange={handleChange}
+                    name="transporterId"
+                    value={values.transporterId || ""}
+                    displayEmpty
+                    sx={{
                       borderRadius: "10px",
-                    },
-                  }}
-                  label={
-                    <>
-                      <Typography
-                        sx={{
-                          bgcolor: "white",
-                          px: 1,
-                        }}
-                      >
-                        Nama Vendor
-                      </Typography>
-                    </>
-                  }
-                  name="transporterCompanyFullName"
-                  // value={values?.jsonData?.transporterCompanyFullName || ""}
-                />
+                      color: MenuItem ? "gray" : "black",
+                    }}
+                  >
+                    <MenuItem value="" disabled >
+                      -- Pilih Vendor --
+                    </MenuItem>
+                    {dtCompany.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <TextField
                   variant="outlined"
                   size="small"
                   fullWidth
+                  disabled
+                  value="-"
                   sx={{
                     my: 2,
                     "& .MuiOutlinedInput-root": {
@@ -246,58 +330,67 @@ const PksTBSInternal = () => {
                   //   Config.SCC_MODEL[values?.jsonData?.vehicleAllowableSccModel || 0]
                   // }
                 />
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
+
+                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                  <InputLabel
+                    id="select-label"
+                    shrink
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
+                    Customer
+                  </InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    onChange={handleChange}
+                    name="customer"
+                    value={values.customer || ""}
+                    displayEmpty
+                    sx={{
                       borderRadius: "10px",
-                    },
-                  }}
-                  label={
-                    <>
-                      <Typography
-                        sx={{
-                          bgcolor: "white",
-                          px: 1,
-                        }}
-                      >
-                        Jenis Barang
-                      </Typography>
-                    </>
-                  }
-                  name="vehicleAllowableSccModel"
-                  // value={
-                  //   Config.SCC_MODEL[values?.jsonData?.vehicleAllowableSccModel || 0]
-                  // }
-                />
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
+                      color: MenuItem ? "gray" : "black",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      -- Pilih Customer --
+                    </MenuItem>
+                    {dtCustomer.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                  <InputLabel
+                    id="select-label"
+                    shrink
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
+                    Jenis Barang
+                  </InputLabel>
+                  <Select
+                    labelId="select-label"
+                    id="select"
+                    onChange={handleChange}
+                    name="productId"
+                    value={values.productId || ""}
+                    displayEmpty
+                    sx={{
                       borderRadius: "10px",
-                    },
-                  }}
-                  label={
-                    <Typography
-                      sx={{
-                        bgcolor: "white",
-                        px: 1,
-                      }}
-                    >
-                      Customer
-                    </Typography>
-                  }
-                  name="vehicleAllowableSccModel"
-                  // value={
-                  //   Config.SCC_MODEL[values?.jsonData?.vehicleAllowableSccModel || 0]
-                  // }
-                />
+                      color: MenuItem ? "gray" : "black",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      -- Pilih Barang --
+                    </MenuItem>
+                    {dtProduct.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
@@ -449,6 +542,9 @@ const PksTBSInternal = () => {
                       borderRadius: "10px",
                     },
                   }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">kg</InputAdornment>
@@ -471,7 +567,7 @@ const PksTBSInternal = () => {
                 <Button
                   variant="contained"
                   fullWidth
-                  sx={{ mb: 2 }}
+                  sx={{ mt: 2 }}
                   // onClick={handleSubmit}
                   // disabled={
                   //   !(
@@ -488,7 +584,7 @@ const PksTBSInternal = () => {
                 />
                 <Button
                   variant="contained"
-                  sx={{ mb: 1, mt: 2 }}
+                  sx={{ my: 1 }}
                   fullWidth
                   onClick={handleClose}
                   // disabled={!(values.progressStatus === 4)}
@@ -509,4 +605,4 @@ const PksTBSInternal = () => {
   );
 };
 
-export default PksTBSInternal;
+export default PksManualOthersTimbangMasuk;

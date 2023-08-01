@@ -159,21 +159,33 @@ const PksTransaction = () => {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
-              > <MenuItem component={Link} to="/" onClick={handleClose}>
+              >
+                <MenuItem
+                  component={Link}
+                  to="/pks-transaction-ManualEntry-CpoPko"
+                  onClick={handleClose}
+                >
                   CPO / PKO
                 </MenuItem>
                 <MenuItem
                   component={Link}
-                  to="/pks-transaction-TBS-Internal"
+                  to="/pks-transaction-ManualEntry-TBSInternal"
                   onClick={handleClose}
                 >
                   TBS Internal
                 </MenuItem>
-               
-                <MenuItem component={Link} to="/item3" onClick={handleClose}>
+                <MenuItem
+                  component={Link}
+                  to="/pks-transaction-ManualEntry-TBSEksternal"
+                  onClick={handleClose}
+                >
                   TBS Eksternal
                 </MenuItem>
-                <MenuItem component={Link} to="/pks-transaction-ManualEntry" onClick={handleClose}>
+                <MenuItem
+                  component={Link}
+                  to="/pks-transaction-ManualEntry-Others"
+                  onClick={handleClose}
+                >
                   Lainnya
                 </MenuItem>
               </Menu>

@@ -20,51 +20,49 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import AddCircleIcon from "@mui/icons-material/Edit";
 import { toast } from "react-toastify";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
 import * as UserApi from "../../../api/usersApi";
 
-const CreateUsers = ({ isEditOpen, onClose, dtuser }) => {
+const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
   // Create
-  const handleFormSubmit = (values, { setSubmitting, resetForm }) => {
-    UserApi.create(values)
-      .then((res) => {
-        console.log("Data Berhasil Disimpan:", res.data);
-        toast.success("Data Berhasil Disimpan"); // Tampilkan toast sukses
-        // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
-      })
-      .catch((error) => {
-        console.error("Data Gagal Disimpan:", error);
-        toast.error("Data Gagal Disimpan: " + error.message); // Tampilkan pesan error spesifik
-        // Tangani error atau tampilkan pesan error
-      })
-      .finally(() => {
-        setSubmitting(false);
-        resetForm();
-        onClose("", false);
-      });
+  const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
+    try {
+      await UserApi.update(values);
+      console.log("Data Berhasil Diperbarui:", values);
+      toast.success("Data Berhasil Diperbarui"); // Tampilkan toast sukses
+      // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
+    } catch (error) {
+      console.error("Data Gagal Diperbarui:", error);
+      toast.error("Data Gagal Diperbarui: " + error.message); // Tampilkan pesan error spesifik
+      // Tangani error atau tampilkan pesan error
+    } finally {
+      setSubmitting(false);
+      resetForm();
+      onClose("", false);
+    }
   };
 
   const userSchema = yup.object().shape({
-    name: yup.string().required("required"),
-    username: yup.string().required("required"),
-    nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
-    email: yup
-      .string()
-      .email("Enter a valid email")
-      .required("Email is required"),
-    division: yup.string().required("required"),
-    position: yup.string().required("required"),
-    phone: yup.string().required("required"),
-    password: yup
-      .string()
-      .required("Kata sandi harus diisi")
-      .min(8, "Kata sandi minimal terdiri dari 8 karakter")
-      .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
-    role: yup.string().required("required"),
+    // name: yup.string().required("required"),
+    // username: yup.string().required("required"),
+    // nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
+    // email: yup
+    //   .string()
+    //   .email("Enter a valid email")
+    //   .required("Email is required"),
+    // division: yup.string().required("required"),
+    // position: yup.string().required("required"),
+    // phone: yup.string().required("required"),
+    // password: yup
+    //   .string()
+    //   .required("Kata sandi harus diisi")
+    //   .min(8, "Kata sandi minimal terdiri dari 8 karakter")
+    //   .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
+    // role: yup.string().required("required"),
   });
 
   const [image, setImage] = useState(null);
@@ -81,8 +79,6 @@ const CreateUsers = ({ isEditOpen, onClose, dtuser }) => {
     setImage(null);
     setInitialImage(true);
   };
-
-
 
   return (
     <Dialog open={isEditOpen} fullWidth maxWidth={"md"}>
@@ -118,6 +114,7 @@ const CreateUsers = ({ isEditOpen, onClose, dtuser }) => {
             handleBlur,
             handleChange,
             handleSubmit,
+            setFieldValue,
           }) => (
             <form onSubmit={handleSubmit}>
               <Box
@@ -207,9 +204,9 @@ const CreateUsers = ({ isEditOpen, onClose, dtuser }) => {
                       }}
                     >
                       {/* Gambar ditampilkan terlebih dahulu */}
-                      {image === null && dtuser.file && (
+                      {image === null && dtuser.profilePic && (
                         <img
-                        src={`http://localhost:6005/images/${dtuser.file}`}
+                          src={dtuser.profilePic}
                           alt="Uploaded Preview"
                           style={{
                             width: "160px",
@@ -218,7 +215,7 @@ const CreateUsers = ({ isEditOpen, onClose, dtuser }) => {
                         />
                       )}
 
-                      {/* Jika gambar baru dipilih melalui input file, gambar yang baru akan ditampilkan */}
+                      {/* Jika gambar baru dipilih melalui input profilePic, gambar yang baru akan ditampilkan */}
                       {image && (
                         <div>
                           <img
@@ -233,17 +230,23 @@ const CreateUsers = ({ isEditOpen, onClose, dtuser }) => {
                           />
                         </div>
                       )}
+
                       {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
-                      {image === null && !initialImage && dtuser.file && (
-                        <img
-                          src={`http://localhost:6005/img/${dtuser.file}`}
-                          alt="Uploaded Preview"
-                          style={{
-                            width: "160px",
-                            height: "160px",
-                          }}
-                        />
-                      )}
+                      {image === null &&
+                        !initialImage &&
+                        !dtuser.profilePic && (
+                          <img
+                            src={`../../assets/user.jpg`}
+                            alt="Uploaded Preview"
+                            style={{
+                              width: "160px",
+                              height: "160px",
+                            }}
+                          />
+                        )}
+
+                      {/* Tambahkan console.log untuk memeriksa URL gambar */}
+                      {console.log("URL Gambar:", dtuser.profilePic)}
                     </div>
                   </Box>
                 </FormControl>
@@ -445,42 +448,61 @@ const CreateUsers = ({ isEditOpen, onClose, dtuser }) => {
                     sx={{
                       color: "black",
                       marginBottom: "8px",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Role id
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan roleId"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.roleId}
-                    name="roleId"
-                    error={!!touched.roleId && !!errors.roleId}
-                    helperText={touched.roleId && errors.roleId}
-                  />
-                </FormControl>
-
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "18px",
+                      fontSize: "16px",
                       fontWeight: "bold",
                     }}
                   >
                     Role
                   </FormLabel>
+                  <Select
+                    fullWidth
+                    name="roleId"
+                    value={values.roleId}
+                    onBlur={handleBlur}
+                    onChange={(event) => {
+                      handleChange(event);
+                      const selectedRole = dtRole.find(
+                        (item) => item.id === event.target.value
+                      );
+                      setFieldValue(
+                        "role",
+                        selectedRole ? selectedRole.name : ""
+                      );
+                    }}
+                    displayEmpty
+                    sx={{
+                      color: MenuItem ? "gray" : "black",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      -- Pilih Role Id --
+                    </MenuItem>
+                    {dtRole.map((item) => {
+                      return (
+                        <MenuItem key={item.id} value={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Role Name
+                  </FormLabel>
                   <TextField
-                    fullWth
+                    fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan role"
+                    placeholder="Masukan Role name....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.role}
@@ -525,7 +547,7 @@ const CreateUsers = ({ isEditOpen, onClose, dtuser }) => {
                   </Select>
                 </FormControl>
 
-                <FormControl
+                {/* <FormControl
                   sx={{
                     gridColumn: "span 4",
                   }}
@@ -714,7 +736,7 @@ const CreateUsers = ({ isEditOpen, onClose, dtuser }) => {
                       }
                     />
                   </RadioGroup>
-                </FormControl>
+                </FormControl> */}
               </Box>
               <Box display="flex" mt={3} mb={4} justifyContent="center">
                 <Button
@@ -752,4 +774,4 @@ const CreateUsers = ({ isEditOpen, onClose, dtuser }) => {
   );
 };
 
-export default CreateUsers;
+export default EditUsers;

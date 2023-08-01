@@ -25,12 +25,12 @@ import { toast } from "react-toastify";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
-import * as UserApi from "../../../api/usersApi";
+import * as UsersAPI from "../../../api/usersApi";
 
-const CreateUsers = ({ isOpen, onClose }) => {
+const CreateUsers = ({ isOpen, onClose, dtRole }) => {
   // Create
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
-    UserApi.create(values)
+    UsersAPI.create(values)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
         toast.success("Data Berhasil Disimpan"); // Tampilkan toast sukses
@@ -82,16 +82,24 @@ const CreateUsers = ({ isOpen, onClose }) => {
   const [image, setImage] = useState(null);
   const [initialImage, setInitialImage] = useState(false);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImage(file ? URL.createObjectURL(file) : null);
-    setInitialImage(false);
+  const handleImageChange = (event) => {
+    const selectedFile = event.target.files[0];
+    const reader = new FileReader();
+
+    // Baca file gambar yang dipilih menggunakan FileReader
+    reader.onloadend = () => {
+      setImage(reader.result); // Simpan hasil pembacaan sebagai state "image"
+      setInitialImage(true); // Set initialImage menjadi true untuk menandakan bahwa ada gambar yang dipilih
+    };
+
+    if (selectedFile) {
+      reader.readAsDataURL(selectedFile);
+    }
   };
 
   const handleResetImage = () => {
-    // Menghapus gambar yang baru dipilih saat tombol reset diklik
-    setImage(null);
-    setInitialImage(true);
+    setImage(null); // Reset state "image" menjadi null untuk menghapus gambar yang dipilih
+    setInitialImage(false); // Set initialImage menjadi false karena gambar telah dihapus
   };
 
   return (
@@ -128,8 +136,9 @@ const CreateUsers = ({ isOpen, onClose }) => {
             handleBlur,
             handleChange,
             handleSubmit,
+            setFieldValue,
           }) => (
-            <form onSubmit={handleSubmit} >
+            <form onSubmit={handleSubmit}>
               <Box
                 display="grid"
                 padding={2}
@@ -255,6 +264,7 @@ const CreateUsers = ({ isOpen, onClose }) => {
                           }}
                         />
                       )}
+                      {console.log("URL Gambar:", values.file)}
                     </div>
                   </Box>
                 </FormControl>
@@ -456,42 +466,61 @@ const CreateUsers = ({ isOpen, onClose }) => {
                     sx={{
                       color: "black",
                       marginBottom: "8px",
-                      fontSize: "18px",
+                      fontSize: "16px",
                       fontWeight: "bold",
                     }}
                   >
-                    Role id
+                    Role 
                   </FormLabel>
-                  <TextField
+                  <Select
                     fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan roleId"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.roleId}
                     name="roleId"
-                    error={!!touched.roleId && !!errors.roleId}
-                    helperText={touched.roleId && errors.roleId}
-                  />
+                    value={values.roleId}
+                    onBlur={handleBlur}
+                    onChange={(event) => {
+                      handleChange(event);
+                      const selectedRole = dtRole.find(
+                        (item) => item.id === event.target.value
+                      );
+                      setFieldValue(
+                        "role",
+                        selectedRole ? selectedRole.name : ""
+                      );
+                    }}
+                    displayEmpty
+                    sx={{
+                      color: MenuItem ? "gray" : "black",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      -- Pilih Role Id --
+                    </MenuItem>
+                    {dtRole.map((item) => {
+                      return (
+                        <MenuItem key={item.id} value={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
                 </FormControl>
 
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
-                      color: "black",
                       marginBottom: "8px",
-                      fontSize: "18px",
+                      color: "black",
+                      fontSize: "16px",
                       fontWeight: "bold",
                     }}
                   >
-                    Role
+                    Role Name
                   </FormLabel>
                   <TextField
-                    fullWth
+                    fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan role"
+                    placeholder="Masukan Role name....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.role}
@@ -511,15 +540,7 @@ const CreateUsers = ({ isOpen, onClose }) => {
                   >
                     isLDAPUser
                   </FormLabel>
-                  {/* <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={values.isLDAPUser}
-                        onChange={handleChange}
-                        name="isLDAPUser"
-                      />
-                    }
-                  /> */}
+
                   <Select
                     fullWidth
                     value={values.isLDAPUser}
@@ -527,7 +548,6 @@ const CreateUsers = ({ isOpen, onClose }) => {
                     onBlur={handleBlur}
                     onChange={handleChange}
                     displayEmpty
-                 
                   >
                     <MenuItem value="" disabled>
                       -- LDAP User --
@@ -537,7 +557,7 @@ const CreateUsers = ({ isOpen, onClose }) => {
                   </Select>
                 </FormControl>
 
-                <FormControl
+                {/* <FormControl
                   sx={{
                     gridColumn: "span 4",
                   }}
@@ -726,7 +746,7 @@ const CreateUsers = ({ isOpen, onClose }) => {
                       }
                     />
                   </RadioGroup>
-                </FormControl>
+                </FormControl> */}
               </Box>
               <Box display="flex" mt={3} mb={4} justifyContent="center">
                 <Button
