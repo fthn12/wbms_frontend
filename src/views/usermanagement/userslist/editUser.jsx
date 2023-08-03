@@ -1,22 +1,18 @@
-import { useState, useEffect, useRef, React } from "react";
+import { useState, React } from "react";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControlLabel,
   Select,
   MenuItem,
-  Typography,
   Button,
   Box,
   FormControl,
   IconButton,
   FormLabel,
   TextField,
-  Radio,
-  Checkbox,
-  RadioGroup,
   Tooltip,
+  Checkbox,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -28,11 +24,40 @@ import { grey } from "@mui/material/colors";
 import * as UserApi from "../../../api/usersApi";
 
 const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
-  // Create
+  const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
+  console.log(path);
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
+    const {
+      id,
+      name,
+      username,
+      nik,
+      email,
+      password,
+      file,
+      position,
+      division,
+      phone,
+      roleId,
+      isLDAPUser,
+    } = values;
+    const dto = {
+      id,
+      name,
+      username,
+      nik,
+      email,
+      password,
+      file,
+      position,
+      division,
+      phone,
+      roleId,
+      isLDAPUser,
+    };
     try {
-      await UserApi.update(values);
-      console.log("Data Berhasil Diperbarui:", values);
+      await UserApi.update(dto);
+      console.log("Data Berhasil Diperbarui:", dto);
       toast.success("Data Berhasil Diperbarui"); // Tampilkan toast sukses
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
     } catch (error) {
@@ -47,22 +72,22 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
   };
 
   const userSchema = yup.object().shape({
-    // name: yup.string().required("required"),
-    // username: yup.string().required("required"),
-    // nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
-    // email: yup
-    //   .string()
-    //   .email("Enter a valid email")
-    //   .required("Email is required"),
-    // division: yup.string().required("required"),
-    // position: yup.string().required("required"),
-    // phone: yup.string().required("required"),
+    name: yup.string().required("required"),
+    username: yup.string().required("required"),
+    nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
+    email: yup
+      .string()
+      .email("Enter a valid email")
+      .required("Email is required"),
+    division: yup.string().required("required"),
+    position: yup.string().required("required"),
+    phone: yup.string().required("required"),
     // password: yup
     //   .string()
     //   .required("Kata sandi harus diisi")
     //   .min(8, "Kata sandi minimal terdiri dari 8 karakter")
     //   .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
-    // role: yup.string().required("required"),
+    role: yup.string().required("required"),
   });
 
   const [image, setImage] = useState(null);
@@ -115,36 +140,62 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
             handleChange,
             handleSubmit,
             setFieldValue,
-          }) => (
-            <form onSubmit={handleSubmit}>
-              <Box
-                display="grid"
-                padding={2}
-                paddingBottom={3}
-                paddingLeft={3}
-                paddingRight={3}
-                gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              >
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Profile
-                  </FormLabel>
-                  <Box mt={1} mb={1} position="relative">
-                    {image && (
+          }) => {
+            return (
+              <form onSubmit={handleSubmit} encType="multipart/form-data">
+                <Box
+                  display="grid"
+                  padding={2}
+                  paddingBottom={3}
+                  paddingLeft={3}
+                  paddingRight={3}
+                  gap="20px"
+                  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                >
+                  <FormControl sx={{ gridColumn: "span 4" }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Profile
+                    </FormLabel>
+                    <Box mt={1} mb={1} position="relative">
+                      {image && (
+                        <label
+                          htmlFor="cancelImage"
+                          onClick={handleResetImage}
+                          style={{
+                            position: "absolute",
+                            bottom: "-17px",
+                            left: "138px",
+                            cursor: "pointer",
+                            zIndex: "1",
+                            background: "#fff",
+                            padding: "5px",
+                            border: "1px solid #9e9e9e",
+                            borderRadius: "50%",
+                            boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+                          }}
+                        >
+                          <Tooltip title="Cancel Profile">
+                            <CancelIcon
+                              style={{ fontSize: "24px", color: "#ff0000" }}
+                            />
+                          </Tooltip>
+                        </label>
+                      )}
+
+                      {/* Ikon "Add" untuk memilih gambar */}
+
                       <label
-                        htmlFor="cancelImage"
-                        onClick={handleResetImage}
+                        htmlFor="imageInput"
                         style={{
                           position: "absolute",
-                          bottom: "-17px",
-                          left: "138px",
+                          top: "-17px",
+                          left: "140px",
                           cursor: "pointer",
                           zIndex: "1",
                           background: "#fff",
@@ -154,89 +205,33 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                           boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
                         }}
                       >
-                        <Tooltip title="Cancel Profile">
-                          <CancelIcon
-                            style={{ fontSize: "24px", color: "#ff0000" }}
+                        <Tooltip title="Pilih Profile">
+                          <input
+                            id="imageInput"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            style={{ display: "none" }}
+                          />
+                          <AddCircleIcon
+                            style={{ fontSize: "24px", color: "#3f51b5" }}
                           />
                         </Tooltip>
                       </label>
-                    )}
 
-                    {/* Ikon "Add" untuk memilih gambar */}
-
-                    <label
-                      htmlFor="imageInput"
-                      style={{
-                        position: "absolute",
-                        top: "-17px",
-                        left: "140px",
-                        cursor: "pointer",
-                        zIndex: "1",
-                        background: "#fff",
-                        padding: "5px",
-                        border: "1px solid #9e9e9e",
-                        borderRadius: "50%",
-                        boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-                      }}
-                    >
-                      <Tooltip title="Pilih Profile">
-                        <input
-                          id="imageInput"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                          value={values.file}
-                          style={{ display: "none" }}
-                        />
-                        <AddCircleIcon
-                          style={{ fontSize: "24px", color: "#3f51b5" }}
-                        />
-                      </Tooltip>
-                    </label>
-
-                    <div
-                      style={{
-                        position: "relative",
-                        width: "160px",
-                        height: "160px",
-                        overflow: "hidden",
-                        border: "2px solid #9e9e9e",
-                      }}
-                    >
-                      {/* Gambar ditampilkan terlebih dahulu */}
-                      {image === null && dtuser.profilePic && (
-                        <img
-                          src={dtuser.profilePic}
-                          alt="Uploaded Preview"
-                          style={{
-                            width: "160px",
-                            height: "160px",
-                          }}
-                        />
-                      )}
-
-                      {/* Jika gambar baru dipilih melalui input profilePic, gambar yang baru akan ditampilkan */}
-                      {image && (
-                        <div>
+                      <div
+                        style={{
+                          position: "relative",
+                          width: "160px",
+                          height: "160px",
+                          overflow: "hidden",
+                          border: "2px solid #9e9e9e",
+                        }}
+                      >
+                        {/* Gambar ditampilkan terlebih dahulu */}
+                        {image === null && dtuser.profilePic && (
                           <img
-                            src={image}
-                            alt="Uploaded Preview"
-                            style={{
-                              width: "160px",
-                              height: "160px",
-                              cursor: "move",
-                            }}
-                            id="uploadedImage"
-                          />
-                        </div>
-                      )}
-
-                      {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
-                      {image === null &&
-                        !initialImage &&
-                        !dtuser.profilePic && (
-                          <img
-                            src={`../../assets/user.jpg`}
+                            src={`${path}${dtuser.profilePic}`}
                             alt="Uploaded Preview"
                             style={{
                               width: "160px",
@@ -245,205 +240,235 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                           />
                         )}
 
-                      {/* Tambahkan console.log untuk memeriksa URL gambar */}
-                      {console.log("URL Gambar:", dtuser.profilePic)}
-                    </div>
-                  </Box>
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Name
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan Name"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.name}
-                    name="name"
-                    error={!!touched.name && !!errors.name}
-                    helperText={touched.name && errors.name}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Email
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="email"
-                    placeholder="Masukkan Email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.email}
-                    name="email"
-                    error={!!touched.email && !!errors.email}
-                    helperText={touched.email && errors.email}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    No Telepon
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan No Telepon"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.phone}
-                    name="phone"
-                    error={!!touched.phone && !!errors.phone}
-                    helperText={touched.phone && errors.phone}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Nik
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan Nik"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.nik}
-                    name="nik"
-                    error={!!touched.nik && !!errors.nik}
-                    helperText={touched.nik && errors.nik}
-                  />
-                </FormControl>
+                        {/* Jika gambar baru dipilih melalui input profilePic, gambar yang baru akan ditampilkan */}
+                        {image && (
+                          <div>
+                            <img
+                              src={image}
+                              alt="Uploaded Preview"
+                              style={{
+                                width: "160px",
+                                height: "160px",
+                                cursor: "move",
+                              }}
+                              id="uploadedImage"
+                            />
+                          </div>
+                        )}
 
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Username
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan Username"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.username}
-                    name="username"
-                    error={!!touched.username && !!errors.username}
-                    helperText={touched.username && errors.username}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Password
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="password"
-                    placeholder="Masukkan Password"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.password}
-                    name="password"
-                    error={!!touched.password && !!errors.password}
-                    helperText={touched.password && errors.password}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Division
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan Division"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.division}
-                    name="division"
-                    error={!!touched.division && !!errors.division}
-                    helperText={touched.division && errors.division}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Position
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukkan Position"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.position}
-                    name="position"
-                    error={!!touched.position && !!errors.position}
-                    helperText={touched.position && errors.position}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                        {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
+                        {image === null &&
+                          !initialImage &&
+                          !dtuser.profilePic && (
+                            <img
+                              src={`../../assets/user.jpg`}
+                              alt="Uploaded Preview"
+                              style={{
+                                width: "160px",
+                                height: "160px",
+                              }}
+                            />
+                          )}
+
+                        {/* Tambahkan console.log untuk memeriksa URL gambar */}
+                        {console.log("URL Gambar:", dtuser.profilePic)}
+                      </div>
+                    </Box>
+                  </FormControl>
+                  <FormControl sx={{ gridColumn: "span 4" }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        marginBottom: "8px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Name
+                    </FormLabel>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="text"
+                      placeholder="Masukkan Name"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.name}
+                      name="name"
+                      error={!!touched.name && !!errors.name}
+                      helperText={touched.name && errors.name}
+                    />
+                  </FormControl>
+                  <FormControl sx={{ gridColumn: "span 4" }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        marginBottom: "8px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Email
+                    </FormLabel>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="email"
+                      placeholder="Masukkan Email"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.email}
+                      name="email"
+                      error={!!touched.email && !!errors.email}
+                      helperText={touched.email && errors.email}
+                    />
+                  </FormControl>
+                  <FormControl sx={{ gridColumn: "span 4" }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        marginBottom: "8px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      No Telepon
+                    </FormLabel>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="text"
+                      placeholder="Masukkan No Telepon"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.phone}
+                      name="phone"
+                      error={!!touched.phone && !!errors.phone}
+                      helperText={touched.phone && errors.phone}
+                    />
+                  </FormControl>
+                  <FormControl sx={{ gridColumn: "span 4" }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        marginBottom: "8px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Nik
+                    </FormLabel>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="text"
+                      placeholder="Masukkan Nik"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.nik}
+                      name="nik"
+                      error={!!touched.nik && !!errors.nik}
+                      helperText={touched.nik && errors.nik}
+                    />
+                  </FormControl>
+
+                  <FormControl sx={{ gridColumn: "span 4" }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        marginBottom: "8px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Username
+                    </FormLabel>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="text"
+                      placeholder="Masukkan Username"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.username}
+                      name="username"
+                      error={!!touched.username && !!errors.username}
+                      helperText={touched.username && errors.username}
+                    />
+                  </FormControl>
+                  <FormControl sx={{ gridColumn: "span 4" }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        marginBottom: "8px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Password
+                    </FormLabel>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="password"
+                      placeholder="Masukkan Password"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.password}
+                      name="password"
+                      error={!!touched.password && !!errors.password}
+                      helperText={touched.password && errors.password}
+                    />
+                  </FormControl>
+                  <FormControl sx={{ gridColumn: "span 4" }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        marginBottom: "8px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Division
+                    </FormLabel>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="text"
+                      placeholder="Masukkan Division"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.division}
+                      name="division"
+                      error={!!touched.division && !!errors.division}
+                      helperText={touched.division && errors.division}
+                    />
+                  </FormControl>
+                  <FormControl sx={{ gridColumn: "span 4" }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        marginBottom: "8px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Position
+                    </FormLabel>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="text"
+                      placeholder="Masukkan Position"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.position}
+                      name="position"
+                      error={!!touched.position && !!errors.position}
+                      helperText={touched.position && errors.position}
+                    />
+                  </FormControl>
+                  <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       color: "black",
@@ -458,12 +483,12 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                     fullWidth
                     name="roleId"
                     value={values.roleId}
-                    onBlur={handleBlur}
                     onChange={(event) => {
-                      handleChange(event);
+                      const { name, value } = event.target;
                       const selectedRole = dtRole.find(
-                        (item) => item.id === event.target.value
+                        (item) => item.id === value
                       );
+                      setFieldValue(name, value);
                       setFieldValue(
                         "role",
                         selectedRole ? selectedRole.name : ""
@@ -475,7 +500,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                     }}
                   >
                     <MenuItem value="" disabled>
-                      -- Pilih Role Id --
+                      -- Pilih Role --
                     </MenuItem>
                     {dtRole.map((item) => {
                       return (
@@ -486,288 +511,64 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                     })}
                   </Select>
                 </FormControl>
-
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
+                  <FormControl
                     sx={{
-                      marginBottom: "8px",
-                      color: "black",
+                      gridColumn: "span 4",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: "5px",
+                    }}
+                  >
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      isLDAPUser
+                    </FormLabel>
+                    <Checkbox
+                      checked={values.isLDAPUser === true}
+                      onChange={(event) => {
+                        const newValue = event.target.checked ? true : false;
+                        setFieldValue("isLDAPUser", newValue);
+                      }}
+                    />
+                  </FormControl>
+                </Box>
+                <Box display="flex" mt={3} mb={4} justifyContent="center">
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: grey[700],
+                      color: "white",
+                      textTransform: "none",
                       fontSize: "16px",
-                      fontWeight: "bold",
+                    }}
+                    onClick={() => {
+                      onClose("", false);
                     }}
                   >
-                    Role Name
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukan Role name....."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.role}
-                    name="role"
-                    error={!!touched.role && !!errors.role}
-                    helperText={touched.role && errors.role}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
+                    Cancel
+                  </Button>
+                  <Box mr={1} />
+                  <Button
+                    type="submit"
+                    variant="contained"
                     sx={{
-                      color: "black",
-                      marginBottom: "8px",
+                      color: "white",
+                      textTransform: "none",
                       fontSize: "16px",
-                      fontWeight: "bold",
                     }}
                   >
-                    isLDAPUser
-                  </FormLabel>
-                  {/* <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={values.isLDAPUser}
-                        onChange={handleChange}
-                        name="isLDAPUser"
-                      />
-                    }
-                  /> */}
-                  <Select
-                    fullWidth
-                    value={values.isLDAPUser}
-                    name="isLDAPUser"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- LDAP User --
-                    </MenuItem>
-                    <MenuItem value={true}>YES</MenuItem>
-                    <MenuItem value={false}>NO</MenuItem>
-                  </Select>
-                </FormControl>
-
-                {/* <FormControl
-                  sx={{
-                    gridColumn: "span 4",
-                  }}
-                >
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "23px",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Role
-                  </FormLabel>
-                  <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    name="radio-buttons-group"
-                  >
-                    <FormControlLabel
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      value="administrator"
-                      control={<Radio />}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Administrator
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Administrator bertanggung jawab untuk membuat akun
-                            pengguna baru dalam sistem. Administrator juga
-                            bertugas memberikan atau mengatur hak akses dan izin
-                            pengguna
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="mill head"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Mill Head
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Mill Head dapat memiliki akses untuk memantau dan
-                            mengawasi proses produksi di pabrik . Ini termasuk
-                            melihat data dan laporan produksi, mendapatkan
-                            informasi terkini tentang progres produksi.
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="manager"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Manager
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Manager dapat memiliki hak akses untuk mengelola dan
-                            mengawasi proses produksi di pabrik. Ini meliputi
-                            memantau kinerja produksi, mengidentifikasi masalah
-                            operasional.
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="supervisor"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Supervisor
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Supervisor dapat memiliki hak akses untuk mengawasi
-                            staf dan operator. mengatur jadwal kerja, dan
-                            memastikan bahwa tugas-tugas dilaksanakan dengan
-                            tepat.
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="staff"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Staff
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Staff atau Operator dapat memiliki hak akses
-                            melakukan proses penimbangan kelapa sawit,
-                            memastikan kualitas produk, dan melaksanakan
-                            tugas-tugas sesuai dengan prosedur yang ditetapkan.
-                          </Typography>
-                        </>
-                      }
-                    />
-                  </RadioGroup>
-                </FormControl> */}
-              </Box>
-              <Box display="flex" mt={3} mb={4} justifyContent="center">
-                <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: grey[700],
-                    color: "white",
-                    textTransform: "none",
-                    fontSize: "16px",
-                  }}
-                  onClick={() => {
-                    onClose("", false);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Box mr={1} />
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{
-                    color: "white",
-                    textTransform: "none",
-                    fontSize: "16px",
-                  }}
-                >
-                  Simpan
-                </Button>
-              </Box>
-            </form>
-          )}
+                    Simpan
+                  </Button>
+                </Box>
+              </form>
+            );
+          }}
         </Formik>
       </DialogContent>
     </Dialog>

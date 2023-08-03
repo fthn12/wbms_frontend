@@ -20,12 +20,12 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import * as React from "react";
 import * as ConfigAPI from "../../../api/provinceApi";
-
+import * as SiteAPI from "../../../api/sitesApi";
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import EditDataConfig from "../../../views/usermanagement/config/editConfig";
-import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
+import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import Swal from "sweetalert2";
 
 ModuleRegistry.registerModules([
@@ -41,9 +41,16 @@ const Config = () => {
 
   const [selectedConfig, setSelectedConfig] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [dtSites, setDtSites] = useState([]);
 
   const fetcher = () =>
     ConfigAPI.getAll().then((res) => res.data.province.records);
+
+  useEffect(() => {
+    SiteAPI.getAll().then((res) => {
+      setDtSites(res.data.site.records);
+    });
+  }, []);
 
   // search
 
@@ -211,7 +218,8 @@ const Config = () => {
       <EditDataConfig
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        dtProvince={selectedConfig}
+        dtConfig={selectedConfig}
+        dtSite={dtSites}
       />
     </>
   );

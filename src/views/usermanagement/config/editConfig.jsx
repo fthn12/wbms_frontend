@@ -17,16 +17,16 @@ import { toast } from "react-toastify";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
-import * as ProvinceApi from "../../../api/provinceApi";
+import * as ConfigApi from "../../../api/configsApi";
 
-const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
+const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
   const userSchema = yup.object().shape({
     name: yup.string().required("required"),
   });
 
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      await ProvinceApi.update(values);
+      await ConfigApi.update(values);
       console.log("Data Berhasil Diperbarui:", values);
       toast.success("Data Berhasil Diperbarui"); // Tampilkan toast sukses
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
@@ -40,7 +40,7 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
       onClose("", false);
     }
   };
-
+  console.log("dtSite:", dtSite);
   return (
     <Dialog
       open={isEditOpen}
@@ -70,7 +70,7 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
       <DialogContent dividers>
         <Formik
           onSubmit={handleFormSubmit}
-          initialValues={dtProvince}
+          initialValues={dtConfig}
           validationSchema={userSchema}
         >
           {({
@@ -178,8 +178,8 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
                   </FormLabel>
                   <Autocomplete
                     multiple
-                    options={["Pks4", "Pks3", "Pks1","Pks2", "Pks9", "Pks11","Pks5", "Pks6", "Pks7","Pks10", "Pks12", "Pks15"]}
-                    getOptionLabel={(option) => option}
+                    options={dtSite}
+                    getOptionLabel={(option) => option.name}
                     value={values.sites}
                     onChange={(event, newValue) => {
                       // Handle changes to the selected values
@@ -192,7 +192,6 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
                       <TextField
                         {...params}
                         variant="outlined"
-                       
                         error={touched.sites && !!errors.sites}
                       />
                     )}
@@ -233,4 +232,4 @@ const EditProvince = ({ isEditOpen, onClose, dtProvince }) => {
   );
 };
 
-export default EditProvince;
+export default EditConfig;

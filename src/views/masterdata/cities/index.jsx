@@ -52,13 +52,11 @@ const Cities = () => {
   const fetcher = () => CitiesApi.getAll().then((res) => res.data.city.records);
 
   // Mengambil data provinsi dari API
-  ProvinceApi.getAll()
-    .then((res) => {
+  useEffect(() => {
+    ProvinceApi.getAll().then((res) => {
       setDtProvinces(res.data.province.records);
-    })
-    .catch((error) => {
-      console.error("Error fetching provinces:", error);
     });
+  }, []);
 
   // search
 

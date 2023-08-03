@@ -1,22 +1,19 @@
-import { useState, useEffect, useRef, React } from "react";
+import { useState, React } from "react";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
-  FormControlLabel,
   Select,
   MenuItem,
-  Typography,
   Button,
   Box,
   FormControl,
   IconButton,
   FormLabel,
   TextField,
-  Radio,
-  Checkbox,
-  RadioGroup,
   Tooltip,
+  Checkbox,
+  Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -44,6 +41,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
       .finally(() => {
         setSubmitting(false);
         resetForm();
+        handleResetImage();
         onClose("", false);
       });
   };
@@ -52,50 +50,39 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
     name: "",
     username: "",
     nik: "",
-    position: "",
     email: "",
+    password: "",
+    file: "",
+    position: "",
     division: "",
     phone: "",
-    password: "",
-    role: "",
+    roleId: "",
+    isLDAPUser: false,
   };
 
   const checkoutSchema = yup.object().shape({
     name: yup.string().required("required"),
-    // username: yup.string().required("required"),
-    // nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
-    // email: yup
-    //   .string()
-    //   .email("Enter a valid email")
-    //   .required("Email is required"),
-    // division: yup.string().required("required"),
-    // position: yup.string().required("required"),
-    // phone: yup.string().required("required"),
-    // password: yup
-    //   .string()
-    //   .required("Kata sandi harus diisi")
-    //   .min(8, "Kata sandi minimal terdiri dari 8 karakter")
-    //   .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
-    // role: yup.string().required("required"),
+    username: yup.string().required("required"),
+    nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
+    email: yup
+      .string()
+      .email("Enter a valid email")
+      .required("Email is required"),
+    division: yup.string().required("required"),
+    position: yup.string().required("required"),
+    phone: yup.string().required("required"),
+    password: yup
+      .string()
+      .required("Kata sandi harus diisi")
+      .min(8, "Kata sandi minimal terdiri dari 8 karakter")
+      .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
+    roleId: yup.mixed().required("required"),
+    isLDAPUser: yup.mixed().required("required"),
+    file: yup.mixed().required("Gambar wajib diisi"),
   });
 
   const [image, setImage] = useState(null);
   const [initialImage, setInitialImage] = useState(false);
-
-  const handleImageChange = (event) => {
-    const selectedFile = event.target.files[0];
-    const reader = new FileReader();
-
-    // Baca file gambar yang dipilih menggunakan FileReader
-    reader.onloadend = () => {
-      setImage(reader.result); // Simpan hasil pembacaan sebagai state "image"
-      setInitialImage(true); // Set initialImage menjadi true untuk menandakan bahwa ada gambar yang dipilih
-    };
-
-    if (selectedFile) {
-      reader.readAsDataURL(selectedFile);
-    }
-  };
 
   const handleResetImage = () => {
     setImage(null); // Reset state "image" menjadi null untuk menghapus gambar yang dipilih
@@ -138,7 +125,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
             handleSubmit,
             setFieldValue,
           }) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} encType="multipart/form-data">
               <Box
                 display="grid"
                 padding={2}
@@ -206,8 +193,22 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                           id="imageInput"
                           type="file"
                           accept="image/*"
-                          onChange={handleImageChange}
-                          value={values.file}
+                          name="file"
+                          onChange={(event) => {
+                            const selectedFile = event.target.files[0];
+                            setFieldValue("file", selectedFile);
+                            const reader = new FileReader();
+
+                            // Baca file gambar yang dipilih menggunakan FileReader
+                            reader.onloadend = () => {
+                              setImage(reader.result); // Simpan hasil pembacaan sebagai state "image"
+                              setInitialImage(true); // Set initialImage menjadi true untuk menandakan bahwa ada gambar yang dipilih
+                            };
+
+                            if (selectedFile) {
+                              reader.readAsDataURL(selectedFile);
+                            }
+                          }}
                           style={{ display: "none" }}
                         />
                         <AddCircleIcon
@@ -264,7 +265,6 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                           }}
                         />
                       )}
-                      {console.log("URL Gambar:", values.file)}
                     </div>
                   </Box>
                 </FormControl>
@@ -470,18 +470,18 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    Role 
+                    Role
                   </FormLabel>
                   <Select
                     fullWidth
                     name="roleId"
                     value={values.roleId}
-                    onBlur={handleBlur}
                     onChange={(event) => {
-                      handleChange(event);
+                      const { name, value } = event.target;
                       const selectedRole = dtRole.find(
-                        (item) => item.id === event.target.value
+                        (item) => item.id === value
                       );
+                      setFieldValue(name, value);
                       setFieldValue(
                         "role",
                         selectedRole ? selectedRole.name : ""
@@ -493,7 +493,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     }}
                   >
                     <MenuItem value="" disabled>
-                      -- Pilih Role Id --
+                      -- Pilih Role --
                     </MenuItem>
                     {dtRole.map((item) => {
                       return (
@@ -505,248 +505,32 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                   </Select>
                 </FormControl>
 
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      marginBottom: "8px",
-                      color: "black",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Role Name
-                  </FormLabel>
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    type="text"
-                    placeholder="Masukan Role name....."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.role}
-                    name="role"
-                    error={!!touched.role && !!errors.role}
-                    helperText={touched.role && errors.role}
-                  />
-                </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    isLDAPUser
-                  </FormLabel>
-
-                  <Select
-                    fullWidth
-                    value={values.isLDAPUser}
-                    name="isLDAPUser"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      -- LDAP User --
-                    </MenuItem>
-                    <MenuItem value={true}>YES</MenuItem>
-                    <MenuItem value={false}>NO</MenuItem>
-                  </Select>
-                </FormControl>
-
-                {/* <FormControl
+                <FormControl
                   sx={{
                     gridColumn: "span 4",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
                   }}
                 >
                   <FormLabel
                     sx={{
                       color: "black",
-                      marginBottom: "23px",
                       fontSize: "18px",
                       fontWeight: "bold",
                     }}
                   >
-                    Role
+                    isLDAPUser
                   </FormLabel>
-                  <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    name="radio-buttons-group"
-                  >
-                    <FormControlLabel
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      value="administrator"
-                      control={<Radio />}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Administrator
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Administrator bertanggung jawab untuk membuat akun
-                            pengguna baru dalam sistem. Administrator juga
-                            bertugas memberikan atau mengatur hak akses dan izin
-                            pengguna
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="mill head"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Mill Head
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Mill Head dapat memiliki akses untuk memantau dan
-                            mengawasi proses produksi di pabrik . Ini termasuk
-                            melihat data dan laporan produksi, mendapatkan
-                            informasi terkini tentang progres produksi.
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="manager"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Manager
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Manager dapat memiliki hak akses untuk mengelola dan
-                            mengawasi proses produksi di pabrik. Ini meliputi
-                            memantau kinerja produksi, mengidentifikasi masalah
-                            operasional.
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="supervisor"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Supervisor
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Supervisor dapat memiliki hak akses untuk mengawasi
-                            staf dan operator. mengatur jadwal kerja, dan
-                            memastikan bahwa tugas-tugas dilaksanakan dengan
-                            tepat.
-                          </Typography>
-                        </>
-                      }
-                    />
-                    <hr />
-                    <FormControlLabel
-                      value="staff"
-                      control={<Radio />}
-                      sx={{
-                        "& .MuiSvgIcon-root": {
-                          fontSize: 30,
-                        },
-                      }}
-                      label={
-                        <>
-                          <Typography
-                            sx={{
-                              fontSize: "18px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Staff
-                          </Typography>
-
-                          <Typography
-                            sx={{
-                              fontSize: "16px",
-                              color: "grey",
-                            }}
-                          >
-                            Staff atau Operator dapat memiliki hak akses
-                            melakukan proses penimbangan kelapa sawit,
-                            memastikan kualitas produk, dan melaksanakan
-                            tugas-tugas sesuai dengan prosedur yang ditetapkan.
-                          </Typography>
-                        </>
-                      }
-                    />
-                  </RadioGroup>
-                </FormControl> */}
+                  <Checkbox
+                    checked={values.isLDAPUser === true}
+                    onChange={(event) => {
+                      const newValue = event.target.checked ? true : false;
+                      setFieldValue("isLDAPUser", newValue);
+                    }}
+                  />
+                </FormControl>
               </Box>
               <Box display="flex" mt={3} mb={4} justifyContent="center">
                 <Button

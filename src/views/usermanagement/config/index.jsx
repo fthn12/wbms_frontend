@@ -36,7 +36,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const ConfigRequest = () => {
-  console.clear();
+  // console.clear();
   const gridRef = useRef();
 
   const [isOpen, setIsOpen] = useState(false);

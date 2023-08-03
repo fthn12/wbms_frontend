@@ -231,7 +231,7 @@ const routes = [
   {
     path: "/viewrole/:id",
     name: "View Role",
-    element: <ViewRole />,
+    element: ViewRole,
   },
 
   // { path: "/theme/typography", name: "Typography", element: Typography },
