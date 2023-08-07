@@ -51,8 +51,8 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
       .required("Email is required"),
     phone: yup.string().required("required"),
     codeSap: yup.string().required("required"),
-    licenseNo: yup.string().min(12, "Minimal 12 karakter"),
-    licenseED: yup.date().required("required"),
+    licenseNo: yup.string(),
+    // licenseED: yup.date().required("required"),
   });
   const initialValues = {
     companyId: "",

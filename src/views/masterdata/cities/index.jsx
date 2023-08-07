@@ -136,6 +136,14 @@ const Cities = () => {
       hide: false,
       flex: 3,
     },
+    {
+      headerName: "Province",
+      field: "province.name",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 3,
+    },
 
     {
       headerName: "Action",

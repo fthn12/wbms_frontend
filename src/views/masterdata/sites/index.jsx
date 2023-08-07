@@ -76,7 +76,7 @@ const Sites = () => {
   const { data: dtSites } = useSWR(
     searchQuery ? `sites?name_like=${searchQuery}` : "sites",
     fetcher,
-    { refreshInterval: 100 }
+    { refreshInterval: 1000 }
   );
 
   const updateGridData = useCallback((Sites) => {

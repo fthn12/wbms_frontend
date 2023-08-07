@@ -36,32 +36,46 @@ import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
 
-// const tType = 1;
-let wsClient;
+const tType = 1;
 
 const PksManualOthersTimbangMasuk = () => {
   const navigate = useNavigate();
-  const [values, setValues] = useState({});
+  const { values, setValues, handleChange } = useForm({
+    ...TransactionAPI.InitialData,
+  });
   const [originWeightNetto, setOriginWeightNetto] = useState(0);
 
-  const handleSubmit = () => {
-    // Assuming you have all the required data in the 'values' state object.
-    TransactionAPI.create(values)
-      .then((res) => {
-        console.log("Data Berhasil Disimpan:", res.data);
-        toast.success("Data Berhasil Disimpan");
-      })
-      .catch((error) => {
-        console.error("Data Gagal Disimpan:", error);
-        toast.error("Data Gagal Disimpan: " + error.message);
-      });
-  };
+  const handleSubmit = async () => {
+    let tempTrans = { ...values };
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+    if (tempTrans.progressStatus === 0) {
+      tempTrans.progressStatus = 1;
+      tempTrans.originWeighInTimestamp = moment().toDate();
+    } else {
+      // ... logika jika progressStatus !== 0 ...
+    }
+
+    try {
+      if (tempTrans.progressStatus === 1) {
+        const results = await TransactionAPI.create({ ...tempTrans });
+
+        if (!results?.status) {
+          toast.error(`Error: ${results?.message}.`);
+          return;
+        }
+
+        toast.success(`Transaksi WB-IN telah tersimpan.`);
+
+        return handleClose();
+      } else {
+        // ... logika jika progressStatus !== 1 ...
+      }
+    } catch (error) {
+      toast.error(`Error: ${error.message}.`);
+      return;
+    }
+
+    setValues({ ...tempTrans });
   };
 
   const [bonTripNo, setBonTripNo] = useState(""); // State untuk menyimpan Nomor BON Trip
@@ -390,7 +404,7 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
-                    onChange={handleChange}
+                    // onChange={handleChange}
                     name="customer"
                     value={values.customer || ""}
                     displayEmpty
@@ -533,7 +547,8 @@ const PksManualOthersTimbangMasuk = () => {
                     </Typography>
                   }
                   name="originWeighInKg"
-                  value={values.originWeighInKg || 0}
+                  value={values.originWeighInKg}
+                  onChange={handleChange}
                 />
                 <TextField
                   type="number"
@@ -696,11 +711,11 @@ const PksManualOthersTimbangMasuk = () => {
             </Box>
           </Paper>
         </Grid>
-        {/* <Grid item xs={12}>
+        <Grid item xs={12}>
           <Paper sx={{ p: 2, mt: 1 }}>
             <TransactionGrid tType={tType} />
           </Paper>
-        </Grid> */}
+        </Grid>
       </Grid>
     </>
   );

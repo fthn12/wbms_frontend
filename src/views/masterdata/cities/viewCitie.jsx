@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -11,10 +11,17 @@ import {
   MenuItem,
   IconButton,
 } from "@mui/material";
+import * as ProvinceApi from "../../../api/provinceApi";
 import CloseIcon from "@mui/icons-material/Close";
 import { Formik } from "formik";
 
-const ViewCities = ({ isViewOpen, onClose, dtCity, dtProvinces }) => {
+const ViewCities = ({ isViewOpen, onClose, dtCity }) => {
+  useEffect(() => {
+    ProvinceApi.getById().then((res) => {
+      const provinceData = res.data.province.records;
+    });
+  }, []);
+
   return (
     <Dialog
       open={isViewOpen}
@@ -97,25 +104,19 @@ const ViewCities = ({ isViewOpen, onClose, dtCity, dtProvinces }) => {
                   >
                     Province
                   </FormLabel>
-                  <Select
+                  <TextField
                     fullWidth
-                    name="provinceId"
+                    variant="outlined"
+                    placeholder="Pilih Province"
                     inputProps={{ readOnly: true }}
-                    value={values.provinceId}
+                    type="text"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    displayEmpty
-                  
-                  >
-                    <MenuItem value="" disabled>
-                      Pilih Province
-                    </MenuItem>
-                    {dtProvinces.map((item) => (
-                      <MenuItem key={item.id} value={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                    value={values.province.name}
+                    name="provinceId"
+                    error={!!touched.provinceId && !!errors.provinceId}
+                    helperText={touched.provinceId && errors.provinceId}
+                  />
                 </FormControl>
               </Box>
             </form>

@@ -351,7 +351,7 @@ const EditSites = ({
                   <Select
                     fullWidth
                     name="cityId"
-                    value={values.cityId}
+                    value={values.cityId || ""}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     displayEmpty
