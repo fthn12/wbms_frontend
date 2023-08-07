@@ -30,6 +30,7 @@ import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import CreateUsers from "../../../views/usermanagement/userslist/createUser";
 import EditUsers from "../../../views/usermanagement/userslist/editUser";
+import ViewUsers from "../../../views/usermanagement/userslist/viewUser";
 import Swal from "sweetalert2";
 import * as RoleAPI from "../../../api/roleApi";
 
@@ -47,6 +48,7 @@ const UsersList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isViewOpen, setIsViewOpen] = useState(false);
   const [dtRole, setDtRole] = useState([]);
 
   const fetcher = () => UsersAPI.getAll().then((res) => res.data.user.records);
@@ -156,6 +158,26 @@ const UsersList = () => {
       cellRenderer: (params) => {
         return (
           <Box display="flex" justifyContent="center">
+            <Box
+              width="25%"
+              display="flex"
+              m="0 3px"
+              bgcolor={indigo[700]}
+              borderRadius="5px"
+              padding="10px 10px"
+              justifyContent="center"
+              color="white"
+              style={{
+                textDecoration: "none",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setSelectedUser(params.data);
+                setIsViewOpen(true);
+              }}
+            >
+              <VisibilityOutlinedIcon sx={{ fontSize: "20px" }} />
+            </Box>
             <Box
               width="25%"
               display="flex"
@@ -289,7 +311,13 @@ const UsersList = () => {
         isEditOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         dtuser={selectedUser}
-        dtRole={dtRole} 
+        dtRole={dtRole}
+      />
+      <ViewUsers
+        isViewOpen={isViewOpen}
+        onClose={() => setIsViewOpen(false)}
+        dtuser={selectedUser}
+        dtRole={dtRole}
       />
     </>
   );

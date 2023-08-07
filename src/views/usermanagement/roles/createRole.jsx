@@ -68,6 +68,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
       t30: isChecked,
       labanan: isChecked,
       report: isChecked,
+      createEditDelete: isChecked,
     });
   };
 
@@ -255,8 +256,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     sx={{ marginLeft: "88px", marginRight: "88px" }}
                     control={
                       <Checkbox
-                        checked={transactionChecked.pks}
-                        onChange={handleTransactionChange("pks")}
+                        checked={transactionChecked.createEditDelete}
+                        onChange={handleTransactionChange("createEditDelete")}
                       />
                     }
                     label={

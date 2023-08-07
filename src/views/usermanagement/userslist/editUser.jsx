@@ -33,7 +33,6 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
       username,
       nik,
       email,
-      password,
       file,
       position,
       division,
@@ -47,7 +46,6 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
       username,
       nik,
       email,
-      password,
       file,
       position,
       division,
@@ -67,6 +65,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
     } finally {
       setSubmitting(false);
       resetForm();
+      handleResetImage();
       onClose("", false);
     }
   };
@@ -92,12 +91,6 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
 
   const [image, setImage] = useState(null);
   const [initialImage, setInitialImage] = useState(false);
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImage(file ? URL.createObjectURL(file) : null);
-    setInitialImage(false);
-  };
 
   const handleResetImage = () => {
     // Menghapus gambar yang baru dipilih saat tombol reset diklik
@@ -210,7 +203,22 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                             id="imageInput"
                             type="file"
                             accept="image/*"
-                            onChange={handleImageChange}
+                            name="file"
+                            onChange={(event) => {
+                              const selectedFile = event.target.files[0];
+                              setFieldValue("file", selectedFile);
+                              const reader = new FileReader();
+
+                              // Baca file gambar yang dipilih menggunakan FileReader
+                              reader.onloadend = () => {
+                                setImage(reader.result); // Simpan hasil pembacaan sebagai state "image"
+                                setInitialImage(true); // Set initialImage menjadi true untuk menandakan bahwa ada gambar yang dipilih
+                              };
+
+                              if (selectedFile) {
+                                reader.readAsDataURL(selectedFile);
+                              }
+                            }}
                             style={{ display: "none" }}
                           />
                           <AddCircleIcon
@@ -255,20 +263,6 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                             />
                           </div>
                         )}
-
-                        {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
-                        {image === null &&
-                          !initialImage &&
-                          !dtuser.profilePic && (
-                            <img
-                              src={`../../assets/user.jpg`}
-                              alt="Uploaded Preview"
-                              style={{
-                                width: "160px",
-                                height: "160px",
-                              }}
-                            />
-                          )}
 
                         {/* Tambahkan console.log untuk memeriksa URL gambar */}
                         {console.log("URL Gambar:", dtuser.profilePic)}
@@ -396,7 +390,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       helperText={touched.username && errors.username}
                     />
                   </FormControl>
-                  <FormControl sx={{ gridColumn: "span 4" }}>
+                  {/* <FormControl sx={{ gridColumn: "span 4" }}>
                     <FormLabel
                       sx={{
                         color: "black",
@@ -419,7 +413,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       error={!!touched.password && !!errors.password}
                       helperText={touched.password && errors.password}
                     />
-                  </FormControl>
+                  </FormControl> */}
                   <FormControl sx={{ gridColumn: "span 4" }}>
                     <FormLabel
                       sx={{
@@ -469,48 +463,45 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                     />
                   </FormControl>
                   <FormControl sx={{ gridColumn: "span 4" }}>
-                  <FormLabel
-                    sx={{
-                      color: "black",
-                      marginBottom: "8px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Role
-                  </FormLabel>
-                  <Select
-                    fullWidth
-                    name="roleId"
-                    value={values.roleId}
-                    onChange={(event) => {
-                      const { name, value } = event.target;
-                      const selectedRole = dtRole.find(
-                        (item) => item.id === value
-                      );
-                      setFieldValue(name, value);
-                      setFieldValue(
-                        "role",
-                        selectedRole ? selectedRole.name : ""
-                      );
-                    }}
-                    displayEmpty
-                    sx={{
-                      color: MenuItem ? "gray" : "black",
-                    }}
-                  >
-                    <MenuItem value="" disabled>
-                      -- Pilih Role --
-                    </MenuItem>
-                    {dtRole.map((item) => {
-                      return (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        marginBottom: "8px",
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Role
+                    </FormLabel>
+                    <Select
+                      fullWidth
+                      name="roleId"
+                      value={values.roleId}
+                      onChange={(event) => {
+                        const { name, value } = event.target;
+                        const selectedRole = dtRole.find(
+                          (item) => item.id === value
+                        );
+                        setFieldValue(name, value);
+                        setFieldValue(
+                          "role",
+                          selectedRole ? selectedRole.name : ""
+                        );
+                      }}
+                      displayEmpty
+                    >
+                      <MenuItem value="" disabled>
+                        -- Pilih Role --
+                      </MenuItem>
+                      {dtRole.map((item) => {
+                        return (
+                          <MenuItem key={item.id} value={item.id}>
+                            {item.name}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
                   <FormControl
                     sx={{
                       gridColumn: "span 4",

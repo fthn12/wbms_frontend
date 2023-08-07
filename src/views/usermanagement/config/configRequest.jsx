@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import useSWR from "swr";
-import { yellow } from "@mui/material/colors";
+import { orange, blue, red, indigo, green } from "@mui/material/colors";
 import "ag-grid-enterprise";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
@@ -19,13 +19,13 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import * as React from "react";
-import * as ConfigAPI from "../../../api/provinceApi";
-import * as SiteAPI from "../../../api/sitesApi";
+import * as ConfigAPI from "../../../api/configsApi";
+
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import EditDataConfig from "../../../views/usermanagement/config/editConfig";
-import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import CancelIcon from "@mui/icons-material/CancelOutlined";
 import Swal from "sweetalert2";
 
 ModuleRegistry.registerModules([
@@ -35,22 +35,17 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const Config = () => {
-  console.clear();
+const ConfigRequest = () => {
+  // console.clear();
   const gridRef = useRef();
 
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [dtSites, setDtSites] = useState([]);
+  const [isViewOpen, setIsViewOpen] = useState(false);
 
   const fetcher = () =>
-    ConfigAPI.getAll().then((res) => res.data.province.records);
-
-  useEffect(() => {
-    SiteAPI.getAll().then((res) => {
-      setDtSites(res.data.site.records);
-    });
-  }, []);
+    ConfigAPI.getAll().then((res) => res.data.config.records);
 
   // search
 
@@ -63,9 +58,9 @@ const Config = () => {
   );
 
   //filter
-  const updateGridData = useCallback((config) => {
+  const updateGridData = useCallback((Config) => {
     if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.setRowData(config);
+      gridRef.current.api.setRowData(Config);
     }
   }, []);
 
@@ -78,6 +73,38 @@ const Config = () => {
       updateGridData(filteredData);
     }
   }, [searchQuery, dtConfig, updateGridData]);
+
+  // delete
+  const deleteById = (id, name) => {
+    Swal.fire({
+      title: `Yakin Ingin Menghapus?`,
+      html: `<span style="font-weight: bold; font-size: 28px;">"${name}"</span>`,
+      icon: "question",
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonColor: "#D80B0B",
+      cancelButtonColor: "grey",
+      cancelButtonText: "Cancel",
+      confirmButtonText: "Hapus",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        ConfigAPI.deleteById(id)
+          .then((res) => {
+            console.log("Data berhasil dihapus:", res.data);
+            toast.success("Data berhasil dihapus"); // Tampilkan toast sukses
+            // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
+          })
+          .catch((error) => {
+            console.error("Data Gagal dihapus:", error);
+            toast.error("Data Gagal dihapus"); // Tampilkan toast error
+            // Tangani error atau tampilkan pesan error
+          });
+      }
+    });
+  };
+
+  //open create dialog
+  useEffect(() => {}, [isOpen]);
 
   const [columnDefs] = useState([
     {
@@ -116,14 +143,6 @@ const Config = () => {
       flex: 3,
     },
     {
-      headerName: "Site",
-      field: "site",
-      filter: true,
-      sortable: true,
-      hide: false,
-      flex: 3,
-    },
-    {
       headerName: "Action",
       field: "id",
       sortable: true,
@@ -134,7 +153,7 @@ const Config = () => {
               width="25%"
               display="flex"
               m="0 3px"
-              bgcolor={yellow[900]}
+              bgcolor={green[500]}
               borderRadius="25%"
               justifyContent="center"
               padding="10px 10px"
@@ -146,9 +165,26 @@ const Config = () => {
               onClick={() => {
                 setSelectedConfig(params.data);
                 setIsEditOpen(true);
-              }}
-            >
-              <DriveFileRenameOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
+              }}>
+              <TaskAltIcon sx={{ fontSize: "20px" }} />
+            </Box>
+
+            <Box
+              width="25%"
+              display="flex"
+              m="0 3px"
+              bgcolor={red[500]}
+              borderRadius="25%"
+              padding="10px 10px"
+              justifyContent="center"
+              color="white"
+              onClick={() => deleteById(params.value, params.data.name)}
+              style={{
+                color: "white",
+                textDecoration: "none",
+                cursor: "pointer",
+              }}>
+              <CancelIcon sx={{ fontSize: "20px" }} />
             </Box>
           </Box>
         );
@@ -168,11 +204,10 @@ const Config = () => {
               mt: 2,
               borderTop: "5px solid #000",
               borderRadius: "10px 10px 10px 10px",
-            }}
-          >
+            }}>
             <div style={{ marginBottom: "5px" }}>
               <Box display="flex">
-                <Typography fontSize="20px">WBMS Config </Typography>
+                <Typography fontSize="20px">WBMS Config Request</Typography>
               </Box>
               <hr sx={{ width: "100%" }} />
               <Box display="flex" pb={1}>
@@ -180,8 +215,7 @@ const Config = () => {
                   display="flex"
                   borderRadius="5px"
                   ml="auto"
-                  border="solid grey 1px"
-                >
+                  border="solid grey 1px">
                   <InputBase
                     sx={{ ml: 2, flex: 2, fontSize: "13px" }}
                     placeholder="Search"
@@ -199,15 +233,14 @@ const Config = () => {
                           .includes(searchQuery.toLowerCase())
                       );
                       gridRef.current.api.setRowData(filteredData);
-                    }}
-                  >
+                    }}>
                     <SearchIcon sx={{ mr: "3px", fontSize: "19px" }} />
                   </IconButton>
                 </Box>
               </Box>
             </div>
             <Tables
-              name={"config"}
+              name={"WBMS Config Request"}
               fetcher={fetcher}
               colDefs={columnDefs}
               gridRef={gridRef}
@@ -215,14 +248,8 @@ const Config = () => {
           </Paper>
         </Grid>
       </Grid>
-      <EditDataConfig
-        isEditOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        dtConfig={selectedConfig}
-        dtSite={dtSites}
-      />
     </>
   );
 };
 
-export default Config;
+export default ConfigRequest;

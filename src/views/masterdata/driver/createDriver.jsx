@@ -276,7 +276,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     })}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 4", display: "none" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -349,7 +349,7 @@ const CreateDriver = ({ isOpen, onClose, dtCompany }) => {
                     helperText={touched.phone && errors.phone}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 8" }}>
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",

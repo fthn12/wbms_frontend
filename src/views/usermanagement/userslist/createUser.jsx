@@ -403,7 +403,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    type="password"
+                    type="text"
                     placeholder="Masukkan Password"
                     onBlur={handleBlur}
                     onChange={handleChange}

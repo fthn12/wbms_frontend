@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: `${REACT_APP_WBMS_BACKEND_API_URL}`,
 });
 
-export const endpoint = "/config";
+export const endpoint = "/configs";
 
 export const getAll = async () => {
   const response = await api.get(endpoint);

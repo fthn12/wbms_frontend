@@ -269,7 +269,7 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
                     })}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 4" }}>
+                <FormControl sx={{ gridColumn: "span 4", display: "none" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",
@@ -342,7 +342,7 @@ const EditDriver = ({ isEditOpen, onClose, dtCompanies, dtDriver }) => {
                     helperText={touched.phone && errors.phone}
                   />
                 </FormControl>
-                <FormControl sx={{ gridColumn: "span 8" }}>
+                <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
                       marginBottom: "8px",

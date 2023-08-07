@@ -40,17 +40,14 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
       onClose("", false);
     }
   };
-  console.log("dtSite:", dtSite);
   return (
     <Dialog
       open={isEditOpen}
       fullWidth
       maxWidth="md"
-      onClose={() => onClose("", false)}
-    >
+      onClose={() => onClose("", false)}>
       <DialogTitle
-        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}
-      >
+        sx={{ color: "white", backgroundColor: "black", fontSize: "27px" }}>
         Edit Data Config
         <IconButton
           sx={{
@@ -61,8 +58,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}
-        >
+          }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -71,8 +67,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={dtConfig}
-          validationSchema={userSchema}
-        >
+          validationSchema={userSchema}>
           {({
             values,
             errors,
@@ -90,8 +85,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                 paddingLeft={3}
                 paddingRight={3}
                 gap="20px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              >
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))">
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
@@ -99,8 +93,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Config Name
                   </FormLabel>
 
@@ -124,8 +117,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Tanggal Mulai
                   </FormLabel>
                   <TextField
@@ -148,8 +140,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Tanggal Akhir
                   </FormLabel>
                   <TextField
@@ -172,8 +163,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                       color: "black",
                       fontSize: "16px",
                       fontWeight: "bold",
-                    }}
-                  >
+                    }}>
                     Sites
                   </FormLabel>
                   <Autocomplete
@@ -208,8 +198,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}
-                >
+                  }}>
                   Cancel
                 </Button>
                 <Box ml="auto" mr={3}>
@@ -218,8 +207,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, dtSite }) => {
                     variant="contained"
                     sx={{
                       color: "white",
-                    }}
-                  >
+                    }}>
                     Simpan
                   </Button>
                 </Box>

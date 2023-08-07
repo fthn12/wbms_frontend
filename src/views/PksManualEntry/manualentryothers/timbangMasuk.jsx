@@ -36,7 +36,7 @@ import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
 
-const tType = 1;
+// const tType = 1;
 let wsClient;
 
 const PksManualOthersTimbangMasuk = () => {
@@ -50,8 +50,6 @@ const PksManualOthersTimbangMasuk = () => {
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
         toast.success("Data Berhasil Disimpan");
-        // Assuming you want to reset the form values after successful submission.
-        setValues({});
       })
       .catch((error) => {
         console.error("Data Gagal Disimpan:", error);
@@ -238,9 +236,21 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
-                    onChange={handleChange}
-                    name="Nopol"
-                    value={values.Nopol || ""}
+                    onChange={(event) => {
+                      const { name, value } = event.target;
+                      const selectedPlatno = dtTransportVehicle.find(
+                        (item) => item.id === value
+                      );
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        [name]: value,
+                        transportVehiclePlateNo: selectedPlatno
+                          ? selectedPlatno.name
+                          : "",
+                      }));
+                    }}
+                    name="transportVehicleId"
+                    value={values.transportVehicleId || ""}
                     displayEmpty
                     sx={{
                       borderRadius: "10px",
@@ -268,9 +278,19 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
-                    onChange={handleChange}
-                    name="driver"
-                    value={values.driver || ""}
+                    onChange={(event) => {
+                      const { name, value } = event.target;
+                      const selectedDriver = dtDriver.find(
+                        (item) => item.id === value
+                      );
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        [name]: value,
+                        driverName: selectedDriver ? selectedDriver.name : "",
+                      }));
+                    }}
+                    name="driverId"
+                    value={values.driverId || ""}
                     displayEmpty
                     sx={{
                       borderRadius: "10px",
@@ -298,7 +318,19 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
-                    onChange={handleChange}
+                    onChange={(event) => {
+                      const { name, value } = event.target;
+                      const selectedVendor = dtCompany.find(
+                        (item) => item.id === value
+                      );
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        [name]: value,
+                        transporterCompanyName: selectedVendor
+                          ? selectedVendor.name
+                          : "",
+                      }));
+                    }}
                     name="transporterId"
                     value={values.transporterId || ""}
                     displayEmpty
@@ -388,42 +420,40 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
+                    sx={{
+                      borderRadius: "10px",
+                      color: MenuItem ? "gray" : "black",
+                    }}
                     onChange={(event) => {
                       const { name, value } = event.target;
                       const selectedProduct = dtProduct.find(
                         (item) => item.id === value
                       );
-                      setValues({
-                        ...values,
+                      setValues((prevValues) => ({
+                        ...prevValues,
                         [name]: value,
                         productName: selectedProduct
                           ? selectedProduct.name
                           : "",
-                      });
+                      }));
                     }}
                     name="productId"
-                    value={values.productId}
-                    sx={{
-                      borderRadius: "10px",
-                      color: "black", // Ganti "MenuItem" dengan "black" atau warna yang diinginkan
-                    }}
+                    value={values.productId || ""}
                     displayEmpty
                   >
                     <MenuItem value="" disabled>
                       -- Pilih Barang --
                     </MenuItem>
-                    {dtProduct.map((item) => {
-                      return (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })}
+                    {dtProduct.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
 
                 {/* Asumsikan Anda ingin menampilkan nama produk yang dipilih */}
-                <TextField
+                {/* <TextField
                   variant="outlined"
                   size="small"
                   fullWidth
@@ -449,7 +479,7 @@ const PksManualOthersTimbangMasuk = () => {
                   }
                   name="productName"
                   value={values.productName}
-                />
+                /> */}
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
@@ -666,11 +696,11 @@ const PksManualOthersTimbangMasuk = () => {
             </Box>
           </Paper>
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Paper sx={{ p: 2, mt: 1 }}>
             <TransactionGrid tType={tType} />
           </Paper>
-        </Grid>
+        </Grid> */}
       </Grid>
     </>
   );
