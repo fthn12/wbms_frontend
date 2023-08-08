@@ -42,7 +42,6 @@ const ConfigRequest = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedConfig, setSelectedConfig] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isViewOpen, setIsViewOpen] = useState(false);
 
   const fetcher = () =>
     ConfigAPI.getAll().then((res) => res.data.config.records);

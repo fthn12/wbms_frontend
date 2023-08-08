@@ -114,8 +114,6 @@ const Cities = () => {
     });
   };
 
-  //open create dialog
-  useEffect(() => {}, [isOpen]);
 
   const [columnDefs] = useState([
     {

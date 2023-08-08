@@ -142,7 +142,15 @@ const Mills = () => {
     },
     {
       headerName: "Nama",
-      field: "name",
+      field: "name",    
+      sortable: true,
+      hide: false,
+      flex: 3,
+    },
+    {
+      headerName: "Site",
+      field: "siteId",
+      filter: true,
       sortable: true,
       hide: false,
       flex: 3,
@@ -225,12 +233,16 @@ const Mills = () => {
     <>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Paper sx={{  p: 3,
+          <Paper
+            sx={{
+              p: 3,
               mx: 3,
               mb: 5,
               mt: 2,
               borderTop: "5px solid #000",
-              borderRadius: "10px 10px 10px 10px", }}>
+              borderRadius: "10px 10px 10px 10px",
+            }}
+          >
             <div style={{ marginBottom: "10px" }}>
               <Box display="flex">
                 <Typography fontSize="20px">Data Mill</Typography>

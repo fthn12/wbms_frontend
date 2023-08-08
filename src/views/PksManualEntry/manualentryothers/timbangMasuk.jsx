@@ -40,10 +40,19 @@ const tType = 1;
 
 const PksManualOthersTimbangMasuk = () => {
   const navigate = useNavigate();
-  const { values, setValues, handleChange } = useForm({
+  const { values, setValues } = useForm({
     ...TransactionAPI.InitialData,
   });
   const [originWeightNetto, setOriginWeightNetto] = useState(0);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async () => {
     let tempTrans = { ...values };
@@ -51,9 +60,7 @@ const PksManualOthersTimbangMasuk = () => {
     if (tempTrans.progressStatus === 0) {
       tempTrans.progressStatus = 1;
       tempTrans.originWeighInTimestamp = moment().toDate();
-    } else {
-      // ... logika jika progressStatus !== 0 ...
-    }
+    } 
 
     try {
       if (tempTrans.progressStatus === 1) {
@@ -238,6 +245,7 @@ const PksManualOthersTimbangMasuk = () => {
                   }
                   name="deliveryOrderNo"
                   value={values.deliveryOrderNo}
+                  onChange={handleChange}
                 />
                 <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
@@ -252,14 +260,14 @@ const PksManualOthersTimbangMasuk = () => {
                     id="select"
                     onChange={(event) => {
                       const { name, value } = event.target;
-                      const selectedPlatno = dtTransportVehicle.find(
+                      const selectedNopol = dtTransportVehicle.find(
                         (item) => item.id === value
                       );
                       setValues((prevValues) => ({
                         ...prevValues,
                         [name]: value,
-                        transportVehiclePlateNo: selectedPlatno
-                          ? selectedPlatno.name
+                        transportVehiclePlateNo: selectedNopol
+                          ? selectedNopol.plateNo
                           : "",
                       }));
                     }}
@@ -404,7 +412,7 @@ const PksManualOthersTimbangMasuk = () => {
                   <Select
                     labelId="select-label"
                     id="select"
-                    // onChange={handleChange}
+                    onChange={handleChange}
                     name="customer"
                     value={values.customer || ""}
                     displayEmpty
