@@ -94,7 +94,7 @@ const TransactionGrid = (props) => {
     }).then((res) => res.records);
 
   const { data: dtTransactions } = useSWR("transaction", fetcher, {
-    refreshInterval: 1000,
+    refreshInterval: 2000,
   });
   return (
     <div className="ag-theme-alpine" style={{ width: "auto" }}>

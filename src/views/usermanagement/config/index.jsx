@@ -119,17 +119,20 @@ const Config = () => {
       sortable: true,
       hide: false,
       flex: 2,
-      headerRenderer: () => (
-        <div>
-          <div>Active Start</div>
-          <div>Active End</div>
-        </div>
-      ),
       valueGetter: (params) => {
         const { data } = params;
-        return `${data.activeStart} - ${data.activeEnd}`;
+        const activeStart = new Date(data.activeStart);
+        const activeEnd = new Date(data.activeEnd);
+    
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        
+        const formattedActiveStart = activeStart.toLocaleDateString('en-US', options);
+        const formattedActiveEnd = activeEnd.toLocaleDateString('en-US', options);
+    
+        return `${formattedActiveStart} - ${formattedActiveEnd}`;
       },
     },
+    
 
     {
       headerName: "Action",

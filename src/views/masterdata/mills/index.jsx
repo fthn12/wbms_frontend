@@ -84,9 +84,7 @@ const Mills = () => {
     SiteAPI.getAll().then((res) => {
       setDtSites(res.data.site.records);
     });
-  }, []);
 
-  useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
       setDtCompanies(res.data.company.records);
     });
@@ -142,14 +140,14 @@ const Mills = () => {
     },
     {
       headerName: "Nama",
-      field: "name",    
+      field: "name",
       sortable: true,
       hide: false,
       flex: 3,
     },
     {
       headerName: "Site",
-      field: "siteId",
+      field: "site.name",
       filter: true,
       sortable: true,
       hide: false,
