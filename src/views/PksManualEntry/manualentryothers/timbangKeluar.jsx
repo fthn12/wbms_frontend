@@ -153,9 +153,24 @@ const PksManualOthersTimbangKeluar = () => {
     setCanSubmit(cSubmit);
   }, [values]);
 
+  useEffect(() => {
+    // setProgressStatus(Config.PKS_PROGRESS_STATUS[values.progressStatus]);
+
+    if (
+      values.originWeighInKg < Config.ENV.WBMS_WB_MIN_WEIGHT ||
+      values.originWeighOutKg < Config.ENV.WBMS_WB_MIN_WEIGHT
+    ) {
+      setOriginWeightNetto(0);
+    } else {
+      let total =
+        Math.abs(values.originWeighInKg - values.originWeighOutKg) -
+        values.potonganWajib -
+        values.potonganLain;
+      setOriginWeightNetto(total);
+    }
+  }, [values]);
+
   const validateForm = () => {
-    // Implementasikan aturan validasi Anda di sini
-    // Kembalikan true jika semua kolom yang dibutuhkan terisi, jika tidak, kembalikan false
     return values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
   };
 
