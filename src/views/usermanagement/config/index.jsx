@@ -121,8 +121,8 @@ const Config = () => {
       flex: 2,
       valueGetter: (params) => {
         const { data } = params;
-        const activeStart = new Date(data.activeStart);
-        const activeEnd = new Date(data.activeEnd);
+        const activeStart = new Date(data.start);
+        const activeEnd = new Date(data.end);
     
         const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
         

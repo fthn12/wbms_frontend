@@ -5,18 +5,19 @@ const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
 const ReportPksTransactions = lazy(() =>
   import("./views/reports/PksTransactions")
 );
-const PksTransactionManualOthers = lazy(() =>
+const PksManualOthersTB = lazy(() =>
   import("./views/PksManualEntry/manualentryothers/timbangMasuk")
 );
-const PksTransactionManualTbsInternal = lazy(() =>
+const PksManualOthersTK = lazy(() =>
+  import("./views/PksManualEntry/manualentryothers/timbangKeluar")
+);
+const PksManualTbsInternal = lazy(() =>
   import("./views/PksManualEntry/manualentryTBSInternal/timbangMasuk")
 );
-const PksTransactionManualTbsEksternal = lazy(() =>
+const PksManualTbsEksternal = lazy(() =>
   import("./views/PksManualEntry/manualentryTBSEksternal/timbangMasuk")
 );
-const PksTransactionManualCpoPko = lazy(() =>
-  import("./views/PksManualEntry/manualentryCpoPko/timbangMasuk")
-);
+
 const Cities = lazy(() => import("./views/masterdata/cities"));
 const Provinces = lazy(() => import("./views/masterdata/provinces"));
 const Sites = lazy(() => import("./views/masterdata/sites"));
@@ -38,7 +39,9 @@ const Transportvehicle = lazy(() =>
 const UsersList = lazy(() => import("./views/usermanagement/userslist"));
 const RolesList = lazy(() => import("./views/usermanagement/roles"));
 const ViewRole = lazy(() => import("./views/usermanagement/roles/viewRole"));
-const ConfigRequest = lazy(() => import("./views/usermanagement/config/configRequest"));
+const ConfigRequest = lazy(() =>
+  import("./views/usermanagement/config/configRequest")
+);
 const Config = lazy(() => import("./views/usermanagement/config"));
 
 // Base
@@ -97,30 +100,31 @@ const routes = [
     exact: true,
   },
   {
-    path: "/pks-transaction-ManualEntry-Others",
-    name: "PKS Transaction Manual Entry Others",
-    element: PksTransactionManualOthers,
+    path: "/pks-ManualEntry-Others-TimbangMasuk",
+    name: "PKS  Manual Entry Others",
+    element: PksManualOthersTB,
+    exact: true,
+  },
+  {
+    path: "/pks-ManualEntry-Others-TimbangKeluar/:id",
+    name: "PKS  Manual Entry Others",
+    element: PksManualOthersTK,
     exact: true,
   },
 
   {
-    path: "/pks-transaction-ManualEntry-TBSInternal",
-    name: "PKS Transaction Manual Entry TBS Internal",
-    element: PksTransactionManualTbsInternal,
+    path: "/pks-ManualEntry-TBSInternal",
+    name: "PKS  Manual Entry TBS Internal",
+    element: PksManualTbsInternal,
     exact: true,
   },
   {
-    path: "/pks-transaction-ManualEntry-TBSEksternal",
-    name: "PKS Transaction Manual Entry TBS Eksternal",
-    element: PksTransactionManualTbsEksternal,
+    path: "/pks-ManualEntry-TBSEksternal",
+    name: "PKS  Manual Entry TBS Eksternal",
+    element: PksManualTbsEksternal,
     exact: true,
   },
-  {
-    path: "/pks-transaction-ManualEntry-CpoPko",
-    name: "PKS Transaction Manual Entry CPO PKO",
-    element: PksTransactionManualCpoPko,
-    exact: true,
-  },
+
   {
     path: "/reports/pks-transactions",
     name: "Report PKS Transactions",

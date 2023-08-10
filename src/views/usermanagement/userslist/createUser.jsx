@@ -63,7 +63,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
   const checkoutSchema = yup.object().shape({
     name: yup.string().required("required"),
     username: yup.string().required("required"),
-    nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
+    nik: yup.string().required("required"),
     email: yup
       .string()
       .email("Enter a valid email")
@@ -171,8 +171,6 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       </label>
                     )}
 
-                    {/* Ikon "Add" untuk memilih gambar */}
-
                     <label
                       htmlFor="imageInput"
                       style={{
@@ -199,10 +197,9 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                             setFieldValue("file", selectedFile);
                             const reader = new FileReader();
 
-                            // Baca file gambar yang dipilih menggunakan FileReader
                             reader.onloadend = () => {
-                              setImage(reader.result); // Simpan hasil pembacaan sebagai state "image"
-                              setInitialImage(true); // Set initialImage menjadi true untuk menandakan bahwa ada gambar yang dipilih
+                              setImage(reader.result);
+                              setInitialImage(true);
                             };
 
                             if (selectedFile) {
@@ -226,7 +223,6 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                         border: "2px solid #9e9e9e",
                       }}
                     >
-                      {/* Gambar ditampilkan terlebih dahulu */}
                       {image === null && (
                         <img
                           src={`../../assets/user.jpg`}
@@ -238,7 +234,6 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                         />
                       )}
 
-                      {/* Jika gambar baru dipilih melalui input file, gambar yang baru akan ditampilkan */}
                       {image && (
                         <div>
                           <img
@@ -254,7 +249,6 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                         </div>
                       )}
 
-                      {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
                       {image === null && !initialImage && (
                         <img
                           src={`../../assets/user.jpg`}
@@ -491,6 +485,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     sx={{
                       color: MenuItem ? "gray" : "black",
                     }}
+                    error={!!touched.roleId && !!errors.roleId}
+                    helperText={touched.roleId && errors.roleId}
                   >
                     <MenuItem value="" disabled>
                       -- Pilih Role --

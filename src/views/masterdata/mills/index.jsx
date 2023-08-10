@@ -42,7 +42,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const Mills = () => {
-  console.clear();
+  // console.clear();
   const gridRef = useRef();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -283,8 +283,8 @@ const Mills = () => {
                     type="button"
                     sx={{ p: 1 }}
                     onClick={() => {
-                      const filteredData = dtCompanies.filter((companies) =>
-                        companies.name
+                      const filteredData = dtMills.filter((MilldtMills) =>
+                        MilldtMills.name
                           .toLowerCase()
                           .includes(searchQuery.toLowerCase())
                       );

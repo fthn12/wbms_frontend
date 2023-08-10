@@ -32,7 +32,7 @@ import { ModuleRegistry } from "@ag-grid-community/core";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-
+import { useNavigate } from "react-router-dom";
 import Config from "../../../configs";
 import * as TransactionAPI from "../../../api/transactionApi";
 
@@ -48,6 +48,7 @@ const tType = 1;
 
 const ReportPksTransactions = () => {
   console.clear();
+  const navigate = useNavigate();
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
   };
@@ -72,12 +73,7 @@ const ReportPksTransactions = () => {
       rowGroup: true,
       hide: true,
     },
-    {
-      headerName: "tanggal",
-      field: "deliveryDate",
-      filter: true,
-      sortable: true,
-    },
+
     {
       headerName: "DO No",
       field: "deliveryOrderNo",
@@ -171,7 +167,7 @@ const ReportPksTransactions = () => {
 
   const filteredTransactions = useMemo(() => {
     let filteredData = dtTransactions;
-  
+
     if (selectedProduct !== "") {
       filteredData = filteredData.filter(
         (transaction) =>
@@ -179,17 +175,17 @@ const ReportPksTransactions = () => {
           selectedProduct.toLowerCase()
       );
     }
-  
+
     if (selectedStartDate !== null && selectedEndDate !== null) {
       filteredData = filteredData.filter((transaction) => {
         const transactionDate = dayjs(transaction.deliveryDate);
         const startDate = dayjs(selectedStartDate).startOf("day");
         const endDate = dayjs(selectedEndDate).endOf("day");
-  
+
         return transactionDate.isBetween(startDate, endDate, "day", "[]");
       });
     }
-  
+
     if (selectedStatus !== "") {
       filteredData = filteredData.filter(
         (transaction) =>
@@ -197,7 +193,7 @@ const ReportPksTransactions = () => {
           selectedStatus.toLowerCase()
       );
     }
-  
+
     return filteredData;
   }, [
     dtTransactions,
@@ -206,7 +202,6 @@ const ReportPksTransactions = () => {
     selectedEndDate,
     selectedStatus,
   ]);
-  
 
   const today = dayjs();
 

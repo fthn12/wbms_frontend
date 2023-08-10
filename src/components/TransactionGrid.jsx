@@ -9,7 +9,7 @@ import { RichSelectModule } from "@ag-grid-enterprise/rich-select";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
-
+import { useNavigate } from "react-router-dom";
 import Config from "../configs";
 import * as TransactionAPI from "../api/transactionApi";
 
@@ -22,12 +22,28 @@ ModuleRegistry.registerModules([
 
 const TransactionGrid = (props) => {
   const { tType } = props;
+  const navigate = useNavigate();
 
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
   };
 
   const gridRef = useRef();
+
+  const handleCellClick = (params) => {
+    const progressStatus = params.data.progressStatus;
+
+    if (progressStatus === 20) {
+      const Id = params.data.id; // Ganti 'id' dengan properti yang benar
+      navigate(`/pks-ManualEntry-Others-TimbangKeluar/${Id}`);
+    } else {
+      // Handle kasus saat progressStatus bukan 1 (misalnya menampilkan pesan)
+      console.log(
+        "This row cannot be clicked due to progressStatus not being 1."
+      );
+    }
+  };
+
   const [columnDefs] = useState([
     {
       headerName: "Bontrip No",
@@ -35,8 +51,14 @@ const TransactionGrid = (props) => {
       filter: true,
       sortable: true,
       hide: false,
+      onCellClicked: handleCellClick,
     },
-    { headerName: "No Pol", field: "transportVehiclePlateNo", filter: true },
+    {
+      headerName: "No Pol",
+      field: "transportVehiclePlateNo",
+      filter: true,
+      onCellClicked: handleCellClick,
+    },
     {
       headerName: "Status",
       field: "progressStatus",
@@ -51,12 +73,14 @@ const TransactionGrid = (props) => {
       field: "deliveryOrderNo",
       filter: true,
       sortable: true,
+      onCellClicked: handleCellClick,
     },
     {
       headerName: "Product",
       field: "productName",
       filter: true,
       sortable: true,
+      onCellClicked: handleCellClick,
     },
     { headerName: "WB-IN", field: "originWeighInKg", maxWidth: 150 },
     { headerName: "WB-OUT", field: "originWeighOutKg", maxWidth: 150 },
@@ -88,7 +112,7 @@ const TransactionGrid = (props) => {
     TransactionAPI.searchMany({
       where: {
         tType,
-        progressStatus: { notIn: [4, 9, 14] },
+        progressStatus: { notIn: [25, 4, 9, 14] },
       },
       orderBy: { bonTripNo: "desc" },
     }).then((res) => res.records);
@@ -97,7 +121,7 @@ const TransactionGrid = (props) => {
     refreshInterval: 2000,
   });
   return (
-    <div className="ag-theme-alpine" style={{ width: "auto" }}>
+    <div className="ag-theme-alpine" style={{ width: "auto", height: "50vh" }}>
       <AgGridReact
         rowData={dtTransactions} // Row Data for Rows
         columnDefs={columnDefs} // Column Defs for Columns

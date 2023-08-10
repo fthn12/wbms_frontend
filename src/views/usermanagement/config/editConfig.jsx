@@ -27,8 +27,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, }) => {
   });
 
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
-    values.activeStart = moment(values.activeStart).toDate();
-    values.activeEnd = moment(values.activeEnd).toDate();
+    values.start = moment(values.start).toDate();
+    values.end = moment(values.end).toDate();
 
     try {
       await ConfigApi.update(values);
@@ -140,13 +140,13 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, }) => {
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={
-                      values.activeStart
-                        ? format(new Date(values.activeStart), "yyyy-MM-dd")
+                      values.start
+                        ? format(new Date(values.start), "yyyy-MM-dd")
                         : ""
                     }
-                    name="activeStart"
-                    error={!!touched.activeStart && !!errors.activeStart}
-                    helperText={touched.activeStart && errors.activeStart}
+                    name="start"
+                    error={!!touched.start && !!errors.start}
+                    helperText={touched.start && errors.start}
                   />
                 </FormControl>
                 <FormControl sx={{ gridColumn: "span 2" }}>
@@ -168,13 +168,13 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, }) => {
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={
-                      values.activeEnd
-                        ? format(new Date(values.activeEnd), "yyyy-MM-dd")
+                      values.end
+                        ? format(new Date(values.end), "yyyy-MM-dd")
                         : ""
                     }
-                    name="activeEnd"
-                    error={!!touched.activeEnd && !!errors.activeEnd}
-                    helperText={touched.activeEnd && errors.activeEnd}
+                    name="end"
+                    error={!!touched.end && !!errors.end}
+                    helperText={touched.end && errors.end}
                   />
                 </FormControl>
       

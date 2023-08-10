@@ -93,11 +93,11 @@ const ViewUsers = ({ isViewOpen, onClose, dtuser, dtRole }) => {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        marginRight: "28px",
+                        marginRight: "18px",
                       }}
                     >
                       <tr>
-                        <td className="nota-text">{values.role}</td>
+                        <td>{values.role}</td>
                       </tr>
                     </Typography>
                   </FormControl>
@@ -109,44 +109,42 @@ const ViewUsers = ({ isViewOpen, onClose, dtuser, dtRole }) => {
                             Username
                           </td>
                           <td width="10">:</td>
-                          <td className="nota-text">{values.username}</td>
+                          <td>{values.username}</td>
                         </tr>
                         <tr height="50">
                           <td>Email</td>
                           <td width="10">:</td>
-                          <td className="nota-text">{values.email}</td>
+                          <td>{values.email}</td>
                         </tr>
                         <tr height="50">
                           <td>NIK</td>
                           <td width="20">:</td>
-                          <td className="nota-text">{values.nik}</td>
+                          <td>{values.nik}</td>
                         </tr>
                         <tr height="50">
                           <td>Nama</td>
                           <td width="10">:</td>
-                          <td className="nota-text">{values.name}</td>
+                          <td>{values.name}</td>
                         </tr>
                         <tr height="50">
                           <td>No Telephon</td>
                           <td width="10">:</td>
-                          <td className="nota-text">{values.phone}</td>
+                          <td>{values.phone}</td>
                         </tr>
                         <tr height="50">
                           <td>Division</td>
                           <td width="10">:</td>
-                          <td className="nota-text">{values.division}</td>
+                          <td>{values.division}</td>
                         </tr>
                         <tr height="50">
                           <td>Position</td>
                           <td width="10">:</td>
-                          <td className="nota-text">{values.position}</td>
+                          <td>{values.position}</td>
                         </tr>
                         <tr>
                           <td>LDAP User</td>
                           <td width="10">:</td>
-                          <td className="nota-text">
-                            {values.isLDAPUser ? "YES" : "NO"}
-                          </td>
+                          <td>{values.isLDAPUser ? "YES" : "NO"}</td>
                         </tr>
                       </Typography>
                     </tbody>

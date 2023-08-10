@@ -11,17 +11,10 @@ import {
   MenuItem,
   IconButton,
 } from "@mui/material";
-import * as ProvinceApi from "../../../api/provinceApi";
 import CloseIcon from "@mui/icons-material/Close";
 import { Formik } from "formik";
 
 const ViewCities = ({ isViewOpen, onClose, dtCity }) => {
-  useEffect(() => {
-    ProvinceApi.getById().then((res) => {
-      const provinceData = res.data.province.records;
-    });
-  }, []);
-
   return (
     <Dialog
       open={isViewOpen}
