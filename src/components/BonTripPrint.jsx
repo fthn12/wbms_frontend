@@ -395,13 +395,13 @@ const BonTripPrint = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Box class="print-button" sx={{  p: 2, mr: 1 }}>
+          <Box class="print-button" sx={{ p: 2, mr: 1 }}>
             <ReactToPrint
               trigger={() => (
                 <Button
                   variant="contained"
                   color="success"
-                  sx={{ textTransform: "none",}}
+                  sx={{ textTransform: "none" }}
                 >
                   Print PKS Transaction
                 </Button>

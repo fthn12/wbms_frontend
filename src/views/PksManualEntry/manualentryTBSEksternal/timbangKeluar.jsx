@@ -39,7 +39,7 @@ import { getById } from "../../../api/configApi";
 
 const tType = 1;
 
-const PksManualOthersTimbangKeluar = () => {
+const PksManualTBSEksternalTimbangKeluar = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { values, setValues } = useForm({
@@ -74,6 +74,8 @@ const PksManualOthersTimbangKeluar = () => {
       originWeighOutKg,
       deliveryOrderNo,
       progressStatus,
+      qtyTbsDikirim,
+      qtyTbsDikembalikan,
       originWeighInTimestamp,
       originWeighOutTimestamp,
     } = values;
@@ -81,7 +83,7 @@ const PksManualOthersTimbangKeluar = () => {
     let updatedProgressStatus = progressStatus;
     let updatedOriginWeighOutTimestamp = originWeighOutTimestamp;
 
-    if (progressStatus === 20) {
+    if (progressStatus === 22) {
       updatedProgressStatus = 4;
       updatedOriginWeighOutTimestamp = moment().toDate();
     }
@@ -102,7 +104,8 @@ const PksManualOthersTimbangKeluar = () => {
       originWeighOutKg: parseFloat(originWeighOutKg),
       deliveryOrderNo,
       progressStatus: updatedProgressStatus,
-
+      qtyTbsDikirim: parseFloat(qtyTbsDikirim),
+      qtyTbsDikembalikan: parseFloat(qtyTbsDikembalikan),
       originWeighInTimestamp,
       originWeighOutTimestamp: updatedOriginWeighOutTimestamp,
     };
@@ -147,7 +150,7 @@ const PksManualOthersTimbangKeluar = () => {
     let cSubmit = false;
     if (values.progressStatus === 0) {
       cSubmit = values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
-    } else if (values.progressStatus === 20) {
+    } else if (values.progressStatus === 22) {
       cSubmit = values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
     }
     setCanSubmit(cSubmit);
@@ -782,6 +785,107 @@ const PksManualOthersTimbangKeluar = () => {
                   Tutup
                 </Button>
               </FormControl>
+              <FormControl sx={{ gridColumn: "span 4" }}>
+                <TextField
+                  type="number"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    mb: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">JJG</InputAdornment>
+                    ),
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Qty TBS Dikirim
+                    </Typography>
+                  }
+                  name="qtyTbsDikirim"
+                  value={values.qtyTbsDikirim}
+                  onChange={handleChange}
+                />
+                <TextField
+                  type="number"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">JJG</InputAdornment>
+                    ),
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Qty TBS Dikembalikan
+                    </Typography>
+                  }
+                  name="qtyTbsDikembalikan"
+                  value={values.qtyTbsDikembalikan}
+                  onChange={handleChange}
+                />
+                <TextField
+                  type="number"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Potongan
+                    </Typography>
+                  }
+                  // name="potonganLain"
+                  value={values.potonganLain || 0}
+                  onChange={handleChange}
+                />
+              </FormControl>
             </Box>
           </Paper>
         </Grid>
@@ -795,4 +899,4 @@ const PksManualOthersTimbangKeluar = () => {
   );
 };
 
-export default PksManualOthersTimbangKeluar;
+export default PksManualTBSEksternalTimbangKeluar;

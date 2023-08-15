@@ -135,6 +135,14 @@ const UsersList = () => {
       flex: 3,
     },
     {
+      headerName: "NPK",
+      field: "nik",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 3,
+    },
+    {
       headerName: "Role",
       field: "role",
       filter: true,

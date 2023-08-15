@@ -71,7 +71,7 @@ const Profile = () => {
       >
         Profile
       </Typography>
-      <Formik initialValues={initialValues}>
+      <Formik initialValues={userInfo}>
         {({
           values,
           errors,
@@ -219,8 +219,8 @@ const Profile = () => {
                       >
                         {userInfo.name}
                       </Typography>
-                      <Typography sx={{ fontSize: "15px", mb: 6 }}>
-                        PKS
+                      <Typography sx={{ fontSize: "15px", mb: 4 }}>
+                        {userInfo.role}
                       </Typography>
 
                       <Button
@@ -247,7 +247,7 @@ const Profile = () => {
                           fontWeight: "bold",
                           color: "white",
                           width: "100%",
-                          mb: 4,
+                          mb: 1,
                         }}
                         onClick={() => {
                           setIsOpen(true);
@@ -276,6 +276,7 @@ const Profile = () => {
                     <Box
                       display="grid"
                       margin={7}
+                      my={14.2}
                       width="75%"
                       gap="30px"
                       gridTemplateColumns="repeat(4, minmax(0, 1fr))"
@@ -374,40 +375,6 @@ const Profile = () => {
                           name="phone"
                           error={!!touched.phone && !!errors.phone}
                           helperText={touched.phone && errors.phone}
-                        />
-                      </FormControl>
-                      <FormControl
-                        sx={{
-                          gridColumn: "span 4",
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <FormLabel
-                          sx={{
-                            color: "black",
-                            marginBottom: "8px",
-                            fontSize: "18px",
-                            fontWeight: "bold",
-                            width: "15%",
-                          }}
-                        >
-                          Alamat
-                        </FormLabel>
-                        <TextField
-                          fullWidth
-                          multiline
-                          rows={4}
-                          sx={{ backgroundColor: "whitesmoke" }}
-                          type="text"
-                          placeholder="Alamat"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.nik}
-                          name="nik"
-                          error={!!touched.nik && !!errors.nik}
-                          helperText={touched.nik && errors.nik}
                         />
                       </FormControl>
                     </Box>

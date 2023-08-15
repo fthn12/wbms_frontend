@@ -288,7 +288,7 @@ const EditStorageTank = ({
                       fontWeight: "bold",
                     }}
                   >
-                    Site Id
+                    Site 
                   </FormLabel>
                   <Select
                     fullWidth

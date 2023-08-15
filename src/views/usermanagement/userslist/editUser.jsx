@@ -39,6 +39,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
       phone,
       roleId,
       isLDAPUser,
+      role,
     } = values;
     const dto = {
       id,
@@ -52,6 +53,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
       phone,
       roleId,
       isLDAPUser,
+      role,
     };
     try {
       await UserApi.update(dto);
@@ -73,7 +75,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
   const userSchema = yup.object().shape({
     name: yup.string().required("required"),
     username: yup.string().required("required"),
-    nik: yup.string().required("required").min(16, "Minimal 16 karakter"),
+    nik: yup.string().required("required"),
     email: yup
       .string()
       .email("Enter a valid email")
@@ -350,7 +352,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         fontWeight: "bold",
                       }}
                     >
-                      Nik
+                      NPK
                     </FormLabel>
                     <TextField
                       fullWidth
@@ -390,30 +392,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       helperText={touched.username && errors.username}
                     />
                   </FormControl>
-                  {/* <FormControl sx={{ gridColumn: "span 4" }}>
-                    <FormLabel
-                      sx={{
-                        color: "black",
-                        marginBottom: "8px",
-                        fontSize: "18px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Password
-                    </FormLabel>
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      type="password"
-                      placeholder="Masukkan Password"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.password}
-                      name="password"
-                      error={!!touched.password && !!errors.password}
-                      helperText={touched.password && errors.password}
-                    />
-                  </FormControl> */}
+
                   <FormControl sx={{ gridColumn: "span 4" }}>
                     <FormLabel
                       sx={{
@@ -489,6 +468,11 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         );
                       }}
                       displayEmpty
+                      sx={{
+                        color: MenuItem ? "gray" : "black",
+                      }}
+                      error={!!touched.roleId && !!errors.roleId}
+                      helperText={touched.roleId && errors.roleId}
                     >
                       <MenuItem value="" disabled>
                         -- Pilih Role --

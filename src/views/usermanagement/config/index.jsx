@@ -124,7 +124,14 @@ const Config = () => {
         const activeStart = new Date(data.start);
         const activeEnd = new Date(data.end);
     
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const options = {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        };
         
         const formattedActiveStart = activeStart.toLocaleDateString('en-US', options);
         const formattedActiveEnd = activeEnd.toLocaleDateString('en-US', options);
@@ -132,6 +139,7 @@ const Config = () => {
         return `${formattedActiveStart} - ${formattedActiveEnd}`;
       },
     },
+    
     
 
     {

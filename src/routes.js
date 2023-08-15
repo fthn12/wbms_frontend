@@ -14,8 +14,14 @@ const PksManualOthersTK = lazy(() =>
 const PksManualTbsInternal = lazy(() =>
   import("./views/PksManualEntry/manualentryTBSInternal/timbangMasuk")
 );
+const PksManualTbsInternalTK = lazy(() =>
+  import("./views/PksManualEntry/manualentryTBSInternal/timbangKeluar")
+);
 const PksManualTbsEksternal = lazy(() =>
   import("./views/PksManualEntry/manualentryTBSEksternal/timbangMasuk")
+);
+const PksManualTbsEksternalTK = lazy(() =>
+  import("./views/PksManualEntry/manualentryTBSEksternal/timbangKeluar")
 );
 
 const Cities = lazy(() => import("./views/masterdata/cities"));
@@ -113,15 +119,27 @@ const routes = [
   },
 
   {
-    path: "/pks-ManualEntry-TBSInternal",
+    path: "/pks-ManualEntry-TBSInternal-TimbangMasuk",
     name: "PKS  Manual Entry TBS Internal",
     element: PksManualTbsInternal,
     exact: true,
   },
   {
-    path: "/pks-ManualEntry-TBSEksternal",
+    path: "/pks-ManualEntry-TBSInternal-TimbangKeluar/:id",
+    name: "PKS  Manual Entry TBS Internal",
+    element: PksManualTbsInternalTK,
+    exact: true,
+  },
+  {
+    path: "/pks-ManualEntry-TBSEksternal-TimbangMasuk",
     name: "PKS  Manual Entry TBS Eksternal",
     element: PksManualTbsEksternal,
+    exact: true,
+  },
+  {
+    path: "/pks-ManualEntry-TBSEksternal-TimbangKeluar/:id",
+    name: "PKS  Manual Entry TBS Eksternal",
+    element: PksManualTbsEksternalTK,
     exact: true,
   },
 

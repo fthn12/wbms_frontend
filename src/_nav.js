@@ -176,12 +176,12 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: "Config Request",
+        name: "Config ",
         to: "/config",
       },
       {
         component: CNavItem,
-        name: "Config ",
+        name: "Config Request ",
         to: "/configrequest",
       },
     ],

@@ -169,14 +169,14 @@ const PksTransaction = () => {
                 </MenuItem> */}
                 <MenuItem
                   component={Link}
-                  to="/pks-ManualEntry-TBSInternal"
+                  to="/pks-ManualEntry-TBSInternal-TimbangMasuk"
                   onClick={handleClose}
                 >
                   TBS Internal
                 </MenuItem>
                 <MenuItem
                   component={Link}
-                  to="/pks-ManualEntry-TBSEksternal"
+                  to="/pks-ManualEntry-TBSEksternal-TimbangMasuk"
                   onClick={handleClose}
                 >
                   TBS Eksternal

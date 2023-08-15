@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -12,16 +12,17 @@ import {
   InputLabel,
   Autocomplete,
 } from "@mui/material";
+
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
-import { format } from "date-fns";
+import { format, addDays, addHours } from "date-fns";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
 import * as ConfigApi from "../../../api/configsApi";
 import moment from "moment";
 
-const EditConfig = ({ isEditOpen, onClose, dtConfig, }) => {
+const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
   const userSchema = yup.object().shape({
     // name: yup.string().required("required"),
   });
@@ -45,6 +46,7 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, }) => {
       onClose("", false);
     }
   };
+
   return (
     <Dialog
       open={isEditOpen}
@@ -135,13 +137,12 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, }) => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    type="date"
-                    placeholder="Masukkan Keur ED...."
+                    type="datetime-local"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={
                       values.start
-                        ? format(new Date(values.start), "yyyy-MM-dd")
+                        ? format(new Date(values.start), "yyyy-MM-dd'T'HH:mm")
                         : ""
                     }
                     name="start"
@@ -163,21 +164,30 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig, }) => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    type="date"
-                    placeholder="Masukkan Keur ED...."
+                    type="datetime-local"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={
                       values.end
-                        ? format(new Date(values.end), "yyyy-MM-dd")
+                        ? format(new Date(values.end), "yyyy-MM-dd'T'HH:mm")
                         : ""
                     }
                     name="end"
                     error={!!touched.end && !!errors.end}
                     helperText={touched.end && errors.end}
+                    // Nonaktifkan pilihan tanggal yang lebih dari 24 jam dari tanggal mulai
+                    inputProps={{
+                      max: format(
+                        addDays(new Date(values.start), 1),
+                        "yyyy-MM-dd'T'HH:mm"
+                      ),
+                      min: format(
+                        addDays(new Date(values.start), 1),
+                        "yyyy-MM-dd'T'HH:mm"
+                      ),
+                    }}
                   />
                 </FormControl>
-      
               </Box>
               <Box display="flex" mt={2} ml={3}>
                 <Button

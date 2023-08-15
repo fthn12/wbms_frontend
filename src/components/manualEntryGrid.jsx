@@ -20,7 +20,7 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const TransactionGrid = (props) => {
+const ManualEntryGrid = (props) => {
   const { tType } = props;
   const navigate = useNavigate();
 
@@ -30,23 +30,6 @@ const TransactionGrid = (props) => {
 
   const gridRef = useRef();
 
-  const handleCellClick = (params) => {
-    const progressStatus = params.data.progressStatus;
-    const Id = params.data.id; // Ganti 'id' dengan properti yang benar
-
-    if (
-      progressStatus === 20 ||
-      progressStatus === 21 ||
-      progressStatus === 22
-    ) {
-      navigate(
-        `/pks-ManualEntry-${progressStatus === 20 ? "Others-" : ""}${
-          progressStatus === 21 ? "TBSInternal-" : ""
-        }${progressStatus === 22 ? "TBSEksternal-" : ""}TimbangKeluar/${Id}`
-      );
-    }
-  };
-
   const [columnDefs] = useState([
     {
       headerName: "Bontrip No",
@@ -54,13 +37,11 @@ const TransactionGrid = (props) => {
       filter: true,
       sortable: true,
       hide: false,
-      onCellClicked: handleCellClick,
     },
     {
       headerName: "No Pol",
       field: "transportVehiclePlateNo",
       filter: true,
-      onCellClicked: handleCellClick,
     },
     // {
     //   headerName: "Status",
@@ -71,20 +52,17 @@ const TransactionGrid = (props) => {
     //   rowGroup: true,
     //   hide: true,
     // },
- 
     {
       headerName: "DO No",
       field: "deliveryOrderNo",
       filter: true,
       sortable: true,
-      onCellClicked: handleCellClick,
     },
     {
       headerName: "Product",
       field: "productName",
       filter: true,
       sortable: true,
-      onCellClicked: handleCellClick,
     },
     { headerName: "WB-IN", field: "originWeighInKg", maxWidth: 150 },
     { headerName: "WB-OUT", field: "originWeighOutKg", maxWidth: 150 },
@@ -145,4 +123,4 @@ const TransactionGrid = (props) => {
   );
 };
 
-export default TransactionGrid;
+export default ManualEntryGrid;

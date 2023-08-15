@@ -304,7 +304,7 @@ const CreateStorageTank = ({
                       fontWeight: "bold",
                     }}
                   >
-                    Site Id
+                    Site 
                   </FormLabel>
                   <Select
                     fullWidth

@@ -277,7 +277,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Name"
+                    placeholder="Masukkan Nama....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.name}
@@ -301,7 +301,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     fullWidth
                     variant="outlined"
                     type="email"
-                    placeholder="Masukkan Email"
+                    placeholder="Masukkan Email....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.email}
@@ -325,7 +325,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan No Telepon"
+                    placeholder="Masukkan No Telepon....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.phone}
@@ -343,13 +343,13 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    Nik
+                    NPK
                   </FormLabel>
                   <TextField
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Nik"
+                    placeholder="Masukkan NPK....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.nik}
@@ -374,7 +374,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Username"
+                    placeholder="Masukkan Username....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.username}
@@ -398,7 +398,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Password"
+                    placeholder="Masukkan Password....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.password}
@@ -422,7 +422,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Division"
+                    placeholder="Masukkan Division....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.division}
@@ -446,7 +446,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     fullWidth
                     variant="outlined"
                     type="text"
-                    placeholder="Masukkan Position"
+                    placeholder="Masukkan Position....."
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.position}

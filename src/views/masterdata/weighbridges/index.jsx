@@ -140,15 +140,11 @@ const Weighbridges = () => {
     },
     {
       headerName: "Site",
-      field: "siteId",
+      field: "site.name",
       sortable: true,
       hide: false,
       flex: 2,
-      valueFormatter: (params) => {
-        const siteId = params.value;
-        const site = dtSites.find((item) => item.id === siteId);
-        return site ? site.name : "";
-      },
+    
     },
 
     {

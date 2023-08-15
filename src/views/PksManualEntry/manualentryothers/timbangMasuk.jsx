@@ -28,7 +28,7 @@ import GetWeightWB from "../../../components/GetWeightWB";
 import BonTripPrint from "../../../components/BonTripPrint";
 import * as TransactionAPI from "../../../api/transactionApi";
 import Config from "../../../configs";
-import TransactionGrid from "../../../components/TransactionGrid";
+import ManualEntryGrid from "../../../components/manualEntryGrid";
 import PageHeader from "../../../components/PageHeader";
 import * as ProductAPI from "../../../api/productsApi";
 import * as CompaniesAPI from "../../../api/companiesApi";
@@ -110,11 +110,10 @@ const PksManualOthersTimbangMasuk = () => {
     try {
       const transactionsFromAPI = await fetchTransactionsFromAPI();
 
-      // Pengecekan apakah ada duplikasi dalam data yang ada di API
       const duplicateEntryFromAPI = transactionsFromAPI.some(
         (item) =>
           item.transportVehiclePlateNo === transportVehiclePlateNo &&
-          item.progressStatus === 20
+          [20, 21, 22].includes(item.progressStatus)
       );
 
       if (duplicateEntryFromAPI) {
@@ -122,9 +121,11 @@ const PksManualOthersTimbangMasuk = () => {
         return;
       }
 
-      if (tempTrans.progressStatus === 20) {
-        // Lakukan pencarian menggunakan fungsi find dari TransactionAPI
-
+      if (
+        tempTrans.progressStatus === 20 ||
+        tempTrans.progressStatus === 21 ||
+        tempTrans.progressStatus === 22
+      ) {
         const results = await TransactionAPI.create({ ...tempTrans });
 
         if (!results?.status) {
@@ -170,7 +171,7 @@ const PksManualOthersTimbangMasuk = () => {
     let cSubmit = false;
     if (values.progressStatus === 0) {
       cSubmit = values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
-    } else if (values.progressStatus === 25) {
+    } else if (values.progressStatus === 4) {
       cSubmit = values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
     }
     setCanSubmit(cSubmit);
@@ -803,11 +804,11 @@ const PksManualOthersTimbangMasuk = () => {
             </Box>
           </Paper>
         </Grid>
-        {/* <Grid item xs={12}>
+        <Grid item xs={12}>
           <Paper sx={{ p: 2, mt: 1 }}>
-            <TransactionGrid tType={tType} />
+            <ManualEntryGrid tType={tType} />
           </Paper>
-        </Grid> */}
+        </Grid>
       </Grid>
     </>
   );

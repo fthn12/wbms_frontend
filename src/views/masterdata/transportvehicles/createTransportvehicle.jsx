@@ -52,10 +52,11 @@ const CreateTransportvehicle = ({
   const checkoutSchema = yup.object().shape({
     companyId: yup.string().required("required"),
     companyName: yup.string().required("required"),
+    codeSap: yup.string().required("required"),
     productId: yup.string().required("required"),
     productName: yup.string().required("required"),
     productCode: yup.string().required("required"),
-    plateNo: yup.string().required("required").max(12),
+    plateNo: yup.string().required("required"),
     capacity: yup.number().required("required"),
     brand: yup.string().required("required"),
     model: yup.string().required("required"),
@@ -76,6 +77,7 @@ const CreateTransportvehicle = ({
     model: "",
     sccModel: "",
     notes: "",
+    codeSap: "",
     licenseED: "",
     keurED: "",
   };
