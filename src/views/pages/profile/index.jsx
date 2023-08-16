@@ -35,8 +35,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import EditPassword from "../../../views/pages/profile/editPassword";
-import Config from "../../../configs";
-import * as TransactionAPI from "../../../api/transactionApi";
+import * as UsersAPI from "../../../api/usersApi";
 
 import PageHeader from "../../../components/PageHeader";
 ModuleRegistry.registerModules([
@@ -46,16 +45,15 @@ ModuleRegistry.registerModules([
   RichSelectModule,
 ]);
 
-const tType = 1;
-
 const Profile = () => {
+  const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
   const initialValues = {
     name: "",
   };
   const { userInfo } = useSelector((state) => state.app);
 
   const [isOpen, setIsOpen] = useState(false);
-
+  const [dtuser, setDtUser] = useState([]);
   const [image, setImage] = useState(null);
   const [initialImage, setInitialImage] = useState(false);
 
@@ -64,6 +62,13 @@ const Profile = () => {
     setImage(file ? URL.createObjectURL(file) : null);
     setInitialImage(false);
   };
+
+  useEffect(() => {
+    UsersAPI.getById(userInfo.id).then((res) => {
+      setDtUser(res.data.user.records);
+    });
+  }, [userInfo.id]);
+  console.log(dtuser, "data user");
   return (
     <>
       <Typography
@@ -128,7 +133,6 @@ const Profile = () => {
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                value={values.profile}
                                 style={{ display: "none" }}
                               />
                               <EditIcon
@@ -161,12 +165,11 @@ const Profile = () => {
                               }}
                             >
                               <img
-                                src={`../../assets/user.jpg`}
+                                src={`${path}${dtuser.profilePic}`}
                                 alt="Uploaded Preview"
                                 style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "cover",
+                                  width: "340px",
+                                  height: "340px",
                                 }}
                               />
                             </div>
@@ -201,12 +204,11 @@ const Profile = () => {
                               }}
                             >
                               <img
-                                src={`../../assets/user.jpg`}
+                                src={`${path}${dtuser.profilePic}`}
                                 alt="Uploaded Preview"
                                 style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "cover",
+                                  width: "340px",
+                                  height: "340px",
                                 }}
                               />
                             </div>

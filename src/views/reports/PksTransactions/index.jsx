@@ -191,7 +191,6 @@ const ReportPksTransactions = () => {
     setSelectedEndDate(date);
   };
 
- 
   const filteredTransactions = useMemo(() => {
     let filteredData = dtTransactions;
 
@@ -202,7 +201,6 @@ const ReportPksTransactions = () => {
           selectedProduct.toLowerCase()
       );
     }
-    
 
     if (selectedVendor !== "") {
       filteredData = filteredData.filter(

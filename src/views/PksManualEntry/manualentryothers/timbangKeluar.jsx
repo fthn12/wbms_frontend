@@ -756,7 +756,7 @@ const PksManualOthersTimbangKeluar = () => {
                       TOTAL
                     </Typography>
                   }
-                  name="weightNetto"
+                  // name="weightNetto"
                   value={originWeightNetto || 0}
                 />
 

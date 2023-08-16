@@ -33,12 +33,11 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
 
     try {
       await ConfigApi.update(values);
-      console.log("Data Berhasil Diperbarui:", values);
-      toast.success("Data Berhasil Diperbarui"); // Tampilkan toast sukses
+      toast.success("Data Berhasil Diperbarui");
       // Lakukan tindakan tambahan atau perbarui state sesuai kebutuhan
     } catch (error) {
       console.error("Data Gagal Diperbarui:", error);
-      toast.error("Data Gagal Diperbarui: " + error.message); // Tampilkan pesan error spesifik
+      toast.error("Data Gagal Diperbarui: " + error.message);
       // Tangani error atau tampilkan pesan error
     } finally {
       setSubmitting(false);
@@ -118,6 +117,8 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     onChange={handleChange}
                     value={values.name}
                     name="name"
+                    inputProps={{ readOnly: true }}
+                    sx={{ backgroundColor: "whitesmoke" }}
                     error={!!touched.name && !!errors.name}
                     helperText={touched.name && errors.name}
                     id="name-input"
@@ -139,7 +140,15 @@ const EditConfig = ({ isEditOpen, onClose, dtConfig }) => {
                     variant="outlined"
                     type="datetime-local"
                     onBlur={handleBlur}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e);
+                      if (
+                        !values.end ||
+                        new Date(e.target.value) <= new Date(values.end)
+                      ) {
+                        setFieldValue("status", "PENDING");
+                      }
+                    }}
                     value={
                       values.start
                         ? format(new Date(values.start), "yyyy-MM-dd'T'HH:mm")

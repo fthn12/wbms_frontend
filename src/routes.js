@@ -250,11 +250,7 @@ const routes = [
     name: "Config ",
     element: Config,
   },
-  {
-    path: "/viewrole/:id",
-    name: "View Role",
-    element: ViewRole,
-  },
+
 
   // { path: "/theme/typography", name: "Typography", element: Typography },
   // { path: "/base", name: "Base", element: Cards, exact: true },

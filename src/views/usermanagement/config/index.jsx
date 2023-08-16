@@ -96,14 +96,7 @@ const Config = () => {
       hide: false,
       flex: 2,
     },
-    {
-      headerName: "Value",
-      field: "value",
-      filter: true,
-      sortable: true,
-      hide: false,
-      flex: 1,
-    },
+  
     {
       headerName: "Status",
       field: "status",
@@ -118,7 +111,7 @@ const Config = () => {
       filter: true,
       sortable: true,
       hide: false,
-      flex: 2,
+      flex: 3,
       valueGetter: (params) => {
         const { data } = params;
         const activeStart = new Date(data.start);

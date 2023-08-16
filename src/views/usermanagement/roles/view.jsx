@@ -65,6 +65,11 @@ const EditRoles = ({ isViewOpen, onClose, dtRole }) => {
     }
   }, [searchQuery, dtUser, updateGridData]);
 
+  const getTotalUsersWithRole = (roleName) => {
+    const usersWithRole = dtUser.filter((user) => user.role === roleName);
+    return usersWithRole.length;
+  };
+
   const [columnDefs] = useState([
     {
       headerName: "No",
@@ -152,7 +157,7 @@ const EditRoles = ({ isViewOpen, onClose, dtRole }) => {
                           color: "grey",
                         }}
                       >
-                        Total users with this role: 5
+                        Total users with this role: {getTotalUsersWithRole(values.name)}
                       </h6>
                     </div>
                   </Paper>

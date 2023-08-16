@@ -12,6 +12,7 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import * as RolesAPI from "../../../api/roleApi";
+import * as UserAPI from "../../../api/usersApi";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CreateRole from "../../../views/usermanagement/roles/createRole";
 import EditRole from "../../../views/usermanagement/roles/editRole";
@@ -28,6 +29,7 @@ ModuleRegistry.registerModules([
 const RoleList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [roles, setRoles] = useState([]);
+  const [dtUser, setDtUser] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -38,7 +40,15 @@ const RoleList = () => {
     fetcher().then((dataRole) => {
       setRoles(dataRole);
     });
+    UserAPI.getAll().then((res) => {
+      setDtUser(res.data.user.records);
+    });
   }, []);
+
+  const getTotalUsersWithRole = (roleName) => {
+    const usersWithRole = dtUser.filter((user) => user.role === roleName);
+    return usersWithRole.length;
+  };
 
   return (
     <div style={{ paddingLeft: 120, paddingRight: 120, paddingBottom: 60 }}>
@@ -68,7 +78,7 @@ const RoleList = () => {
                 <h6
                   sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}
                 >
-                  Total users with this role: 5
+                  Total users with this role: {getTotalUsersWithRole(role.name)}
                 </h6>
                 <br />
                 <Typography
@@ -84,14 +94,9 @@ const RoleList = () => {
                 </Typography>
               </div>
               <Box display="flex" justifyContent="flex-start" gap="15px" mt={2}>
-                {/* <LinkContainer
-                  to={`/viewrole/${role.id}`}
-                  sx={{ textDecoration: "none", textTransform: "none" }}
-                >
-                  <Button variant="contained">View Role</Button>
-                </LinkContainer> */}
+       
                 <Button
-                variant="contained"
+                  variant="contained"
                   style={{ textTransform: "none" }}
                   onClick={() => {
                     setSelectedRole(role);
@@ -100,7 +105,7 @@ const RoleList = () => {
                 >
                   View Role
                 </Button>
-                {!["Administrator", "administrator", "Admin", "admin"].includes(
+                {!["Admin IT", "Admin HC", "Admin System"].includes(
                   role.name
                 ) && (
                   <Button
