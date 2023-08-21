@@ -15,9 +15,9 @@ const initialValues = { username: "", password: "" };
 
 const SignIn = () => {
   const userRef = useRef();
-  const errRef = useRef();
   const [errMsg, setErrMsg] = useState("");
-
+  const [user, setUser] = useState("");
+  const [pwd, setPwd] = useState("");
   const { userInfo } = useSelector((state) => state.app);
   const [signin] = useSigninMutation();
 
@@ -38,6 +38,7 @@ const SignIn = () => {
     try {
       const response = await signin(values).unwrap();
       const at = response?.data?.tokens?.access_token;
+      // const roles = response?.data?.roles;
       Cookies.set("accessToken", at, { sameSite: "strict" });
 
       if (!response.status) {
@@ -50,7 +51,9 @@ const SignIn = () => {
       }
 
       dispatch(setCredentials({ ...response.data.user }));
-
+      // setAuth({ user, pwd, roles, at });
+      setUser("");
+      setPwd("");
       navigate(from, { replace: true });
     } catch (err) {
       if (!err?.response) {
@@ -62,7 +65,6 @@ const SignIn = () => {
       } else {
         setErrMsg("Login Failed");
       }
-      errRef.current.focus();
       toast.error(errMsg);
     }
   };
@@ -103,8 +105,7 @@ const SignIn = () => {
           </p>
           <p
             className="title text-center mb-4 "
-            style={{ fontSize: "48px", fontWeight: "bold" }}
-          >
+            style={{ fontSize: "48px", fontWeight: "bold" }}>
             <span>WBMS </span>Administrator
           </p>
           <InputGroup className="mb-3">
@@ -141,8 +142,7 @@ const SignIn = () => {
             <Button
               type="submit"
               className="px-4 text-center w-90"
-              style={{ fontSize: "20px", fontWeight: "bold" }}
-            >
+              style={{ fontSize: "20px", fontWeight: "bold" }}>
               LOGIN
             </Button>
           </Row>

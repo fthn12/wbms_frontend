@@ -1,70 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Select, { components } from "react-select";
 
-import Select from "react-select";
+const ValueContainer = ({ children, getValue, ...props }) => {
+  let maxToShow = 3;
+  var length = getValue().length;
+  let displayChips = React.Children.toArray(children).slice(0, maxToShow);
+  let shouldBadgeShow = length > maxToShow;
+  let displayLength = length - maxToShow;
 
-const Checkbox = ({ children, ...props }) => (
-  <label style={{ marginRight: "1em" }}>
-    <input type="checkbox" {...props} />
-    {children}
-  </label>
-);
+  return (
+    <components.ValueContainer {...props}>
+      {!props.selectProps.inputValue && displayChips}
+      <div className="root">
+        {shouldBadgeShow &&
+          `+ ${displayLength} item${length !== 1 ? "s" : ""} selected`}
+      </div>
+    </components.ValueContainer>
+  );
+};
 
-const SelectBox = ({ name, width, onChange, options }) => {
-  const [isClearable, setIsClearable] = useState(true);
-  const [isSearchable, setIsSearchable] = useState(true);
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRtl, setIsRtl] = useState(false);
+const SelectBox = (props) => {
+  const styles = {
+    option: (base, value) => {
+      return value ? { ...base } : { display: "none" };
+    },
+  };
+  const [len, setLen] = useState("");
+  const [opts, setOpts] = useState([]);
+  useEffect(() => {
+    if (props.length) {
+      setLen(props.length);
+    }
+  }, [props.length]);
+
+  useEffect(() => {
+    if (props.options) {
+      setOpts(props.options);
+    }
+  }, [props.options]);
+  const [selectedValues, setselectedValues] = useState(props.defaultValue);
 
   return (
     <>
-      <Select
-        className="basic-single"
-        classNamePrefix="select"
-        // defaultValue={options[0]}
-        isDisabled={isDisabled}
-        isLoading={isLoading}
-        isClearable={isClearable}
-        isRtl={isRtl}
-        isSearchable={isSearchable}
-        name={name}
-        onChange={onChange}
-        options={options}
-        style={{ flex: 1, width: "50%" }}
-      />
-
-      <div
-        style={{
-          color: "hsl(0, 0%, 40%)",
-          display: "inline-block",
-          fontSize: 12,
-          fontStyle: "italic",
-          marginTop: "1em",
-        }}>
-        <Checkbox
-          checked={isClearable}
-          onChange={() => setIsClearable((state) => !state)}>
-          Clearable
-        </Checkbox>
-        <Checkbox
-          checked={isSearchable}
-          onChange={() => setIsSearchable((state) => !state)}>
-          Searchable
-        </Checkbox>
-        <Checkbox
-          checked={isDisabled}
-          onChange={() => setIsDisabled((state) => !state)}>
-          Disabled
-        </Checkbox>
-        <Checkbox
-          checked={isLoading}
-          onChange={() => setIsLoading((state) => !state)}>
-          Loading
-        </Checkbox>
-        <Checkbox checked={isRtl} onChange={() => setIsRtl((state) => !state)}>
-          RTL
-        </Checkbox>
-      </div>
+      {opts && opts.length > 0 && (
+        <Select
+          isMulti
+          fullWidth
+          name={props.name}
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          classNamePrefix="select"
+          isOptionSelected={true}
+          isClearable={true}
+          isSearchable={true}
+          placeholder={props.placeholder}
+          value={props.value}
+          options={opts}
+          onChange={props.onChange}
+          components={{ ValueContainer }}
+          style={{ flex: 1, width: `${props.width}` }}
+          styles={styles}
+        />
+      )}
     </>
   );
 };

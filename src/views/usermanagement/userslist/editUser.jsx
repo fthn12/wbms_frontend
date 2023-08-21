@@ -22,21 +22,21 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
 import * as UserApi from "../../../api/usersApi";
+import format from "date-fns/format";
+import moment from "moment";
 
 const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
   const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
-  console.log(path);
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
+    values.profile.doB = moment(values.profile.doB).toDate();
+
     const {
       id,
-      name,
+      profile: { name, phone, position, division, doB, alamat },
       username,
       nik,
       email,
       file,
-      position,
-      division,
-      phone,
       roleId,
       isLDAPUser,
       role,
@@ -44,16 +44,18 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
     const dto = {
       id,
       name,
+      phone,
       username,
       nik,
       email,
       file,
       position,
       division,
-      phone,
       roleId,
       isLDAPUser,
       role,
+      doB,
+      alamat,
     };
     try {
       await UserApi.update(dto);
@@ -73,22 +75,19 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
   };
 
   const userSchema = yup.object().shape({
-    name: yup.string().required("required"),
-    username: yup.string().required("required"),
-    nik: yup.string().required("required"),
-    email: yup
-      .string()
-      .email("Enter a valid email")
-      .required("Email is required"),
-    division: yup.string().required("required"),
-    position: yup.string().required("required"),
-    phone: yup.string().required("required"),
-    // password: yup
+    // name: yup.string().required("required"),
+    // username: yup.string().required("required"),
+    // nik: yup.string().required("required"),
+    // email: yup
     //   .string()
-    //   .required("Kata sandi harus diisi")
-    //   .min(8, "Kata sandi minimal terdiri dari 8 karakter")
-    //   .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
-    role: yup.string().required("required"),
+    //   .email("Enter a valid email")
+    //   .required("Email is required"),
+    // division: yup.string().required("required"),
+    // position: yup.string().required("required"),
+    // phone: yup.string().required("required"),
+    // doB: yup.date(),
+    // alamat: yup.string(),
+    // roleId: yup.string().required("required"),
   });
 
   const [image, setImage] = useState(null);
@@ -239,9 +238,9 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         }}
                       >
                         {/* Gambar ditampilkan terlebih dahulu */}
-                        {image === null && dtuser.profilePic && (
+                        {image === null && dtuser.profile.profilePic && (
                           <img
-                            src={`${path}${dtuser.profilePic}`}
+                            src={`${path}${dtuser.profile.profilePic}`}
                             alt="Uploaded Preview"
                             style={{
                               width: "160px",
@@ -265,9 +264,6 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                             />
                           </div>
                         )}
-
-                        {/* Tambahkan console.log untuk memeriksa URL gambar */}
-                        {console.log("URL Gambar:", dtuser.profilePic)}
                       </div>
                     </Box>
                   </FormControl>
@@ -289,8 +285,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Name"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.name}
-                      name="name"
+                      value={values.profile?.name}
+                      name="profile.name"
                       error={!!touched.name && !!errors.name}
                       helperText={touched.name && errors.name}
                     />
@@ -337,8 +333,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan No Telepon"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.phone}
-                      name="phone"
+                      value={values.profile.phone}
+                      name="profile.phone"
                       error={!!touched.phone && !!errors.phone}
                       helperText={touched.phone && errors.phone}
                     />
@@ -411,8 +407,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Division"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.division}
-                      name="division"
+                      value={values.profile.division}
+                      name="profile.division"
                       error={!!touched.division && !!errors.division}
                       helperText={touched.division && errors.division}
                     />
@@ -435,10 +431,64 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       placeholder="Masukkan Position"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.position}
-                      name="position"
+                      value={values.profile.position}
+                      name="profile.position"
                       error={!!touched.position && !!errors.position}
                       helperText={touched.position && errors.position}
+                    />
+                  </FormControl>
+                  <FormControl sx={{ gridColumn: "span 4" }}>
+                    <FormLabel
+                      sx={{
+                        marginBottom: "8px",
+                        color: "black",
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Tanggal Lahir
+                    </FormLabel>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="date"
+                      placeholder="Masukkan Tanggal Lahir..."
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={
+                        values.profile.doB
+                          ? format(new Date(values.profile.doB), "yyyy-MM-dd")
+                          : ""
+                      }
+                      name="profile.doB"
+                      error={!!touched.doB && !!errors.doB}
+                      helperText={touched.doB && errors.doB}
+                    />
+                  </FormControl>
+                  <FormControl sx={{ gridColumn: "span 4" }}>
+                    <FormLabel
+                      sx={{
+                        color: "black",
+                        marginBottom: "8px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Alamat
+                    </FormLabel>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="text"
+                      multiline
+                      rows={4}
+                      placeholder="Masukkan alamat....."
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.profile.alamat}
+                      name="profile.alamat"
+                      error={!!touched.alamat && !!errors.alamat}
+                      helperText={touched.alamat && errors.alamat}
                     />
                   </FormControl>
                   <FormControl sx={{ gridColumn: "span 4" }}>
@@ -505,7 +555,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       isLDAPUser
                     </FormLabel>
                     <Checkbox
-                      checked={values.isLDAPUser === true}
+                      checked={values.isLDAPUser}
                       onChange={(event) => {
                         const newValue = event.target.checked ? true : false;
                         setFieldValue("isLDAPUser", newValue);

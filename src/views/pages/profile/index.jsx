@@ -112,7 +112,7 @@ const Profile = () => {
                     >
                       {/* Tambahkan div kontainer untuk mengatur posisi */}
                       <div style={{ position: "relative" }}>
-                        <div
+                        {/* <div
                           style={{
                             position: "absolute",
                             top: "55px",
@@ -140,7 +140,7 @@ const Profile = () => {
                               />
                             </label>
                           </Tooltip>
-                        </div>
+                        </div> */}
 
                         <div
                           style={{
@@ -165,11 +165,11 @@ const Profile = () => {
                               }}
                             >
                               <img
-                                src={`${path}${dtuser.profilePic}`}
+                                src={`${path}${userInfo.profilePic}`}
                                 alt="Uploaded Preview"
                                 style={{
-                                  width: "340px",
-                                  height: "340px",
+                                  width: "200px",
+                                  height: "200px",
                                 }}
                               />
                             </div>
@@ -192,27 +192,6 @@ const Profile = () => {
                             </div>
                           )}
 
-                          {/* Jika gambar baru tidak dipilih dan tidak ada gambar yang diunggah sebelumnya, maka tampilkan gambar */}
-                          {image === null && !initialImage && (
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                width: "200px",
-                                height: "200px",
-                              }}
-                            >
-                              <img
-                                src={`${path}${dtuser.profilePic}`}
-                                alt="Uploaded Preview"
-                                style={{
-                                  width: "340px",
-                                  height: "340px",
-                                }}
-                              />
-                            </div>
-                          )}
                         </div>
                       </div>
 
@@ -221,11 +200,11 @@ const Profile = () => {
                       >
                         {userInfo.name}
                       </Typography>
-                      <Typography sx={{ fontSize: "15px", mb: 4 }}>
-                        {userInfo.role}
+                      <Typography sx={{ fontSize: "15px", mb: 4.8 }}>
+                        {userInfo.role} Role
                       </Typography>
 
-                      <Button
+                      {/* <Button
                         fullwidth
                         variant="contained"
                         sx={{
@@ -238,7 +217,7 @@ const Profile = () => {
                         }}
                       >
                         Edit Profile
-                      </Button>
+                      </Button> */}
                       <Button
                         type="submit"
                         fullwidth
@@ -278,7 +257,6 @@ const Profile = () => {
                     <Box
                       display="grid"
                       margin={7}
-                      my={14.2}
                       width="75%"
                       gap="30px"
                       gridTemplateColumns="repeat(4, minmax(0, 1fr))"
@@ -310,43 +288,13 @@ const Profile = () => {
                           onBlur={handleBlur}
                           onChange={handleChange}
                           value={values.name}
+                          inputProps={{ readOnly: true }}
                           name="name"
                           error={!!touched.name && !!errors.name}
                           helperText={touched.name && errors.name}
                         />
                       </FormControl>
-                      <FormControl
-                        sx={{
-                          gridColumn: "span 4",
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <FormLabel
-                          sx={{
-                            color: "black",
-                            marginBottom: "8px",
-                            fontSize: "18px",
-                            fontWeight: "bold",
-                            width: "15%",
-                          }}
-                        >
-                          Email
-                        </FormLabel>
-                        <TextField
-                          fullWidth
-                          sx={{ backgroundColor: "whitesmoke" }}
-                          type="email"
-                          placeholder=" Email"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.email}
-                          name="email"
-                          error={!!touched.email && !!errors.email}
-                          helperText={touched.email && errors.email}
-                        />
-                      </FormControl>
+                    
                       <FormControl
                         sx={{
                           gridColumn: "span 4",
@@ -373,10 +321,44 @@ const Profile = () => {
                           placeholder=" No Telephon"
                           onBlur={handleBlur}
                           onChange={handleChange}
+                          inputProps={{ readOnly: true }}
                           value={values.phone}
                           name="phone"
                           error={!!touched.phone && !!errors.phone}
                           helperText={touched.phone && errors.phone}
+                        />
+                      </FormControl>
+                      <FormControl
+                        sx={{
+                          gridColumn: "span 4",
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}>
+                        <FormLabel
+                          sx={{
+                            color: "black",
+                            marginBottom: "8px",
+                            fontSize: "18px",
+                            fontWeight: "bold",
+                            width: "15%",
+                          }}>
+                          Alamat
+                        </FormLabel>
+                        <TextField
+                          fullWidth
+                          multiline
+                          rows={4}
+                          sx={{ backgroundColor: "whitesmoke" }}
+                          type="text"
+                          placeholder="Alamat....."
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.alamat}
+                          inputProps={{ readOnly: true }}
+                          name="alamat"
+                          error={!!touched.nik && !!errors.nik}
+                          helperText={touched.nik && errors.nik}
                         />
                       </FormControl>
                     </Box>

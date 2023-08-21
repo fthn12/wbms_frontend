@@ -23,10 +23,12 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
 import * as UsersAPI from "../../../api/usersApi";
+import moment from "moment";
 
 const CreateUsers = ({ isOpen, onClose, dtRole }) => {
-  // Create
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
+    values.doB = moment(values.doB).toDate();
+
     UsersAPI.create(values)
       .then((res) => {
         console.log("Data Berhasil Disimpan:", res.data);
@@ -57,6 +59,8 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
     division: "",
     phone: "",
     roleId: "",
+    doB: "",
+    alamat: "",
     isLDAPUser: false,
   };
 
@@ -458,6 +462,57 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                 <FormControl sx={{ gridColumn: "span 4" }}>
                   <FormLabel
                     sx={{
+                      marginBottom: "8px",
+                      color: "black",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Tanggal Lahir
+                  </FormLabel>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    type="date"
+                    placeholder="Masukkan Tanggal Lahir..."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.doB}
+                    name="doB"
+                    error={!!touched.doB && !!errors.doB}
+                    helperText={touched.doB && errors.doB}
+                  />
+                </FormControl>
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
+                      color: "black",
+                      marginBottom: "8px",
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Alamat
+                  </FormLabel>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    type="text"
+                    multiline
+                    rows={4}
+                    placeholder="Masukkan alamat....."
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.alamat}
+                    name="alamat"
+                    error={!!touched.alamat && !!errors.alamat}
+                    helperText={touched.alamat && errors.alamat}
+                  />
+                </FormControl>
+
+                <FormControl sx={{ gridColumn: "span 4" }}>
+                  <FormLabel
+                    sx={{
                       color: "black",
                       marginBottom: "8px",
                       fontSize: "16px",
@@ -520,7 +575,7 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                     isLDAPUser
                   </FormLabel>
                   <Checkbox
-                    checked={values.isLDAPUser === true}
+                    checked={values.isLDAPUser}
                     onChange={(event) => {
                       const newValue = event.target.checked ? true : false;
                       setFieldValue("isLDAPUser", newValue);

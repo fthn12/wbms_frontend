@@ -128,7 +128,7 @@ const UsersList = () => {
 
     {
       headerName: "Nama",
-      field: "name",
+      field: "profile.name",
       filter: true,
       sortable: true,
       hide: false,
@@ -289,7 +289,7 @@ const UsersList = () => {
                     sx={{ p: 1 }}
                     onClick={() => {
                       const filteredData = dtUser.filter((User) =>
-                        User.name
+                        User.profile.name
                           .toLowerCase()
                           .includes(searchQuery.toLowerCase())
                       );

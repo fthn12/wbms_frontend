@@ -21,12 +21,13 @@ import { toast } from "react-toastify";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { grey } from "@mui/material/colors";
+import { format } from "date-fns";
 
 const ViewUsers = ({ isViewOpen, onClose, dtuser, dtRole }) => {
   const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
 
   return (
-    <Dialog open={isViewOpen} fullWidth maxWidth={"md"}>
+    <Dialog open={isViewOpen} fullWidth maxWidth={"lg"}>
       <DialogContent dividers>
         <DialogTitle>
           <IconButton
@@ -65,35 +66,42 @@ const ViewUsers = ({ isViewOpen, onClose, dtuser, dtRole }) => {
                   gridTemplateColumns="repeat(11, minmax(0, 1fr))"
                 >
                   <FormControl sx={{ gridColumn: "span 5" }}>
-                    <Box mt={1} mb={1} position="relative">
+                    <Box
+                      mt={1}
+                      mb={1}
+                      position="relative"
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
                       <div
                         style={{
                           position: "relative",
-                          width: "340px",
-                          height: "340px",
+                          width: "430px",
+                          height: "430px",
                           overflow: "hidden",
                           border: "2px solid #9e9e9e",
                         }}
                       >
                         {/* Gambar ditampilkan terlebih dahulu */}
                         <img
-                          src={`${path}${dtuser.profilePic}`}
+                          src={`${path}${dtuser.profile.profilePic}`}
                           alt="Uploaded Preview"
                           style={{
-                            width: "340px",
-                            height: "340px",
+                            width: "430px",
+                            height: "430px",
                           }}
                         />
                       </div>
                     </Box>
-
                     <Typography
-                      fontSize="20px"
+                      fontSize="23px"
                       style={{
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        marginRight: "18px",
                       }}
                     >
                       <tr>
@@ -124,22 +132,38 @@ const ViewUsers = ({ isViewOpen, onClose, dtuser, dtRole }) => {
                         <tr height="50">
                           <td>Nama</td>
                           <td width="10">:</td>
-                          <td>{values.name}</td>
+                          <td>{values.profile.name}</td>
                         </tr>
                         <tr height="50">
-                          <td>No Telephon</td>
+                          <td>No Telepon</td>
                           <td width="10">:</td>
-                          <td>{values.phone}</td>
+                          <td>{values.profile.phone}</td>
                         </tr>
                         <tr height="50">
                           <td>Division</td>
                           <td width="10">:</td>
-                          <td>{values.division}</td>
+                          <td>{values.profile.division}</td>
                         </tr>
                         <tr height="50">
                           <td>Position</td>
                           <td width="10">:</td>
-                          <td>{values.position}</td>
+                          <td>{values.profile.position}</td>
+                        </tr>
+                        <tr height="50">
+                          <td>Tanggal Lahir</td>
+                          <td width="10">:</td>
+                          <td>
+                            {format(
+                              new Date(values.profile.doB),
+                              "dd MMMM yyyy"
+                            )}
+                          </td>
+                        </tr>
+
+                        <tr height="50">
+                          <td>Alamat</td>
+                          <td width="10">:</td>
+                          <td>{values.profile.alamat}</td>
                         </tr>
                         <tr>
                           <td>LDAP User</td>
