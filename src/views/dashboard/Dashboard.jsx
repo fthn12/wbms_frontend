@@ -1,25 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Paper, Typography } from "@mui/material";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  Legend,
-} from "recharts";
+import { Box, IconButton, Typography, Paper } from "@mui/material";
 import * as TransactionAPI from "../../api/transactionApi";
-
-const data = [
-  { name: "January", value: 70 },
-  { name: "February", value: 39 },
-  { name: "March", value: 10 },
-  { name: "April", value: 85 },
-  { name: "May", value: 30 },
-  { name: "June", value: 70 },
-  { name: "July", value: 35 },
-];
+import AreaCharts from "../../components/areaChart";
+import PieCharts from "../../components/pieChart";
+import BarChartIcon from "@mui/icons-material/EqualizerOutlined";
 
 const Dashboard = () => {
   const [CPOProduct, setCPOProduct] = useState(0);
@@ -59,49 +43,127 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div>
-      {/* Kotak di atas (4 kotak) */}
-      <Grid container spacing={2}>
-        <Grid item xs={6} md={3}>
-          <Paper elevation={3} sx={{ p: 2, backgroundColor: "primary.main" }}>
-            <Typography variant="h6">CPO TRANSACTION {CPOProduct}</Typography>
-            <Typography>Content for Box 1</Typography>
+    <div className="dashboard">
+      <Box my={2}>
+        <Typography variant="h5" fontWeight="bold">
+          Dashboard
+        </Typography>
+      </Box>
+      <Box
+        display="grid"
+        gridTemplateColumns="repeat(12, 1fr)"
+        gridAutoRows="140px"
+        gap="20px"
+      >
+        {/* ROWS 1 */}
+        <Box
+          gridColumn="span 3"
+          display="flex"
+          height="150px"
+          justifyContent="space-between"
+          alignItems="center"
+          borderRadius="10px"
+          sx={{
+            background: "linear-gradient(to right, #0B63F6, #003CC5)",
+            boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          <Box mx={3}>
+            <Typography variant="h5" pb={1} fontWeight="bold" color="white">
+              {CPOProduct}
+            </Typography>
+            <Typography variant="h7" color="white">
+              CPO TRANSACTION
+            </Typography>
+          </Box>
+          <BarChartIcon sx={{ fontSize: 90, color: "#283593", mr: 2 }} />
+        </Box>
+        <Box
+          gridColumn="span 3"
+          display="flex"
+          height="150px"
+          justifyContent="space-between"
+          alignItems="center"
+          borderRadius="10px"
+          sx={{
+            background: "linear-gradient(to right,#33cc33, #009933)",
+            boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          <Box mx={3}>
+            <Typography variant="h5" pb={1} fontWeight="bold" color="white">
+              {PKOProduct}
+            </Typography>
+            <Typography variant="h7" color="white">
+              PKO TRANSACTION
+            </Typography>
+          </Box>
+          <BarChartIcon sx={{ fontSize: 90, color: "#2e7d32", mr: 2 }} />
+        </Box>
+        <Box
+          gridColumn="span 3"
+          display="flex"
+          height="150px"
+          justifyContent="space-between"
+          alignItems="center"
+          borderRadius="10px"
+          sx={{
+            background: "linear-gradient(to right,#ffc107, #ffc107 )",
+            boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          <Box mx={3}>
+            <Typography variant="h5" pb={1} fontWeight="bold" color="white">
+              {TBSProduct}
+            </Typography>
+            <Typography variant="h7" color="white">
+              TBS TRANSACTION
+            </Typography>
+          </Box>
+          <BarChartIcon sx={{ fontSize: 90, color: "#ff8f00", mr: 2 }} />
+        </Box>
+        <Box
+          gridColumn="span 3"
+          display="flex"
+          height="150px"
+          justifyContent="space-between"
+          alignItems="center"
+          borderRadius="10px"
+          sx={{
+            background: "linear-gradient(to right,#f44336,#d32f2f)",
+            boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          <Box mx={3}>
+            <Typography variant="h5" pb={1} fontWeight="bold" color="white">
+              {OtherProduct}
+            </Typography>
+            <Typography variant="h7" color="white">
+              OTHERS TRANSACTION
+            </Typography>
+          </Box>
+          <BarChartIcon sx={{ fontSize: 90, color: "#b71c1c", mr: 2 }} />
+        </Box>
+        <Box gridColumn="span 8" pt={3} >
+          <Paper elevation={5} sx={{ p: 3, mx: 1, borderRadius:"10px" }}>
+            <div
+              style={{ width: "auto", height: "45vh" }}
+            >
+              <AreaCharts />
+            </div>
           </Paper>
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <Paper elevation={3} sx={{ p: 2, backgroundColor: "success.main" }}>
-            <Typography variant="h6">PKO TRANSACTION {PKOProduct}</Typography>
-            <Typography>Content for Box 2</Typography>
+        </Box>
+        <Box gridColumn="span 4" pt={3} >
+          <Paper elevation={5} sx={{ p: 3, mx: 1, borderRadius:"10px" }}>
+            <div
+              style={{ width: "auto", height: "45vh" }}
+            >
+              <PieCharts />
+            </div>
           </Paper>
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <Paper elevation={3} sx={{ p: 2, backgroundColor: "warning.main" }}>
-            <Typography variant="h6">TBS  {TBSProduct}</Typography>
-            <Typography>Content for Box 3</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <Paper elevation={3} sx={{ p: 2, backgroundColor: "error.main" }}>
-            <Typography variant="h6">Other TRANSACTION {OtherProduct}</Typography>
-            <Typography>Content for Box 4</Typography>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12}>
-          <paper elevation={3} sx={{ p: 2, backgroundColor: "warning.main" }}>
-            <LineChart width={1000} height={500} data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="value" stroke="#8884d8" />
-            </LineChart>
-          </paper>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </div>
   );
 };
-
 export default Dashboard;

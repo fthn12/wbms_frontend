@@ -216,7 +216,7 @@ const UsersList = () => {
               padding="10px 10px"
               justifyContent="center"
               color="white"
-              onClick={() => deleteById(params.value, params.data.name)}
+              onClick={() => deleteById(params.value, params.data.profile.name)}
               style={{
                 color: "white",
                 textDecoration: "none",
