@@ -518,9 +518,6 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         );
                       }}
                       displayEmpty
-                      sx={{
-                        color: MenuItem ? "gray" : "black",
-                      }}
                       error={!!touched.roleId && !!errors.roleId}
                       helperText={touched.roleId && errors.roleId}
                     >
@@ -552,7 +549,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                         fontWeight: "bold",
                       }}
                     >
-                      isLDAPUser
+                      LDAPUser
                     </FormLabel>
                     <Checkbox
                       checked={values.isLDAPUser}

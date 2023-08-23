@@ -1,4 +1,4 @@
-import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
@@ -7,7 +7,6 @@ import { useSignoutMutation } from "../../slices/authApiSlice";
 
 import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import Avatar from "@mui/material/Avatar";
-import { blue } from "@mui/material/colors";
 import {
   CDropdown,
   CDropdownDivider,
@@ -26,14 +25,10 @@ const AppHeaderDropdown = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const firstInitial = userInfo.name
-    ? userInfo.name.charAt(0).toUpperCase()
-    : "";
-
   const handleSignout = async () => {
     try {
       const res = await signout().unwrap();
-      Cookies.remove("accessToken");
+      Cookies.remove("accessToken", { expires: 60 });
       if (!res.status) {
         console.log(res.message);
         console.log(res.logs);

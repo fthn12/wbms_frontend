@@ -196,12 +196,12 @@ const Profile = () => {
                       </div>
 
                       <Typography
-                        sx={{ fontSize: "24px", fontWeight: "bold", mb: 1 }}
+                        sx={{ fontSize: "25px", fontWeight: "bold", mb: 1 }}
                       >
                         {userInfo.name}
                       </Typography>
-                      <Typography sx={{ fontSize: "15px", mb: 4.8 }}>
-                        {userInfo.role} Role
+                      <Typography sx={{ fontSize: "18px", mb: 4 }}>
+                        {userInfo.role}
                       </Typography>
 
                       {/* <Button

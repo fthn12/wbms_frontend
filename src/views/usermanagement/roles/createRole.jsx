@@ -85,14 +85,17 @@ const CreateRoles = ({ isOpen, onClose }) => {
   const [possesionList, setPossesionList] = useState(
     Array(actionOptions.length).fill("own")
   );
-  const [grants, setGrants] = useState(actionOptions.map((action, index) => ({
-    action: action,
-    possession: possesionList[index],
-    attributes: [
-      {
-        attr: "",
-      },
-    ]})));
+  const [grants, setGrants] = useState(
+    actionOptions.map((action, index) => ({
+      action: action,
+      possession: possesionList[index],
+      attributes: [
+        {
+          attr: "",
+        },
+      ],
+    }))
+  );
   const [permissions, setPermissions] = useState({ resource: "", grants });
   const generateInitialValues = (permissions) => ({
     name: "",
@@ -107,9 +110,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
   }, [checkboxes]);
 
   useEffect(() => {
-    setPermissions(
-      selectedResources.map((resource) => ({ resource, grants }))
-    );
+    setPermissions(selectedResources.map((resource) => ({ resource, grants })));
     setAttrOptions(
       Object.keys(dtAttrJson)
         .filter((resource) => selectedResources.includes(resource))
@@ -119,27 +120,40 @@ const CreateRoles = ({ isOpen, onClose }) => {
         }, {})
     );
   }, [selectedResources, grants]);
-  
+
   // Create
+
+  useEffect(() => {
+    const successMessage = localStorage.getItem("successMessage");
+
+    if (successMessage) {
+      // Hapus pesan dari storage web
+      localStorage.removeItem("successMessage");
+
+      // Menampilkan toast alert
+      toast.success(successMessage);
+    }
+  }, []);
+
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     const asArray = Object.entries(values);
     const filtered = asArray.filter(([key, value]) => value !== "");
     const filteredValues = Object.fromEntries(filtered);
-    RolesAPI.create(filteredValues)
-      .then((res) => {
-        console.log("Data Berhasil Disimpan:", res.data);
-        toast.success("Data Berhasil Disimpan");
-      })
-      .catch((error) => {
-        console.error("Data Gagal Disimpan:", error);
-        toast.error("Data Gagal Disimpan: " + error.message);
-      })
-      .finally(() => {
-        setSubmitting(false);
-        resetForm();
-
-        onClose("", false);
-      });
+    try {
+      await RolesAPI.create(filteredValues);
+      console.log("Data Berhasil Disimpan");
+      // Simpan pesan berhasil di storage web
+      localStorage.setItem("successMessage", "Data Berhasil Disimpan");
+      // Memuat ulang halaman
+      window.location.reload();
+    } catch (error) {
+      console.error("Data Gagal Disimpan:", error);
+      toast.error("Data Gagal Disimpan: " + error.message);
+    } finally {
+      setSubmitting(false);
+      resetForm();
+      onClose("", false);
+    }
   };
 
   const checkoutSchema = yup.object().shape({
@@ -154,7 +168,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
   return (
     <Dialog open={isOpen} fullWidth maxWidth={"xl"}>
       <DialogTitle
-        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}>
+        sx={{ color: "black", backgroundColor: "white", fontSize: "28px" }}
+      >
         Tambah Roles
         <IconButton
           sx={{
@@ -165,15 +180,18 @@ const CreateRoles = ({ isOpen, onClose }) => {
           }}
           onClick={() => {
             onClose("", false);
-          }}>
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent dividers>
-        <Formik enableReinitialize 
+        <Formik
+          enableReinitialize
           onSubmit={handleSubmit}
           initialValues={generateInitialValues(permissions)}
-          validationSchema={checkoutSchema}>
+          validationSchema={checkoutSchema}
+        >
           {({
             values,
             errors,
@@ -192,14 +210,16 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   alignItems: "center",
                   backgroundColor: "#f8f8f8",
                   marginBottom: "20px",
-                }}>
+                }}
+              >
                 <Box
                   display="block"
                   padding={2}
                   paddingBottom={3}
                   paddingLeft={3}
                   paddingRight={3}
-                  gap="20px">
+                  gap="20px"
+                >
                   <FormControl>
                     <FormLabel
                       sx={{
@@ -207,7 +227,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
                         marginBottom: "8px",
                         fontSize: "18px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       Role Name
                     </FormLabel>
                     <TextField
@@ -256,14 +277,16 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   padding={2}
                   paddingBottom={3}
                   paddingLeft={3}
-                  paddingRight={3}>
+                  paddingRight={3}
+                >
                   <FormLabel
                     sx={{
                       color: "black",
                       fontSize: "18px",
                       fontWeight: "bold",
                       marginBottom: "8px",
-                    }}>
+                    }}
+                  >
                     Master Data
                   </FormLabel>
 
@@ -274,7 +297,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       marginBottom: "8px",
                       fontSize: "18px",
                       fontWeight: "bold",
-                    }}>
+                    }}
+                  >
                     Permissions
                   </FormLabel>
                   <Masonry columns={4} spacing={2}>
@@ -285,7 +309,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
                           expanded={expanded === index}
                           onChange={(e, expanded) => toggleAccordion(index)}
                           TransitionProps={{ unmountOnExit: true }}
-                          sx={{ minHeight: "15px", width: "auto" }}>
+                          sx={{ minHeight: "15px", width: "auto" }}
+                        >
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography>
                               {" "}
@@ -296,12 +321,13 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                 actionOptions.map(
                                   (actionOption, actionIndex) => (
                                     <span>
-                                      {
-                                        values.permissions[index]?.grants[
-                                          actionIndex
-                                        ]?.action?values.permissions[index]?.grants[
-                                          actionIndex
-                                        ]?.action:""}
+                                      {values.permissions[index]?.grants[
+                                        actionIndex
+                                      ]?.action
+                                        ? values.permissions[index]?.grants[
+                                            actionIndex
+                                          ]?.action
+                                        : ""}
                                       <span style={{ fontSize: "10px" }}>
                                         {
                                           values.permissions[index]?.grants[
@@ -323,8 +349,14 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                 backgroundColor: blue[50],
                                 marginTop: "5px",
                                 padding: "15px",
-                              }}>
-                              <div style={{display: "flex", justifyContent: "space-evenly"}}>
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-evenly",
+                                }}
+                              >
                                 <label>Actions:</label>
                                 <label> Possession </label>
                               </div>
@@ -335,24 +367,52 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                     style={{
                                       display: "block",
                                       width: "100%",
-                                    }}>
-                                    <Stack direction="row" spacing={1} alignItems="center">
+                                    }}
+                                  >
+                                    <Stack
+                                      direction="row"
+                                      spacing={1}
+                                      alignItems="center"
+                                    >
                                       <label>
-                                        <Field type="checkbox" 
-                                          name={`permissions[${index}].grants[${actionIndex}].action`} 
-                                          checked={values.permissions[index]?.grants[actionIndex]?.action === actionOption}
-                                          value={values.permissions[index]?.grants[actionIndex]?.action} />
+                                        <Field
+                                          type="checkbox"
+                                          name={`permissions[${index}].grants[${actionIndex}].action`}
+                                          checked={
+                                            values.permissions[index]?.grants[
+                                              actionIndex
+                                            ]?.action === actionOption
+                                          }
+                                          value={
+                                            values.permissions[index]?.grants[
+                                              actionIndex
+                                            ]?.action
+                                          }
+                                        />
                                         {actionOption}
                                       </label>
-                                        <Switch
-                                          name={`permissions[${index}].grants[${actionIndex}].possession`}
-                                          value="own" 
-                                          checked={values.permissions[index]?.grants[actionIndex]?.possession === "any"}
-                                          onChange={(event, checked) => {
-                                            setFieldValue(`permissions[${index}].grants[${actionIndex}].possession`, checked ? "any" : "own");
-                                          }}
-                                        />
-                                      <Typography>{values.permissions[index]?.grants[actionIndex]?.possession}</Typography>
+                                      <Switch
+                                        name={`permissions[${index}].grants[${actionIndex}].possession`}
+                                        value="own"
+                                        checked={
+                                          values.permissions[index]?.grants[
+                                            actionIndex
+                                          ]?.possession === "any"
+                                        }
+                                        onChange={(event, checked) => {
+                                          setFieldValue(
+                                            `permissions[${index}].grants[${actionIndex}].possession`,
+                                            checked ? "any" : "own"
+                                          );
+                                        }}
+                                      />
+                                      <Typography>
+                                        {
+                                          values.permissions[index]?.grants[
+                                            actionIndex
+                                          ]?.possession
+                                        }
+                                      </Typography>
                                     </Stack>
                                     <Accordion>
                                       <AccordionSummary
@@ -360,33 +420,37 @@ const CreateRoles = ({ isOpen, onClose }) => {
                                         aria-controls={`permissions[${index}].grants[${actionIndex}].attributes`}
                                         id={`permissions[${index}].grants[${actionIndex}].attributes`}
                                       >
-                                        <Typography>hidden attributes</Typography>
+                                        <Typography>
+                                          hidden attributes
+                                        </Typography>
                                       </AccordionSummary>
                                       <AccordionDetails>
                                         {attrOptions[resource] && (
-                                        <SelectBox
-                                          name={`permissions[${index}].grants[${actionIndex}].attributes`}
-                                          onChange={(event) => {
-                                            if (
-                                              values.permissions[index] &&
-                                              values.permissions[index]?.grants[actionIndex]
-                                            ) {
-                                              event.forEach((options, i) =>
-                                                setFieldValue(
-                                                  `permissions[${index}].grants[${actionIndex}].attributes[${i}].attr`,
-                                                  options.value
-                                                )
-                                              );
+                                          <SelectBox
+                                            name={`permissions[${index}].grants[${actionIndex}].attributes`}
+                                            onChange={(event) => {
+                                              if (
+                                                values.permissions[index] &&
+                                                values.permissions[index]
+                                                  ?.grants[actionIndex]
+                                              ) {
+                                                event.forEach((options, i) =>
+                                                  setFieldValue(
+                                                    `permissions[${index}].grants[${actionIndex}].attributes[${i}].attr`,
+                                                    options.value
+                                                  )
+                                                );
+                                              }
+                                            }}
+                                            placeholder="Hide Attributes: "
+                                            length={
+                                              attrOptions[resource]?.length
                                             }
-                                          }}
-                                          placeholder="Hide Attributes: "
-                                          length={attrOptions[resource]?.length}
-                                          options={attrOptions[resource]}
-                                        />
-                                      )}
+                                            options={attrOptions[resource]}
+                                          />
+                                        )}
                                       </AccordionDetails>
                                     </Accordion>
-                                    
                                   </div>
                                 )
                               )}
@@ -409,7 +473,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   }}
                   onClick={() => {
                     onClose("", false);
-                  }}>
+                  }}
+                >
                   Cancel
                 </Button>
                 <Box mr={1} />
@@ -421,7 +486,8 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     color: "white",
                     textTransform: "none",
                     fontSize: "16px",
-                  }}>
+                  }}
+                >
                   Simpan
                 </Button>
               </Box>

@@ -13,8 +13,9 @@ import {
   TextField,
   Tooltip,
   Checkbox,
-  Typography,
+  InputAdornment,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -91,6 +92,12 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
   const handleResetImage = () => {
     setImage(null); // Reset state "image" menjadi null untuk menghapus gambar yang dipilih
     setInitialImage(false); // Set initialImage menjadi false karena gambar telah dihapus
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -401,12 +408,20 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    type="text"
-                    placeholder="Masukkan Password....."
-                    onBlur={handleBlur}
-                    onChange={handleChange}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Masukan Password ..."
                     value={values.password}
+                    onChange={handleChange}
                     name="password"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={togglePasswordVisibility}>
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                     error={!!touched.password && !!errors.password}
                     helperText={touched.password && errors.password}
                   />
