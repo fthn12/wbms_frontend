@@ -191,16 +191,20 @@ const PksManualOthersTimbangKeluar = (props) => {
     fetchData();
   }, [id]);
 
-  // useEffect(() => {
-  //   // ... (kode useEffect yang sudah ada)
+  // const [canSubmit, setCanSubmit] = useState(false);
 
-  //   // Tetapkan nilai awal canSubmit berdasarkan nilai yang sudah ada
+  // useEffect(() => {
   //   let cSubmit = false;
-  //   if (values.progressStatus === 0) {
-  //     cSubmit = values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
-  //   } else if (values.progressStatus === 20) {
-  //     cSubmit = values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT;
+
+  //   if (values.progressStatus === 20) {
+  //     if (values.originWeighInKg >= Config.ENV.WBMS_WB_MIN_WEIGHT) {
+  //       cSubmit = true;
+  //     }
+  //   } else if (values.progressStatus === 4) {
+  //     if (values.originWeighOutKg >= Config.ENV.WBMS_WB_MIN_WEIGHT)
+  //       cSubmit = false;
   //   }
+
   //   setCanSubmit(cSubmit);
   // }, [values]);
 
@@ -768,8 +772,8 @@ const PksManualOthersTimbangKeluar = (props) => {
                     isDisabled ||
                     !wb.isStable ||
                     wb.weight < configs.WBMS_WB_MIN_WEIGHT
-                    ? true
-                    : false
+                      ? true
+                      : false
                   }
                 >
                   Simpan

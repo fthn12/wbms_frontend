@@ -127,6 +127,8 @@ const PksManualOthersTimbangMasuk = (props) => {
       driverName,
       transportVehicleId,
       transportVehiclePlateNo,
+      customername,
+      customerId,
       originWeighInKg,
       deliveryOrderNo,
       progressStatus,
@@ -144,6 +146,8 @@ const PksManualOthersTimbangMasuk = (props) => {
       driverName,
       transportVehicleId,
       transportVehiclePlateNo,
+      customername,
+      customerId,
       originWeighInKg,
       deliveryOrderNo,
       progressStatus,
@@ -542,7 +546,7 @@ const PksManualOthersTimbangMasuk = (props) => {
                   value={values.transportVehicleSccModel || "-"}
                 />
 
-                {/* <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"
                     shrink
@@ -553,14 +557,26 @@ const PksManualOthersTimbangMasuk = (props) => {
                   <Select
                     labelId="select-label"
                     id="select"
-                    onChange={handleChange}
-                    name="customer"
-                    value={values.customer || ""}
-                    displayEmpty
                     sx={{
                       borderRadius: "10px",
                       color: MenuItem ? "gray" : "black",
                     }}
+                    onChange={(event) => {
+                      const { name, value } = event.target;
+                      const selectedCustomer = dtCustomer.find(
+                        (item) => item.id === value
+                      );
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        [name]: value,
+                        customername: selectedCustomer
+                          ? selectedCustomer.name
+                          : "",
+                      }));
+                    }}
+                    name="customerId"
+                    value={values.customerId || ""}
+                    displayEmpty
                   >
                     <MenuItem value="" disabled>
                       -- Pilih Customer --
@@ -571,7 +587,7 @@ const PksManualOthersTimbangMasuk = (props) => {
                       </MenuItem>
                     ))}
                   </Select>
-                </FormControl> */}
+                </FormControl>
                 <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
                   <InputLabel
                     id="select-label"

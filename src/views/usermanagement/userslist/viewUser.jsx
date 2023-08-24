@@ -68,7 +68,7 @@ const ViewUsers = ({ isViewOpen, onClose, dtuser, dtRole }) => {
                   <FormControl sx={{ gridColumn: "span 5" }}>
                     <Box
                       mt={1}
-                      mb={1}
+                      mb={2.5}
                       position="relative"
                       style={{
                         display: "flex",
@@ -79,8 +79,8 @@ const ViewUsers = ({ isViewOpen, onClose, dtuser, dtRole }) => {
                       <div
                         style={{
                           position: "relative",
-                          width: "430px",
-                          height: "430px",
+                          width: "410px",
+                          height: "410px",
                           overflow: "hidden",
                           border: "2px solid #9e9e9e",
                         }}
@@ -90,22 +90,36 @@ const ViewUsers = ({ isViewOpen, onClose, dtuser, dtRole }) => {
                           src={`${path}${dtuser.profile.profilePic}`}
                           alt="Uploaded Preview"
                           style={{
-                            width: "430px",
-                            height: "430px",
+                            width: "410px",
+                            height: "410px",
                           }}
                         />
                       </div>
                     </Box>
                     <Typography
-                      fontSize="23px"
+                      fontSize="21px"
                       style={{
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        fontWeight: "bold",
                       }}
                     >
                       <tr>
-                        <td>{values.role}</td>
+                        <td>
+                          <Box
+                            sx={{
+                              backgroundColor: "#b9f6ca",
+                              border: "1px solid #388e3c",
+                              px: 1,
+                              py: 0.3,
+                              borderRadius: "10px",
+                              color: "#388e3c",
+                            }}
+                          >
+                            {values.role}
+                          </Box>
+                        </td>
                       </tr>
                     </Typography>
                   </FormControl>

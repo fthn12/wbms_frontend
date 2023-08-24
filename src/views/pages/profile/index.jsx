@@ -56,6 +56,7 @@ const Profile = () => {
   const [dtuser, setDtUser] = useState([]);
   const [image, setImage] = useState(null);
   const [initialImage, setInitialImage] = useState(false);
+  const [editedData, setEditedData] = useState({});
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -64,11 +65,19 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    UsersAPI.getById(userInfo.id).then((res) => {
-      setDtUser(res.data.user.records);
-    });
-  }, [userInfo.id]);
+    if (Object.keys(editedData).length > 0) {
+      UsersAPI.update(userInfo.id, editedData).then((res) => {
+        setDtUser(res.data.user.records);
+        setEditedData({}); // Reset editedData setelah berhasil disimpan
+      });
+    }
+  }, [editedData, userInfo.id]);
   console.log(dtuser, "data user");
+
+  const handleFormSubmit = (editedValues) => {
+    setEditedData(editedValues); // Simpan perubahan ke dalam editedData
+  };
+
   return (
     <>
       <Typography
@@ -76,7 +85,7 @@ const Profile = () => {
       >
         Profile
       </Typography>
-      <Formik initialValues={userInfo}>
+      <Formik onSubmit={handleFormSubmit} initialValues={userInfo}>
         {({
           values,
           errors,
@@ -191,7 +200,6 @@ const Profile = () => {
                               />
                             </div>
                           )}
-
                         </div>
                       </div>
 
@@ -204,8 +212,9 @@ const Profile = () => {
                         {userInfo.role}
                       </Typography>
 
-                      {/* <Button
+                      <Button
                         fullwidth
+                        type="submit"
                         variant="contained"
                         sx={{
                           backgroundColor: blue[700],
@@ -217,7 +226,7 @@ const Profile = () => {
                         }}
                       >
                         Edit Profile
-                      </Button> */}
+                      </Button>
                       <Button
                         type="submit"
                         fullwidth
@@ -288,13 +297,12 @@ const Profile = () => {
                           onBlur={handleBlur}
                           onChange={handleChange}
                           value={values.name}
-                          inputProps={{ readOnly: true }}
                           name="name"
                           error={!!touched.name && !!errors.name}
                           helperText={touched.name && errors.name}
                         />
                       </FormControl>
-                    
+
                       <FormControl
                         sx={{
                           gridColumn: "span 4",
@@ -334,7 +342,8 @@ const Profile = () => {
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
-                        }}>
+                        }}
+                      >
                         <FormLabel
                           sx={{
                             color: "black",
@@ -342,7 +351,8 @@ const Profile = () => {
                             fontSize: "18px",
                             fontWeight: "bold",
                             width: "15%",
-                          }}>
+                          }}
+                        >
                           Alamat
                         </FormLabel>
                         <TextField
