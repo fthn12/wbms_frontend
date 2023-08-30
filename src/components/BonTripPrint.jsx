@@ -137,7 +137,7 @@ const BonTripPrint = (props) => {
                     </tr>
                     <tr>
                       <td height="30" width="100">
-                        Dikirim ke
+                        Dikirim Ke
                       </td>
                       <td width="10">:</td>
                       <td className="nota-text">

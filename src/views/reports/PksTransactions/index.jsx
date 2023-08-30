@@ -361,27 +361,7 @@ const ReportPksTransactions = () => {
                   </Select>
                 </FormControl>
 
-                {/* <FormControl
-                  sx={{ ml: "10px", mt: "auto", minWidth: 150 }}
-                  size="small"
-                >
-                  <Select
-                    value={selectedStatus}
-                    onChange={Status}
-                    displayEmpty
-                    inputProps={{ "aria-label": "Without label" }}
-                    sx={{
-                      color: selectedStatus === "" ? "gray" : "inherit",
-                      fontSize: "15px",
-                    }}
-                  >
-                    <MenuItem value="">Pilih Status</MenuItem>
-                    <MenuItem value="0">TIMBANG MASUK</MenuItem>
-                    <MenuItem value="1">LOADING/UNLOADING</MenuItem>
-                    <MenuItem value="2">TIMBANG KELUAR</MenuItem>
-                    <MenuItem value="3">DATA DISPATCHED</MenuItem>
-                  </Select>
-                </FormControl> */}
+       
                 <Box ml="auto" mt="auto">
                   <Button
                     sx={{

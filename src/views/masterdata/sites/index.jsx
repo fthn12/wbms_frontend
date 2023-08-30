@@ -58,6 +58,7 @@ const Sites = () => {
   const [isViewOpen, setIsViewOpen] = useState(false);
 
   const fetcher = () => SitesAPI.getAll().then((res) => res.data.site.records);
+  const syncSemai = () => SitesAPI.syncSemai();
 
   useEffect(() => {
     CitiesAPI.getAll().then((res) => {
@@ -548,6 +549,7 @@ const Sites = () => {
                           padding: "7px 10px",
                           color: "white",
                         }}
+                        onClick={syncSemai}
                       >
                         <SyncIcon sx={{ mr: "5px", fontSize: "16px" }} />
                         Sync

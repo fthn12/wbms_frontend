@@ -20,7 +20,7 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import * as React from "react";
-import * as ConfigAPI from "../../../api/configsApi";
+import * as ConfigAPI from "../../../api/configApi";
 
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";

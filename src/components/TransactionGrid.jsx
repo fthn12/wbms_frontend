@@ -32,7 +32,7 @@ const TransactionGrid = (props) => {
 
   const handleCellClick = (params) => {
     const progressStatus = params.data.progressStatus;
-    const Id = params.data.id; // Ganti 'id' dengan properti yang benar
+    const Id = params.data.id; 
 
     if (
       progressStatus === 20 ||
@@ -54,13 +54,16 @@ const TransactionGrid = (props) => {
       filter: true,
       sortable: true,
       hide: false,
+      flex: 2,
       onCellClicked: handleCellClick,
+      cellStyle: { cursor: "pointer" },
     },
     {
       headerName: "No Pol",
       field: "transportVehiclePlateNo",
       filter: true,
       onCellClicked: handleCellClick,
+      cellStyle: { cursor: "pointer" },
     },
     // {
     //   headerName: "Status",
@@ -71,13 +74,14 @@ const TransactionGrid = (props) => {
     //   rowGroup: true,
     //   hide: true,
     // },
- 
+
     {
       headerName: "DO No",
       field: "deliveryOrderNo",
       filter: true,
       sortable: true,
       onCellClicked: handleCellClick,
+      cellStyle: { cursor: "pointer" },
     },
     {
       headerName: "Product",
@@ -85,6 +89,7 @@ const TransactionGrid = (props) => {
       filter: true,
       sortable: true,
       onCellClicked: handleCellClick,
+      cellStyle: { cursor: "pointer" },
     },
     { headerName: "WB-IN", field: "originWeighInKg", maxWidth: 150 },
     { headerName: "WB-OUT", field: "originWeighOutKg", maxWidth: 150 },

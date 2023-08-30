@@ -38,6 +38,11 @@ const _nav = [
         name: "Report",
         to: "/reports/pks-transactions",
       },
+      {
+        component: CNavItem,
+        name: "Data Transaction",
+        to: "/data-transaction",
+      },
     ],
   },
   {

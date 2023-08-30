@@ -2,6 +2,11 @@ import { lazy } from "react";
 
 const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
 const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
+const DataTransaction = lazy(() => import("./views/dataTransaction"));
+const BackdateFormTBSEksternal = lazy(() => import("./views/backdateForm/backdateFormTBSEksternal"));
+const BackdateFormTBSInternal = lazy(() => import("./views/backdateForm/backdateFormTBSInternal"));
+const BackdateFormOthers = lazy(() => import("./views/backdateForm/backdateFormOthers"));
+const EditDataTransaction = lazy(() => import("./views/dataTransaction/editDataTransaksi"));
 const ReportPksTransactions = lazy(() =>
   import("./views/reports/PksTransactions")
 );
@@ -147,7 +152,36 @@ const routes = [
     name: "Report PKS Transactions",
     element: ReportPksTransactions,
   },
-
+  {
+    path: "/data-transaction",
+    name: "Data Transaction",
+    element: DataTransaction,
+    exact: true,
+  },
+  {
+    path: "/backdateFormTBSEksternal",
+    name: "Backdate Form TBSEksternal",
+    element: BackdateFormTBSEksternal,
+    exact: true,
+  },
+  {
+    path: "/backdateFormTBSInternal",
+    name: "Backdate Form TBSInternal",
+    element: BackdateFormTBSInternal,
+    exact: true,
+  },
+  {
+    path: "/backdateFormOthers",
+    name: "Backdate Form Others",
+    element: BackdateFormOthers,
+    exact: true,
+  },
+  {
+    path: "/edit-data-Transaction/:id",
+    name: "Edit Data Transaction",
+    element: EditDataTransaction,
+    exact: true,
+  },
   {
     path: "/profile",
     name: "Profile",
@@ -249,7 +283,6 @@ const routes = [
     name: "Config ",
     element: Config,
   },
-
 
   // { path: "/theme/typography", name: "Typography", element: Typography },
   // { path: "/base", name: "Base", element: Cards, exact: true },

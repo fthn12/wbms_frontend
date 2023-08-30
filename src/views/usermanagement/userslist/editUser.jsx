@@ -28,7 +28,7 @@ import moment from "moment";
 const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
   const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
-    values.profile.doB = moment(values.profile.doB).toDate();
+    // values.profile.doB = moment(values.profile.doB).toDate();
 
     const {
       id,
@@ -41,6 +41,8 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
       isLDAPUser,
       role,
     } = values;
+
+    const formattedDoB = moment(doB).toDate();
     const dto = {
       id,
       name,
@@ -54,7 +56,7 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
       roleId,
       isLDAPUser,
       role,
-      doB,
+      doB: formattedDoB,
       alamat,
     };
     try {
@@ -85,9 +87,10 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
     // division: yup.string().required("required"),
     // position: yup.string().required("required"),
     // phone: yup.string().required("required"),
-    // doB: yup.date(),
+    // doB: yup.date().required("required"),
     // alamat: yup.string(),
     // roleId: yup.string().required("required"),
+    // file: yup.mixed().required("Gambar wajib diisi"),
   });
 
   const [image, setImage] = useState(null);
@@ -552,12 +555,12 @@ const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
                       LDAPUser
                     </FormLabel>
                     <Checkbox
-                      checked={values.isLDAPUser}
-                      onChange={(event) => {
-                        const newValue = event.target.checked ? true : false;
-                        setFieldValue("isLDAPUser", newValue);
-                      }}
-                    />
+                    checked={values.isLDAPUser}
+                    onChange={(event) => {
+                      const newValue = event.target.checked ? true : false;
+                      setFieldValue("isLDAPUser", newValue);
+                    }}
+                  />
                   </FormControl>
                 </Box>
                 <Box display="flex" mt={3} mb={4} justifyContent="center">

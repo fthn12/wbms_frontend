@@ -76,13 +76,9 @@ const CreateUsers = ({ isOpen, onClose, dtRole }) => {
     division: yup.string().required("required"),
     position: yup.string().required("required"),
     phone: yup.string().required("required"),
-    password: yup
-      .string()
-      .required("Kata sandi harus diisi")
-      .min(8, "Kata sandi minimal terdiri dari 8 karakter")
-      .max(20, "Kata sandi tidak boleh lebih dari 20 karakter"),
-    roleId: yup.mixed().required("required"),
-    isLDAPUser: yup.mixed().required("required"),
+    doB: yup.date().required("required"),
+    alamat: yup.string(),
+    roleId: yup.string().required("required"),
     file: yup.mixed().required("Gambar wajib diisi"),
   });
 

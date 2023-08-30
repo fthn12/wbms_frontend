@@ -24,10 +24,6 @@ const pksProgressStatus = {
   13: "REJECT\nSUBMITTED",
   14: "REJECT\nSUBMITTED",
   15: "SELESAI",
-  //manualentry LOADING/UNLOADING
-  20: "LOADING/UNLOADING",
-  21: "LOADING/UNLOADING",
-  22: "LOADING/UNLOADING",
 };
 
 const t30ProgressStatus = {

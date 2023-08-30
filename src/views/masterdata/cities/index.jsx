@@ -135,7 +135,7 @@ const Cities = () => {
       flex: 3,
     },
     {
-      headerName: "Province",
+      headerName: "Provinsi",
       field: "province.name",
       filter: true,
       sortable: true,

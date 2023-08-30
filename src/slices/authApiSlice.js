@@ -1,8 +1,8 @@
-import { apiSlice } from "./apiSlice";
+import apiSlice from "./apiSlice";
 import Cookies from "js-cookie";
 
 const API_URL = "/auth";
-const token = Cookies.get("accessToken");
+const token = Cookies.get("at");
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

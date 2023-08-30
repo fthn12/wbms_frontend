@@ -208,7 +208,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  backgroundColor: "#f8f8f8",
+                  // backgroundColor: "#f8f8f8",
                   marginBottom: "20px",
                 }}
               >
@@ -220,7 +220,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                   paddingRight={3}
                   gap="20px"
                 >
-                  <FormControl>
+                  <FormControl sx={{ mb: 2 }}>
                     <FormLabel
                       sx={{
                         color: "black",
@@ -235,6 +235,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       fullWidth
                       variant="outlined"
                       type="text"
+                      size="small"
                       placeholder="Masukkan Nama"
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -253,7 +254,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                     Select All
                   </label>
                   {checkboxes.map((checkbox) => (
-                    <div key={checkbox.id}>
+                    <div key={checkbox.id} sx={{ }}>
                       <label>
                         <input
                           type="checkbox"
@@ -284,7 +285,7 @@ const CreateRoles = ({ isOpen, onClose }) => {
                       color: "black",
                       fontSize: "18px",
                       fontWeight: "bold",
-                      marginBottom: "8px",
+                      marginBottom: "10px",
                     }}
                   >
                     Master Data

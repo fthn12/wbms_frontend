@@ -148,7 +148,7 @@ const AreaCharts = () => {
               <YAxis />
 
               <Tooltip />
-              <Legend iconType="square" />
+              <Legend />
               <Area
                 type="monotone"
                 dataKey="CPO"

@@ -18,7 +18,7 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ModuleRegistry } from "@ag-grid-community/core";
 import * as React from "react";
-import * as ConfigAPI from "../../../api/configsApi";
+import * as ConfigAPI from "../../../api/configApi";
 import * as SiteAPI from "../../../api/sitesApi";
 import Tables from "../../../components/Tables";
 import SearchIcon from "@mui/icons-material/Search";
@@ -26,14 +26,12 @@ import InputBase from "@mui/material/InputBase";
 import EditDataConfig from "../../../views/usermanagement/config/editConfig";
 import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import Swal from "sweetalert2";
-
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   RangeSelectionModule,
   RowGroupingModule,
   RichSelectModule,
 ]);
-
 const Config = () => {
   console.clear();
   const gridRef = useRef();
@@ -96,7 +94,22 @@ const Config = () => {
       hide: false,
       flex: 2,
     },
-  
+    {
+      headerName: "Description",
+      field: "description",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 2,
+    },
+    {
+      headerName: "Lvl of Approval",
+      field: "lvlOfApprvl",
+      filter: true,
+      sortable: true,
+      hide: false,
+      flex: 1,
+    },
     {
       headerName: "Status",
       field: "status",
@@ -112,24 +125,27 @@ const Config = () => {
       sortable: true,
       hide: false,
       flex: 3,
+      cellClass: "grid-cell-centered",
       valueGetter: (params) => {
         const { data } = params;
-        const activeStart = new Date(data.start);
-        const activeEnd = new Date(data.end);
+        if(data.status == "ACTIVE") return "Always"
+        else if(data.status === "DISABLED") return "-"
+        // const activeStart = new Date(data.start);
+        // const activeEnd = new Date(data.end);
     
-        const options = {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        };
+        // const options = {
+        //   year: 'numeric',
+        //   month: '2-digit',
+        //   day: '2-digit',
+        //   hour: '2-digit',
+        //   minute: '2-digit',
+        //   second: '2-digit'
+        // };
         
-        const formattedActiveStart = activeStart.toLocaleDateString('en-US', options);
-        const formattedActiveEnd = activeEnd.toLocaleDateString('en-US', options);
+        // const formattedActiveStart = activeStart.toLocaleDateString('en-US', options);
+        // const formattedActiveEnd = activeEnd.toLocaleDateString('en-US', options);
     
-        return `${formattedActiveStart} - ${formattedActiveEnd}`;
+        // return `${formattedActiveStart} - ${formattedActiveEnd}`;
       },
     },
     
@@ -143,13 +159,14 @@ const Config = () => {
         return (
           <Box display="flex" justifyContent="center">
             <Box
-              width="25%"
               display="flex"
               m="0 3px"
               bgcolor={yellow[900]}
-              borderRadius="25%"
+              borderRadius="15%"
               justifyContent="center"
-              padding="10px 10px"
+              textAlign="center"
+              padding="7px"
+              alignItems="center"
               color="white"
               style={{
                 textDecoration: "none",
@@ -159,8 +176,7 @@ const Config = () => {
                 setSelectedConfig(params.data);
                 setIsEditOpen(true);
               }}
-            >
-              <DriveFileRenameOutlineOutlinedIcon sx={{ fontSize: "20px" }} />
+            > <DriveFileRenameOutlineOutlinedIcon />
             </Box>
           </Box>
         );

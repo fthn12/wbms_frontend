@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { Form, Button, Row, InputGroup, Image } from "react-bootstrap";
 import Cookies from "js-cookie";
 import FormContainer from "../../../components/FormContainer";
-
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useSigninMutation } from "../../../slices/authApiSlice";
 import { setCredentials } from "../../../slices/appSlice";
 
@@ -16,8 +16,6 @@ const initialValues = { username: "", password: "" };
 const SignIn = () => {
   const userRef = useRef();
   const [errMsg, setErrMsg] = useState("");
-  const [user, setUser] = useState("");
-  const [pwd, setPwd] = useState("");
   const { userInfo } = useSelector((state) => state.app);
   const [signin] = useSigninMutation();
 
@@ -37,10 +35,13 @@ const SignIn = () => {
 
     try {
       const response = await signin(values).unwrap();
-      const at = response?.data?.tokens?.access_token;
-      // const roles = response?.data?.roles;
-      Cookies.set("accessToken", at, { sameSite: "strict" });
+      // Get the cookie string from the response headers
 
+      console.log("response from signin:", response);
+
+      const at = response?.data?.tokens?.access_token;
+      localStorage.setItem("wbms_at", at);
+      
       if (!response.status) {
         console.log(response.message);
         console.log(response.logs);
@@ -51,9 +52,6 @@ const SignIn = () => {
       }
 
       dispatch(setCredentials({ ...response.data.user }));
-      // setAuth({ user, pwd, roles, at });
-      setUser("");
-      setPwd("");
       navigate(from, { replace: true });
     } catch (err) {
       if (!err?.response) {
@@ -90,6 +88,12 @@ const SignIn = () => {
     return () => {};
   }, [navigate, userInfo]);
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="min-vh-100 d-flex flex-row align-items-center">
       <FormContainer>
@@ -105,7 +109,8 @@ const SignIn = () => {
           </p>
           <p
             className="title text-center mb-4 "
-            style={{ fontSize: "48px", fontWeight: "bold" }}>
+            style={{ fontSize: "48px", fontWeight: "bold" }}
+          >
             <span>WBMS </span>Administrator
           </p>
           <InputGroup className="mb-3">
@@ -128,7 +133,7 @@ const SignIn = () => {
               <FaLock />
             </InputGroup.Text>
             <Form.Control
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Password"
               autoComplete="password"
@@ -137,12 +142,18 @@ const SignIn = () => {
               style={{ fontSize: "23px", height: "55px" }}
               required
             />
+            <InputGroup.Text>
+              <Button onClick={togglePasswordVisibility} variant="link">
+                {showPassword ? <Visibility /> : <VisibilityOff />}
+              </Button>
+            </InputGroup.Text>
           </InputGroup>
           <Row>
             <Button
               type="submit"
               className="px-4 text-center w-90"
-              style={{ fontSize: "20px", fontWeight: "bold" }}>
+              style={{ fontSize: "20px", fontWeight: "bold" }}
+            >
               LOGIN
             </Button>
           </Row>
