@@ -43,6 +43,11 @@ const _nav = [
         name: "Data Transaction",
         to: "/data-transaction",
       },
+      {
+        component: CNavItem,
+        name: "Backdate Template",
+        to: "/backdateTemplate",
+      },
     ],
   },
   {

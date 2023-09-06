@@ -263,7 +263,7 @@ const ReportPksTransactions = () => {
   return (
     <>
       <PageHeader
-        title="Report Transaksi PKS4"
+        title="Report Transaksi PKS"
         subTitle="Page Description"
         icon={<LocalShippingIcon fontSize="large" />}
       />

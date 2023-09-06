@@ -3,9 +3,10 @@ import { lazy } from "react";
 const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
 const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
 const DataTransaction = lazy(() => import("./views/dataTransaction"));
-const BackdateFormTBSEksternal = lazy(() => import("./views/backdateForm/backdateFormTBSEksternal"));
-const BackdateFormTBSInternal = lazy(() => import("./views/backdateForm/backdateFormTBSInternal"));
-const BackdateFormOthers = lazy(() => import("./views/backdateForm/backdateFormOthers"));
+const BackdateFormTBSEksternal = lazy(() => import("./views/backdate/backdateFormTBSEksternal"));
+const BackdateFormTBSInternal = lazy(() => import("./views/backdate/backdateFormTBSInternal"));
+const BackdateFormOthers = lazy(() => import("./views/backdate/backdateFormOthers"));
+const BackdateTemplate = lazy(() => import("./views/backdate/backdateTemplate"));
 const EditDataTransaction = lazy(() => import("./views/dataTransaction/editDataTransaksi"));
 const ReportPksTransactions = lazy(() =>
   import("./views/reports/PksTransactions")
@@ -174,6 +175,12 @@ const routes = [
     path: "/backdateFormOthers",
     name: "Backdate Form Others",
     element: BackdateFormOthers,
+    exact: true,
+  },
+  {
+    path: "/backdateTemplate",
+    name: "Backdate Template",
+    element: BackdateTemplate,
     exact: true,
   },
   {

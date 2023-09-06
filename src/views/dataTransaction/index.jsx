@@ -33,6 +33,7 @@ import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import * as TransactionAPI from "../../api/transactionApi";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -46,12 +47,11 @@ const tType = 1;
 const DataTransaction = () => {
   const navigate = useNavigate();
 
-// Di index.jsx
-const handleCellClick = (params) => {
-  const Id = params.data.id;
-  navigate(`/edit-data-Transaction/${Id}`);
-};
-
+  // Di index.jsx
+  const handleCellClick = (params) => {
+    const Id = params.data.id;
+    navigate(`/edit-data-Transaction/${Id}`);
+  };
 
   const statusFormatter = (params) => {
     return Config.PKS_PROGRESS_STATUS[params.value];
@@ -95,12 +95,14 @@ const handleCellClick = (params) => {
       sortable: true,
       hide: false,
       maxWidth: 170,
+      flex: true,
     },
     {
       headerName: "No Pol",
       field: "transportVehiclePlateNo",
       filter: true,
       maxWidth: 130,
+      flex: true,
     },
     {
       headerName: "Status",
@@ -117,6 +119,7 @@ const handleCellClick = (params) => {
       filter: true,
       sortable: true,
       maxWidth: 150,
+      flex: true,
     },
     {
       headerName: "Product",
@@ -124,6 +127,7 @@ const handleCellClick = (params) => {
       filter: true,
       sortable: true,
       maxWidth: 130,
+      flex: true,
     },
     { headerName: "WB-IN", field: "originWeighInKg", maxWidth: 125 },
     { headerName: "WB-OUT", field: "originWeighOutKg", maxWidth: 125 },
@@ -250,6 +254,24 @@ const handleCellClick = (params) => {
             </Box>
             <hr sx={{ width: "100%" }} />
             <Box display="flex" pb={1}>
+              {/* <Button
+                color="success"
+                variant="contained"
+                sx={{
+                  fontSize: "11px",
+                  fontWeight: "bold",
+                  padding: "12px 12px",
+                  color: "white",
+                }}
+                onClick={() => {
+                  gridRef.current.api.exportDataAsExcel();
+                }}
+              >
+                <FileDownloadOutlinedIcon
+                  sx={{ mr: "5px", fontSize: "17px" }}
+                />
+                Export Excel
+              </Button> */}
               <Box
                 display="flex"
                 borderRadius="5px"
@@ -291,7 +313,6 @@ const handleCellClick = (params) => {
               defaultColDef={defaultColDef} // Default Column Properties
               animateRows={true} // Optional - set to 'true' to have rows animate when sorted
               rowSelection="multiple" // Options - allows click selection of rows
-              rowGroupPanelShow="always"
               enableRangeSelection="true"
               groupSelectsChildren="true"
               suppressRowClickSelection="true"

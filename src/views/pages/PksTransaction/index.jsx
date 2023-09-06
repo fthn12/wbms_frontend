@@ -117,8 +117,10 @@ const PksTransaction = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+    setAnchorE2(null);
   };
 
+  
   return (
     <>
       <PageHeader

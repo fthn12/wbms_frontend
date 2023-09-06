@@ -31,11 +31,10 @@ import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
 import { useConfig } from "../../../common/hooks";
-import * as SiteAPI from "../../../api/sitesApi";
 
 const tType = 1;
 
-const BackdateFormOthers = () => {
+const BackdateFormTBSEksternal = () => {
   const dispatch = useDispatch();
   const [configs] = useConfig();
   const navigate = useNavigate();
@@ -71,6 +70,8 @@ const BackdateFormOthers = () => {
       originWeighOutTimestamp,
       deliveryOrderNo,
       progressStatus,
+      qtyTbsDikirim,
+      qtyTbsDikembalikan,
       originWeighInTimestamp,
       transportVehicleSccModel,
     } = values;
@@ -91,6 +92,8 @@ const BackdateFormOthers = () => {
       originWeighOutKg,
       deliveryOrderNo,
       progressStatus,
+      qtyTbsDikirim,
+      qtyTbsDikembalikan,
       originWeighInTimestamp,
       originWeighOutTimestamp,
       transportVehicleSccModel,
@@ -179,7 +182,6 @@ const BackdateFormOthers = () => {
   const [dtDriver, setDtDriver] = useState([]);
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCustomer, setDtCustomer] = useState([]);
-  const [dtSite, setDtSite] = useState([]);
 
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
@@ -200,15 +202,12 @@ const BackdateFormOthers = () => {
     CustomerAPI.getAll().then((res) => {
       setDtCustomer(res.data.customer.records);
     });
-    SiteAPI.getAll().then((res) => {
-      setDtSite(res.data.site.records);
-    });
   }, []);
 
   return (
     <>
       <PageHeader
-        title="Transaksi PKS4"
+        title="Backdate TBS Eksternal PKS"
         subTitle="Page Description"
         sx={{ mb: 2 }}
         icon={<LocalShippingIcon fontSize="large" />}
@@ -244,7 +243,7 @@ const BackdateFormOthers = () => {
               }
               fullWidth
               multiline
-              value="Backdate Others"
+              value="Backdate TBS Eksternal"
             />
           </Paper>
         </Grid>
@@ -322,6 +321,7 @@ const BackdateFormOthers = () => {
                   >
                     Nomor Polisi
                   </InputLabel>
+
                   <Autocomplete
                     id="select-label"
                     options={dtTransportVehicle}
@@ -366,6 +366,7 @@ const BackdateFormOthers = () => {
                   >
                     Nama Supir
                   </InputLabel>
+
                   <Autocomplete
                     id="select-label"
                     options={dtDriver}
@@ -472,6 +473,7 @@ const BackdateFormOthers = () => {
                   >
                     Jenis Barang
                   </InputLabel>
+
                   <Autocomplete
                     id="select-label"
                     options={dtProduct}
@@ -788,6 +790,105 @@ const BackdateFormOthers = () => {
                   value={values.originWeighOutTimestamp}
                   onChange={handleChange}
                 />
+                <TextField
+                  type="number"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">JJG</InputAdornment>
+                    ),
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Qty TBS Dikirim
+                    </Typography>
+                  }
+                  name="qtyTbsDikirim"
+                  value={values.qtyTbsDikirim}
+                  onChange={handleChange}
+                />
+                <TextField
+                  type="number"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">JJG</InputAdornment>
+                    ),
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Qty TBS Dikembalikan
+                    </Typography>
+                  }
+                  name="qtyTbsDikembalikan"
+                  value={values.qtyTbsDikembalikan}
+                  onChange={handleChange}
+                />
+                <TextField
+                  type="number"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                  }}
+                  label={
+                    <Typography
+                      sx={{
+                        bgcolor: "white",
+                        px: 1,
+                      }}
+                    >
+                      Potongan
+                    </Typography>
+                  }
+                  // name="potonganLain"
+                  value={values.potonganLain || 0}
+                  onChange={handleChange}
+                />
               </FormControl>
             </Box>
           </Paper>
@@ -802,4 +903,4 @@ const BackdateFormOthers = () => {
   );
 };
 
-export default BackdateFormOthers;
+export default BackdateFormTBSEksternal;

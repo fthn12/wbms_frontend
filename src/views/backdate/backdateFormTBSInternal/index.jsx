@@ -31,10 +31,11 @@ import * as DriverAPI from "../../../api/driverApi";
 import * as TransportVehicleAPI from "../../../api/transportvehicleApi";
 import * as CustomerAPI from "../../../api/customerApi";
 import { useConfig } from "../../../common/hooks";
+import * as SiteAPI from "../../../api/sitesApi";
 
 const tType = 1;
 
-const BackdateFormTBSEksternal = () => {
+const BackdateFormTBSInternal = () => {
   const dispatch = useDispatch();
   const [configs] = useConfig();
   const navigate = useNavigate();
@@ -61,6 +62,8 @@ const BackdateFormTBSEksternal = () => {
       transporterCompanyName,
       driverId,
       driverName,
+      originSiteId,
+      originSiteName,
       transportVehicleId,
       transportVehiclePlateNo,
       customerName,
@@ -70,8 +73,7 @@ const BackdateFormTBSEksternal = () => {
       originWeighOutTimestamp,
       deliveryOrderNo,
       progressStatus,
-      qtyTbsDikirim,
-      qtyTbsDikembalikan,
+      qtyTbs,
       originWeighInTimestamp,
       transportVehicleSccModel,
     } = values;
@@ -84,6 +86,8 @@ const BackdateFormTBSEksternal = () => {
       transporterCompanyName,
       driverId,
       driverName,
+      originSiteId,
+      originSiteName,
       transportVehicleId,
       transportVehiclePlateNo,
       customerName,
@@ -92,8 +96,7 @@ const BackdateFormTBSEksternal = () => {
       originWeighOutKg,
       deliveryOrderNo,
       progressStatus,
-      qtyTbsDikirim,
-      qtyTbsDikembalikan,
+      qtyTbs,
       originWeighInTimestamp,
       originWeighOutTimestamp,
       transportVehicleSccModel,
@@ -163,6 +166,7 @@ const BackdateFormTBSEksternal = () => {
       values.driverId &&
       values.transporterId &&
       values.productId &&
+      values.originSiteId &&
       values.customerId &&
       values.originWeighInTimestamp &&
       values.originWeighOutTimestamp &&
@@ -182,6 +186,7 @@ const BackdateFormTBSEksternal = () => {
   const [dtDriver, setDtDriver] = useState([]);
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCustomer, setDtCustomer] = useState([]);
+  const [dtSite, setDtSite] = useState([]);
 
   useEffect(() => {
     CompaniesAPI.getAll().then((res) => {
@@ -202,12 +207,15 @@ const BackdateFormTBSEksternal = () => {
     CustomerAPI.getAll().then((res) => {
       setDtCustomer(res.data.customer.records);
     });
+    SiteAPI.getAll().then((res) => {
+      setDtSite(res.data.site.records);
+    });
   }, []);
 
   return (
     <>
       <PageHeader
-        title="Transaksi PKS4"
+        title="Backdate TBS Internal PKS"
         subTitle="Page Description"
         sx={{ mb: 2 }}
         icon={<LocalShippingIcon fontSize="large" />}
@@ -243,7 +251,7 @@ const BackdateFormTBSEksternal = () => {
               }
               fullWidth
               multiline
-              value="Backdate TBS Eksternal"
+              value="Backdate TBS Internal"
             />
           </Paper>
         </Grid>
@@ -321,7 +329,6 @@ const BackdateFormTBSEksternal = () => {
                   >
                     Nomor Polisi
                   </InputLabel>
-
                   <Autocomplete
                     id="select-label"
                     options={dtTransportVehicle}
@@ -366,7 +373,6 @@ const BackdateFormTBSEksternal = () => {
                   >
                     Nama Supir
                   </InputLabel>
-
                   <Autocomplete
                     id="select-label"
                     options={dtDriver}
@@ -473,7 +479,6 @@ const BackdateFormTBSEksternal = () => {
                   >
                     Jenis Barang
                   </InputLabel>
-
                   <Autocomplete
                     id="select-label"
                     options={dtProduct}
@@ -544,6 +549,76 @@ const BackdateFormTBSEksternal = () => {
                     )}
                   />
                 </FormControl>
+                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
+                  <InputLabel
+                    id="select-label"
+                    shrink
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
+                    Asal
+                  </InputLabel>
+
+                  <Autocomplete
+                    id="select-label"
+                    options={dtSite}
+                    getOptionLabel={(option) => option.name}
+                    value={
+                      dtSite.find((item) => item.id === values.originSiteId) ||
+                      null
+                    }
+                    onChange={(event, newValue) => {
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        originSiteId: newValue ? newValue.id : "",
+                        originSiteName: newValue ? newValue.name : "",
+                      }));
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: "10px",
+                          },
+                        }}
+                        placeholder="-- Pilih Asal --"
+                        variant="outlined"
+                        size="small"
+                      />
+                    )}
+                  />
+                </FormControl>
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  type="number"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  placeholder="Masukkan Jumlah Janjang"
+                  sx={{
+                    my: 2,
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                  label={
+                    <>
+                      <Typography
+                        sx={{
+                          bgcolor: "white",
+                          px: 1.5,
+                        }}
+                      >
+                        Qty TBS
+                      </Typography>
+                    </>
+                  }
+                  name="qtyTbs"
+                  value={values.qtyTbs}
+                  onChange={handleChange}
+                />
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
@@ -790,105 +865,6 @@ const BackdateFormTBSEksternal = () => {
                   value={values.originWeighOutTimestamp}
                   onChange={handleChange}
                 />
-                <TextField
-                  type="number"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
-                    },
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">JJG</InputAdornment>
-                    ),
-                  }}
-                  label={
-                    <Typography
-                      sx={{
-                        bgcolor: "white",
-                        px: 1,
-                      }}
-                    >
-                      Qty TBS Dikirim
-                    </Typography>
-                  }
-                  name="qtyTbsDikirim"
-                  value={values.qtyTbsDikirim}
-                  onChange={handleChange}
-                />
-                <TextField
-                  type="number"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
-                    },
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">JJG</InputAdornment>
-                    ),
-                  }}
-                  label={
-                    <Typography
-                      sx={{
-                        bgcolor: "white",
-                        px: 1,
-                      }}
-                    >
-                      Qty TBS Dikembalikan
-                    </Typography>
-                  }
-                  name="qtyTbsDikembalikan"
-                  value={values.qtyTbsDikembalikan}
-                  onChange={handleChange}
-                />
-                <TextField
-                  type="number"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
-                    },
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">%</InputAdornment>
-                    ),
-                  }}
-                  label={
-                    <Typography
-                      sx={{
-                        bgcolor: "white",
-                        px: 1,
-                      }}
-                    >
-                      Potongan
-                    </Typography>
-                  }
-                  // name="potonganLain"
-                  value={values.potonganLain || 0}
-                  onChange={handleChange}
-                />
               </FormControl>
             </Box>
           </Paper>
@@ -903,4 +879,4 @@ const BackdateFormTBSEksternal = () => {
   );
 };
 
-export default BackdateFormTBSEksternal;
+export default BackdateFormTBSInternal;

@@ -35,7 +35,7 @@ import * as SiteAPI from "../../../api/sitesApi";
 
 const tType = 1;
 
-const BackdateFormTBSInternal = () => {
+const BackdateFormOthers = () => {
   const dispatch = useDispatch();
   const [configs] = useConfig();
   const navigate = useNavigate();
@@ -62,8 +62,6 @@ const BackdateFormTBSInternal = () => {
       transporterCompanyName,
       driverId,
       driverName,
-      originSiteId,
-      originSiteName,
       transportVehicleId,
       transportVehiclePlateNo,
       customerName,
@@ -73,7 +71,6 @@ const BackdateFormTBSInternal = () => {
       originWeighOutTimestamp,
       deliveryOrderNo,
       progressStatus,
-      qtyTbs,
       originWeighInTimestamp,
       transportVehicleSccModel,
     } = values;
@@ -86,8 +83,6 @@ const BackdateFormTBSInternal = () => {
       transporterCompanyName,
       driverId,
       driverName,
-      originSiteId,
-      originSiteName,
       transportVehicleId,
       transportVehiclePlateNo,
       customerName,
@@ -96,7 +91,6 @@ const BackdateFormTBSInternal = () => {
       originWeighOutKg,
       deliveryOrderNo,
       progressStatus,
-      qtyTbs,
       originWeighInTimestamp,
       originWeighOutTimestamp,
       transportVehicleSccModel,
@@ -214,7 +208,7 @@ const BackdateFormTBSInternal = () => {
   return (
     <>
       <PageHeader
-        title="Transaksi PKS4"
+        title="Backdate Others PKS"
         subTitle="Page Description"
         sx={{ mb: 2 }}
         icon={<LocalShippingIcon fontSize="large" />}
@@ -250,7 +244,7 @@ const BackdateFormTBSInternal = () => {
               }
               fullWidth
               multiline
-              value="Backdate TBS Internal"
+              value="Backdate Others"
             />
           </Paper>
         </Grid>
@@ -548,76 +542,6 @@ const BackdateFormTBSInternal = () => {
                     )}
                   />
                 </FormControl>
-                <FormControl variant="outlined" size="small" sx={{ my: 2 }}>
-                  <InputLabel
-                    id="select-label"
-                    shrink
-                    sx={{ bgcolor: "white", px: 1 }}
-                  >
-                    Asal
-                  </InputLabel>
-
-                  <Autocomplete
-                    id="select-label"
-                    options={dtSite}
-                    getOptionLabel={(option) => option.name}
-                    value={
-                      dtSite.find((item) => item.id === values.originSiteId) ||
-                      null
-                    }
-                    onChange={(event, newValue) => {
-                      setValues((prevValues) => ({
-                        ...prevValues,
-                        originSiteId: newValue ? newValue.id : "",
-                        originSiteName: newValue ? newValue.name : "",
-                      }));
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "10px",
-                          },
-                        }}
-                        placeholder="-- Pilih Asal --"
-                        variant="outlined"
-                        size="small"
-                      />
-                    )}
-                  />
-                </FormControl>
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  type="number"
-                  fullWidth
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  placeholder="Masukkan Jumlah Janjang"
-                  sx={{
-                    my: 2,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",
-                    },
-                  }}
-                  label={
-                    <>
-                      <Typography
-                        sx={{
-                          bgcolor: "white",
-                          px: 1.5,
-                        }}
-                      >
-                        Qty TBS
-                      </Typography>
-                    </>
-                  }
-                  name="qtyTbs"
-                  value={values.qtyTbs}
-                  onChange={handleChange}
-                />
               </FormControl>
 
               <FormControl sx={{ gridColumn: "span 4" }}>
@@ -878,4 +802,4 @@ const BackdateFormTBSInternal = () => {
   );
 };
 
-export default BackdateFormTBSInternal;
+export default BackdateFormOthers;

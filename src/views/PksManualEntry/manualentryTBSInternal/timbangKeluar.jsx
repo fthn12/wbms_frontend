@@ -241,7 +241,7 @@ const PksManualTBSInternalTimbangKeluar = () => {
   return (
     <>
       <PageHeader
-        title="Transaksi PKS4"
+        title="Transaksi PKS"
         subTitle="Page Description"
         sx={{ mb: 2 }}
         icon={<LocalShippingIcon fontSize="large" />}
