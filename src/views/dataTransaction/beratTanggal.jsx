@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import format from "date-fns/format";
 
-const EditDataOthers = ({
+const BeratTanggal = ({
   values,
   handleChange,
   handleSubmit,
@@ -16,6 +16,23 @@ const EditDataOthers = ({
   validateForm,
   handleClose,
 }) => {
+  const convertUTCtoLocal = (utcDateTime) => {
+    if (!utcDateTime) return ""; // Handle jika utcDateTime kosong
+
+    // Parse tanggal dan waktu UTC
+    const utcDate = new Date(utcDateTime);
+
+    // Mengonversi UTC ke waktu lokal
+    const localDate = new Date(
+      utcDate.getUTCFullYear(),
+      utcDate.getUTCMonth(),
+      utcDate.getUTCDate(),
+      utcDate.getUTCHours(),
+      utcDate.getUTCMinutes()
+    );
+
+    return format(localDate, "yyyy-MM-dd'T'HH:mm");
+  };
   return (
     <>
       <FormControl sx={{ gridColumn: "span 4" }}>
@@ -199,14 +216,7 @@ const EditDataOthers = ({
             </Typography>
           }
           name="originWeighInTimestamp"
-          value={
-            values.originWeighInTimestamp
-              ? format(
-                  new Date(values.originWeighInTimestamp),
-                  "yyyy-MM-dd'T'HH:mm"
-                )
-              : ""
-          }
+          value={convertUTCtoLocal(values.originWeighInTimestamp)}
           onChange={handleChange}
         />
         <TextField
@@ -234,14 +244,7 @@ const EditDataOthers = ({
             </Typography>
           }
           name="originWeighOutTimestamp"
-          value={
-            values.originWeighOutTimestamp
-              ? format(
-                  new Date(values.originWeighOutTimestamp),
-                  "yyyy-MM-dd'T'HH:mm"
-                )
-              : ""
-          }
+          value={convertUTCtoLocal(values.originWeighOutTimestamp)}
           onChange={handleChange}
         />
         <Button
@@ -271,4 +274,4 @@ const EditDataOthers = ({
   );
 };
 
-export default EditDataOthers;
+export default BeratTanggal;

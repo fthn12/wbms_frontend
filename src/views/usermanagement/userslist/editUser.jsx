@@ -28,7 +28,6 @@ import moment from "moment";
 const EditUsers = ({ isEditOpen, onClose, dtuser, dtRole }) => {
   const path = process.env.REACT_APP_WBMS_BACKEND_IMG_URL;
   const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
-    // values.profile.doB = moment(values.profile.doB).toDate();
 
     const {
       id,

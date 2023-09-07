@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import {
   Grid,
   Paper,
@@ -6,12 +6,15 @@ import {
   Box,
   IconButton,
   Typography,
+  TextField,
+  FormControl,
 } from "@mui/material";
-import { red, indigo } from "@mui/material/colors";
+import moment from "moment";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-enterprise";
+import { DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection";
 import { RowGroupingModule } from "@ag-grid-enterprise/row-grouping";
@@ -20,7 +23,11 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import UploadFileOutlinedIcon from "@mui/icons-material/UploadFileOutlined";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import dayjs from "dayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import * as TransactionAPI from "../../../api/transactionApi";
 import Swal from "sweetalert2";
@@ -37,6 +44,7 @@ ModuleRegistry.registerModules([
 
 const BackdateTemplate = () => {
   const gridRef = useRef();
+
   const defaultColDef = {
     sortable: true,
     resizable: true,
@@ -56,14 +64,69 @@ const BackdateTemplate = () => {
     []
   );
 
-  const [isDataSaved, setIsDataSaved] = useState(false);
+  const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [uploadedData, setUploadedData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([]);
   const [isEditFormVisible, setIsEditFormVisible] = useState(false);
   const [editFormData, setEditFormData] = useState({});
   const [editColumnDefs, setEditColumnDefs] = useState([]);
 
-  // ...
+  const handleFormClose = () => {
+    setIsEditFormVisible(false);
+    setEditFormData({});
+  };
+
+  const handleSave = () => {
+    const isValidData = uploadedData.every((rowData) => {
+      return !isNaN(rowData.tType); // Pastikan tType adalah angka
+    });
+
+    if (!isValidData) {
+      toast.error(
+        "Data contains invalid tType values. Please check your data."
+      );
+      return;
+    }
+
+    TransactionAPI.create(uploadedData)
+      .then(() => {
+        setIsFileUploaded(true);
+        toast.success("Data saved successfully.");
+      })
+      .catch((error) => {
+        console.error("Data Gagal Diperbarui:", error);
+        toast.error(error.message);
+      });
+  };
+
+  const handleDeleteData = (rowId) => {
+    Swal.fire({
+      title: "Hapus Data ",
+      text: "Yakin Ingin Hapus Data Ini ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Perform the delete operation and update the state
+        const updatedData = uploadedData.filter((row) => row.id !== rowId);
+        setUploadedData(updatedData);
+        setIsEditFormVisible(false);
+        toast.success("Data Berhasil dihapus.");
+      }
+    });
+  };
+
+  const handleSearch = (value) => {
+    console.log("Search Value:", value);
+    const filteredData = uploadedData.filter((row) =>
+      Object.values(row).join(" ").toLowerCase().includes(value.toLowerCase())
+    );
+    console.log("Filtered Data:", filteredData);
+    gridRef.current.api.setRowData(filteredData);
+  };
 
   const handleRowClick = (params) => {
     setEditFormData(params.data);
@@ -77,45 +140,23 @@ const BackdateTemplate = () => {
     setEditColumnDefs(newEditColumnDefs);
   };
 
-  const handleFormClose = () => {
-    setIsEditFormVisible(false);
-    setEditFormData({});
-  };
+  const [selectedDate, setSelectedDate] = useState(dayjs());
+  const formattedDate = selectedDate.format("YYMMDD");
+  const [bonTripNo, setBonTripNo] = useState("");
 
-  const handleSave = () => {
-    TransactionAPI.create(uploadedData)
-      .then(() => {
-        setIsDataSaved(true);
-        toast.success("Data saved successfully.");
-      })
-      .catch((error) => {
-        Swal.fire("Error", "Failed to save data.", "error");
-        console.error("Error saving data:", error);
-      });
-  };
+  useEffect(() => {
+    const generateBonTripNo = () => {
+      return `P041${formattedDate}${Math.floor(
+        100000 + Math.random() * 900000
+      )}`;
+    };
 
-  const handleSearch = (value) => {
-    console.log("Search Value:", value);
-    const filteredData = uploadedData.filter((row) =>
-      Object.values(row).join(" ").toLowerCase().includes(value.toLowerCase())
-    );
-    console.log("Filtered Data:", filteredData);
-    gridRef.current.api.setRowData(filteredData);
-  };
-
-  const clearUploadedData = (rowIndex, columnId) => {
-    console.log("Clearing data for row:", rowIndex, "column:", columnId);
-    const updatedData = [...uploadedData];
-    const rowToUpdate = updatedData.find((row) => row.id === rowIndex);
-
-    if (rowToUpdate) {
-      delete rowToUpdate[columnId];
-      setUploadedData(updatedData);
-    }
-  };
+    const generatedBonTripNo = generateBonTripNo();
+    setBonTripNo(generatedBonTripNo);
+  }, [formattedDate]);
 
   const processUploadedData = (csvData) => {
-    setIsDataSaved(false);
+    setIsFileUploaded(true);
     const headers = Object.keys(csvData[0]);
     const newColumnDefs = headers.map((header) => ({
       headerName: header,
@@ -125,35 +166,23 @@ const BackdateTemplate = () => {
       sortable: true,
     }));
 
-    const dataWithId = csvData.map((row, index) => ({ ...row, id: index }));
-
-    newColumnDefs.push({
-      headerName: "Action",
-      maxWidth: 110,
-      cellRenderer: (params) => {
-        return (
-          <Box display="flex" justifyContent="center">
-            <Box
-              display="flex"
-              bgcolor={red[800]}
-              borderRadius="5px"
-              padding="7px 5px "
-              color="white"
-              onClick={() => {
-                clearUploadedData(params.data.id, params.colDef.field);
-                console.log("Field:", params.colDef.field);
-              }}
-              style={{
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-            >
-              <CancelOutlinedIcon sx={{ fontSize: "25px" }} />
-            </Box>
-          </Box>
-        );
-      },
+    // Tambahkan kolom BontripNo dengan header "BontripNo" ke dalam columnDefs
+    newColumnDefs.unshift({
+      headerName: "Bontrip No",
+      field: "bonTripNo",
+      sortable: true,
+      filter: true,
     });
+
+    // Generate nomor bonTripNo yang berbeda untuk setiap baris data
+    const dataWithId = csvData.map((row, index) => ({
+      ...row,
+      id: index,
+      tType: 1,
+      bonTripNo: `P041${formattedDate}${Math.floor(
+        100000 + Math.random() * 900000
+      )}`,
+    }));
 
     setColumnDefs(newColumnDefs);
     setUploadedData(dataWithId);
@@ -175,7 +204,38 @@ const BackdateTemplate = () => {
           <div style={{ marginBottom: "5px" }}>
             <Box display="flex">
               <Typography fontSize="20px">Backdate Template</Typography>
-              <Box ml="auto">
+              <Box display="flex" ml="auto">
+                <FormControl
+                  sx={{ mt: "auto", mr: 1.5, minWidth: 150 }}
+                  size="small"
+                >
+                  <TextField
+                    type="date"
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      mt: "auto",
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    label={
+                      <Typography
+                        sx={{
+                          bgcolor: "white",
+                          px: 1,
+                        }}
+                      >
+                        Tanggal BonTripNo
+                      </Typography>
+                    }
+                    value={selectedDate.format("YYYY-MM-DD")}
+                    onChange={(e) => {
+                      const selectedDate = dayjs(e.target.value);
+                      setSelectedDate(selectedDate);
+                    }}
+                  />
+                </FormControl>
                 <Button
                   color="success"
                   ml="auto"
@@ -183,7 +243,7 @@ const BackdateTemplate = () => {
                   component="label"
                   sx={{
                     fontSize: "11px",
-                    padding: "8px 8px",
+                    padding: "12px 12px",
                     color: "white",
                     marginLeft: "8px",
                   }}
@@ -220,10 +280,12 @@ const BackdateTemplate = () => {
                   marginLeft: "8px",
                 }}
                 onClick={handleSave}
+                disabled={!isFileUploaded}
               >
                 <SaveOutlinedIcon sx={{ mr: "5px", fontSize: "17px" }} />
                 Simpan
               </Button>
+
               <Box
                 display="flex"
                 borderRadius="5px"
@@ -256,7 +318,6 @@ const BackdateTemplate = () => {
               defaultColDef={defaultColDef}
               animateRows={true}
               rowSelection="multiple"
-              rowGroupPanelShow="always"
               enableRangeSelection="true"
               groupSelectsChildren="true"
               suppressRowClickSelection="true"
@@ -273,7 +334,6 @@ const BackdateTemplate = () => {
                 data={editFormData}
                 columnDefs={editColumnDefs}
                 onSave={(editedData) => {
-                  // Set data yang telah diedit kembali ke tabel AgGrid
                   const updatedData = [...uploadedData];
                   const rowIndex = updatedData.findIndex(
                     (row) => row.id === editFormData.id
@@ -286,6 +346,7 @@ const BackdateTemplate = () => {
                   setIsEditFormVisible(false);
                 }}
                 onCancel={handleFormClose}
+                onDelete={handleDeleteData}
               />
             </div>
           )}

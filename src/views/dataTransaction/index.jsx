@@ -47,7 +47,6 @@ const tType = 1;
 const DataTransaction = () => {
   const navigate = useNavigate();
 
-  // Di index.jsx
   const handleCellClick = (params) => {
     const Id = params.data.id;
     navigate(`/edit-data-Transaction/${Id}`);
