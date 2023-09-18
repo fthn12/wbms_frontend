@@ -147,7 +147,7 @@ const BackdateTemplate = () => {
     setBonTripNo(generatedBonTripNo);
 
     // Tingkatkan nilai increment setiap kali Anda menghasilkan nomor baru
-    setIncrement(increment + 1);
+    setIncrement(increment + 0);
   }, [formattedDate]);
 
   const processUploadedData = (csvData) => {

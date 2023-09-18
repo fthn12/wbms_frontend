@@ -144,7 +144,8 @@ const ReportPksTransactions = () => {
     () => ({
       cellRendererParams: {
         suppressCount: true,
-        checkbox: true,
+      
+        
       },
       field: "bonTripNo",
       width: 300,

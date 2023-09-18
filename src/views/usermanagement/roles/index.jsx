@@ -86,45 +86,56 @@ const RoleList = () => {
             <Paper
               variant="outlined"
               sx={{
+                width: "100%",
+                height: "100%",
                 p: 4,
                 borderRadius: "10px 10px 10px 10px",
                 boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
+                overflow: "hidden", // Hide overflowing content
               }}
             >
-              <div
-                className="ag-theme-alpine"
-                style={{ width: "auto", height: "29vh" }}
-              >
-                <h4 ml={3}>{role.name}</h4>
+              <div style={{ padding: "0 15px" }}>
+                <h4>{role.name}</h4>
                 <br />
-                <h6
-                  sx={{ fontSize: "15px", fontWeight: "bold", color: "grey" }}
-                >
+                <h6 sx={{ fontWeight: "bold", color: "grey" }}>
                   Total users with this role: {role.users.length}
                 </h6>
-                <br />
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    color: "gray",
-                    display: "flex",
-                    alignItems: "center",
-                    flex: 1,
-                  }}
-                >
-                  {role.description}
-                </Typography>
               </div>
-              <Box display="flex" justifyContent="flex-start" gap="15px" mt={2}>
-                {/* <LinkContainer
-                  to={`/viewrole/${role.id}`}
-                  sx={{ textDecoration: "none", textTransform: "none" }}
-                >
-                  <Button variant="contained">View Role</Button>
-                </LinkContainer> */}
+              <div
+                className="ag-theme-alpine"
+                style={{ width: "auto", maxHeight: "19vh", overflow: "auto" }}
+              >
+                {role.permissions.map((permission, index) => (
+                  <div key={index}>
+                    <Typography
+                      sx={{
+                        fontSize: "13px",
+                        color: "gray",
+                        my: 1,
+                      }}
+                    >
+                      {permission.resource}
+                    </Typography>
+                    <ul>
+                      {permission.grants.map((grant, index) => (
+                        <li key={index}>
+                          {grant.action}:{grant.possession}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <Box
+                display="flex"
+                justifyContent="flex-start"
+                gap="15px"
+                mt={2}
+                sx={{ overflow: "auto" }}
+              >
                 <Button
                   variant="contained"
                   style={{ textTransform: "none" }}
@@ -171,6 +182,8 @@ const RoleList = () => {
           <Paper
             variant="outlined"
             sx={{
+              width: "100%",
+              height: "100%",
               p: 4,
               borderRadius: "10px",
               boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
