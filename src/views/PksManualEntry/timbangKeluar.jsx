@@ -20,10 +20,10 @@ import * as TransactionAPI from "../../api/transactionApi";
 import PageHeader from "../../components/PageHeader";
 import ManualEntryGrid from "../../components/manualEntryGrid";
 import { useConfig } from "../../common/hooks";
-import TimbangKeluarTBSInternal from "../PksManualEntry/manualentryTBSInternal/timbangKeluar";
-import TimbangKeluarTBSEksternal from "../PksManualEntry/manualentryTBSEksternal/timbangKeluar";
-import OthersKirim from "../PksManualEntry/manualentryothers/timbangKeluar/othersKirim";
-import OthersTerima from "../PksManualEntry/manualentryothers/timbangKeluar/othersTerima";
+import TimbangKeluarTBS from "../PksManualEntry/manualentryTBS/timbangKeluar";
+import TimbangKeluarOthers from "../PksManualEntry/manualentryothers/timbangKeluar";
+import CpoPko from "../PksManualEntry/manualentryCpoPko/timbangKeluar";
+import { CPopover } from "@coreui/react";
 
 const tType = 1;
 
@@ -33,30 +33,21 @@ const TimbangKeluar = () => {
   const { values, setValues } = useForm({
     ...TransactionAPI.InitialData,
   });
-  const [others, setOthers] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const dataById = await TransactionAPI.getById(id);
-        console.log(dataById);
         if (dataById) {
           setValues({
             ...dataById.record,
           });
-          const productName = dataById.record.productName;
-          const destinationSiteId = dataById.record.destinationSiteId;
+          const productName = dataById.record.productName.toLowerCase();
 
-          if (productName === "TBS Internal") {
-            setSelectedOption("TbsInternal");
-          } else if (productName === "TBS Eksternal") {
-            setSelectedOption("TbsEksternal");
+          if (productName.includes("tbs")) {
+            setSelectedOption("Tbs");
           } else {
-            if (destinationSiteId) {
-              setSelectedOption("OthersKirim");
-            } else {
-              setSelectedOption("OthersTerima");
-            }
+            setSelectedOption("Others");
           }
         }
       } catch (error) {
@@ -119,23 +110,17 @@ const TimbangKeluar = () => {
               gap="20px"
               gridTemplateColumns="repeat(15, minmax(0, 1fr))"
             >
-              {/* TBS INTERNAL */}
+              {/* CPO & PKO */}
 
-              {selectedOption === "TbsInternal" && <TimbangKeluarTBSInternal />}
+              {/* {selectedOption === "CpoPko" && <CpoPko />} */}
 
-              {/* TBS EKSTERNAL */}
+              {/* TBS */}
 
-              {selectedOption === "TbsEksternal" && (
-                <TimbangKeluarTBSEksternal />
-              )}
+              {selectedOption === "Tbs" && <TimbangKeluarTBS />}
 
-              {/* OTHERS TERIMA */}
+              {/* OTHERS */}
 
-              {selectedOption === "OthersTerima" && <OthersTerima />}
-
-              {/* OTHERS KIRIM */}
-
-              {selectedOption === "OthersKirim" && <OthersKirim />}
+              {selectedOption === "Others" && <TimbangKeluarOthers />}
             </Box>
           </Paper>
         </Grid>
