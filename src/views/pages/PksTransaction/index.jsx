@@ -126,13 +126,13 @@ const PksTransaction = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const fetcher = () =>
-  TransactionAPI.searchMany({
-    where: {
-      tType,
-      progressStatus: { notIn: [4, 9, 14] },
-    },
-    orderBy: { bonTripNo: "desc" },
-  }).then((res) => res.records);
+    TransactionAPI.searchMany({
+      where: {
+        tType,
+        progressStatus: { notIn: [4, 9, 14] },
+      },
+      orderBy: { bonTripNo: "desc" },
+    }).then((res) => res.records);
 
   const { data: dtTransactions } = useSWR(
     searchQuery ? `transaction?name_like=${searchQuery}` : "transaction",
@@ -183,20 +183,22 @@ const PksTransaction = () => {
             </Grid>
             <Grid item xs={12}>
               <Box display="flex">
-                <Button
-                  variant="contained"
-                  component={Link}
-                  to="/pks-ManualEntry-TimbangMasuk"
-                  style={{
-                    width: "10vh",
-                    fontSize: "13px",
-                    borderRadius: "10%",
-                  }}
-                >
-                  New
-                </Button>
-
-                <Box sx={{ ml: 1 }}>
+                <Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    component={Link}
+                    to="/pks-ManualEntry-TimbangMasuk"
+                    style={{
+                      width: "10vh",
+                      fontSize: "13px",
+                      borderRadius: "10%",
+                    }}
+                  >
+                    New
+                  </Button>
+                </Box>
+                <Box sx={{ pl: 1 }}>
                   <Button
                     variant="contained"
                     onClick={handleFormClick}
@@ -215,18 +217,12 @@ const PksTransaction = () => {
                   >
                     <MenuItem
                       component={Link}
-                      to="/backdateFormTBSInternal"
+                      to="/backdateFormTBS"
                       onClick={handleClose}
                     >
-                      TBS Internal
+                      TBS
                     </MenuItem>
-                    <MenuItem
-                      component={Link}
-                      to="/backdateFormTBSEksternal"
-                      onClick={handleClose}
-                    >
-                      TBS Eksternal
-                    </MenuItem>
+
                     <MenuItem
                       component={Link}
                       to="/backdateFormOthers"
@@ -268,10 +264,7 @@ const PksTransaction = () => {
               </Box>
 
               <Paper sx={{ p: 2, mt: 1 }}>
-                <TransactionGrid
-                  gridRef={gridRef}
-                  fetcher={fetcher}
-                />
+                <TransactionGrid gridRef={gridRef} fetcher={fetcher} />
               </Paper>
             </Grid>
           </Grid>

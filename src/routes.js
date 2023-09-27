@@ -3,12 +3,8 @@ import { lazy } from "react";
 const Dashboard = lazy(() => import("./views/dashboard/Dashboard"));
 const PksTransaction = lazy(() => import("./views/pages/PksTransaction"));
 const DataTransaction = lazy(() => import("./views/dataTransaction"));
-const BackdateFormTBSEksternal = lazy(() =>
-  import("./views/backdate/backdateFormTBSEksternal")
-);
-const BackdateFormTBSInternal = lazy(() =>
-  import("./views/backdate/backdateFormTBSInternal")
-);
+
+const BackdateFormTBS = lazy(() => import("./views/backdate/backdateFormTBS"));
 const BackdateFormOthers = lazy(() =>
   import("./views/backdate/backdateFormOthers")
 );
@@ -59,7 +55,7 @@ const ConfigRequest = lazy(() =>
 const Config = lazy(() => import("./views/usermanagement/config"));
 
 const routes = [
-  { path: "/", exact: true, name: "Home" },
+  { path: "/:id", exact: true, name: "Home" },
   { path: "/dashboard", name: "Dashboard", element: Dashboard },
   {
     path: "/pks-transaction",
@@ -69,7 +65,7 @@ const routes = [
   },
   {
     path: "/pks-ManualEntry-TimbangMasuk",
-    name: "PKS  Manual Entry Others",
+    name: "PKS  Manual Entry",
     element: PksManualTimbangMasuk,
     exact: true,
   },
@@ -99,16 +95,11 @@ const routes = [
     element: DataTransaction,
     exact: true,
   },
+
   {
-    path: "/backdateFormTBSEksternal",
-    name: "Backdate Form TBSEksternal",
-    element: BackdateFormTBSEksternal,
-    exact: true,
-  },
-  {
-    path: "/backdateFormTBSInternal",
-    name: "Backdate Form TBSInternal",
-    element: BackdateFormTBSInternal,
+    path: "/backdateFormTBS",
+    name: "Backdate Form TBS",
+    element: BackdateFormTBS,
     exact: true,
   },
   {

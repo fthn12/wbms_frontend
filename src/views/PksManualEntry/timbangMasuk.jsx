@@ -17,7 +17,7 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useForm } from "../../utils/useForm";
 import * as TransactionAPI from "../../api/transactionApi";
 import PageHeader from "../../components/PageHeader";
-import ManualEntryGrid from "../../components/manualEntryGrid";
+import ManualEntryGrid from "../../components/TransactionGrid";
 import { useConfig } from "../../common/hooks";
 import TBS from "../PksManualEntry/manualentryTBS/timbangMasuk";
 import OTHERS from "../PksManualEntry/manualentryothers/timbangMasuk";
@@ -35,7 +35,17 @@ const TimbangMasuk = () => {
     ...TransactionAPI.InitialData,
   });
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedOption, setSelectedOption] = useState("");
   const [dtTransportVehicle, setDtTransportVehicle] = useState([]);
   const [dtCompany, setDtCompany] = useState([]);
@@ -95,140 +105,197 @@ const TimbangMasuk = () => {
               value={"Timbang Masuk"}
             />
           </Paper>
-          <Paper elevation={2} sx={{ p: 2, mt: 2 }}>
-            <FormControl
-              fullWidth
-              variant="outlined"
-              size="small"
-              sx={{ my: 1.3 }}
-            >
-              <InputLabel
-                id="select-label"
-                shrink
-                sx={{ bgcolor: "white", px: 1 }}
-              >
-                Nomor Polisi
-              </InputLabel>
-
-              <Autocomplete
-                id="select-label"
-                options={dtTransportVehicle}
-                getOptionLabel={(option) => option.plateNo}
-                value={
-                  dtTransportVehicle.find(
-                    (item) => item.id === values.transportVehicleId
-                  ) || null
-                }
-                onChange={(event, newValue) => {
-                  setValues((prevValues) => ({
-                    ...prevValues,
-                    transportVehicleId: newValue ? newValue.id : "",
-                    transportVehiclePlateNo: newValue ? newValue.plateNo : "",
-                    transportVehicleSccModel: newValue ? newValue.sccModel : "",
-                  }));
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="-- Pilih Kendaraan --"
-                    variant="outlined"
-                    size="small"
-                  />
-                )}
-              />
-            </FormControl>
-            <FormControl
-              fullWidth
-              variant="outlined"
-              size="small"
-              sx={{ my: 1.3 }}
-            >
-              <InputLabel
-                id="select-label"
-                shrink
-                sx={{ bgcolor: "white", px: 1 }}
-              >
-                Nama Vendor
-              </InputLabel>
-              <Autocomplete
-                id="select-label"
-                options={dtCompany}
-                getOptionLabel={(option) => option.code}
-                value={
-                  dtCompany.find((item) => item.id === values.transporterId) ||
-                  null
-                }
-                onChange={(event, newValue) => {
-                  setValues((prevValues) => ({
-                    ...prevValues,
-                    transporterId: newValue ? newValue.id : "",
-                    transporterCompanyName: newValue ? newValue.name : "",
-                  }));
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="-- Pilih Vendor --"
-                    variant="outlined"
-                    size="small"
-                  />
-                )}
-              />
-            </FormControl>
-            <FormControl
-              fullWidth
-              variant="outlined"
-              size="small"
-              sx={{ my: 1.3 }}
-            >
-              <Autocomplete
-                id="select-label"
-                options={dtProduct}
-                getOptionLabel={(option) => option.name}
-                value={selectedProduct}
-                onChange={(event, newValue) => {
-                  setSelectedProduct(newValue);
-                  // Determine and set the selectedOption based on some condition.
-                  if (newValue) {
-                    const productName = newValue.name.toLowerCase();
-                    if (
-                      productName.includes("cpo") ||
-                      productName.includes("pko")
-                    ) {
-                      setSelectedOption("CpoPko");
-                    } else if (productName.includes("tbs")) {
-                      setSelectedOption("Tbs");
-                    } else {
-                      setSelectedOption("Others");
-                    }
-                  } else {
-                    setSelectedOption(""); // Reset the selectedOption if no product is selected.
-                  }
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="-- Pilih Barang --"
-                    variant="outlined"
-                    size="small"
-                  />
-                )}
-              />
-            </FormControl>
-          </Paper>
         </Grid>
         <Grid item xs={10.3}>
-          {/* CPO & PKO */}
+          <Paper elevation={1} sx={{ p: 3, px: 4 }}>
+            <Box
+              display="grid"
+              gap="20px"
+              gridTemplateColumns="repeat(15, minmax(0, 1fr))"
+            >
+              <FormControl sx={{ gridColumn: "span 3" }}>
+                {/* <FormControl
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  sx={{ mb: 2 }}
+                >
+                  <InputLabel
+                    id="select-label"
+                    shrink
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
+                    Nomor Polisi
+                  </InputLabel>
 
-          {/* {selectedOption === "CpoPko" && <CpoPko />} */}
+                  <Autocomplete
+                    id="select-label"
+                    options={dtTransportVehicle}
+                    getOptionLabel={(option) => option.plateNo}
+                    value={
+                      dtTransportVehicle.find(
+                        (item) => item.id === values.transportVehicleId
+                      ) || null
+                    }
+                    onChange={(event, newValue) => {
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        transportVehicleId: newValue ? newValue.id : "",
+                        transportVehiclePlateNo: newValue
+                          ? newValue.plateNo
+                          : "",
+                        transportVehicleSccModel: newValue
+                          ? newValue.sccModel
+                          : "",
+                      }));
+                    }}
+                    freeSolo // Ini memungkinkan pengguna untuk memasukkan teks yang tidak ada dalam opsi.
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="-- Pilih Kendaraan --"
+                        variant="outlined"
+                        size="small"
+                      />
+                    )}
+                  />
+                </FormControl> */}
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  // placeholder="Masukkan Jumlah Janjang"
+                  sx={{
+                    mb: 2,
+                  }}
+                  label={
+                    <>
+                      <Typography
+                        sx={{
+                          bgcolor: "white",
+                          px: 1.5,
+                        }}
+                      >
+                        Nomor Polisi
+                      </Typography>
+                    </>
+                  }
+                  name="transportVehiclePlateNo"
+                  value={values.transportVehiclePlateNo}
+                  onChange={handleChange}
+                />
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  sx={{ my: 2 }}
+                >
+                  <InputLabel
+                    id="select-label"
+                    shrink
+                    sx={{ bgcolor: "white", px: 1 }}
+                  >
+                    Nama Vendor
+                  </InputLabel>
+                  <Autocomplete
+                    id="select-label"
+                    options={dtCompany}
+                    getOptionLabel={(option) => option.name}
+                    value={
+                      dtCompany.find(
+                        (item) => item.id === values.transporterId
+                      ) || null
+                    }
+                    onChange={(event, newValue) => {
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        transporterId: newValue ? newValue.id : "",
+                        transporterCompanyName: newValue ? newValue.name : "",
+                      }));
+                      setSelectedCompany({
+                        id: newValue ? newValue.id : "",
+                        name: newValue ? newValue.name : "",
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="-- Pilih Vendor --"
+                        variant="outlined"
+                        size="small"
+                      />
+                    )}
+                  />
+                </FormControl>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  size="small"
+                  sx={{ my: 2 }}
+                >
+                  <Autocomplete
+                    id="select-label"
+                    options={dtProduct}
+                    getOptionLabel={(option) => option.name}
+                    value={selectedProduct}
+                    onChange={(event, newValue) => {
+                      setSelectedProduct(newValue);
+                      // Determine and set the selectedOption based on some condition.
+                      if (newValue) {
+                        const productName = newValue.name.toLowerCase();
+                        if (
+                          productName.includes("cpo") ||
+                          productName.includes("pko")
+                        ) {
+                          setSelectedOption("CpoPko");
+                        } else if (productName.includes("tbs")) {
+                          setSelectedOption("Tbs");
+                        } else {
+                          setSelectedOption("Others");
+                        }
+                      } else {
+                        setSelectedOption(""); // Reset the selectedOption if no product is selected.
+                      }
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="-- Pilih Barang --"
+                        variant="outlined"
+                        size="small"
+                      />
+                    )}
+                  />
+                </FormControl>
+              </FormControl>
+              {/* CPO & PKO */}
 
-          {/* TBS */}
+              {/* {selectedOption === "CpoPko" && <CpoPko />} */}
 
-          {selectedOption === "Tbs" && <TBS />}
+              {/* TBS */}
 
-          {/* OTHERS */}
+              {selectedOption === "Tbs" && (
+                <TBS
+                  selectedProduct={selectedProduct}
+                  selectedCompany={selectedCompany}
+                  PlateNo={values.transportVehiclePlateNo}
+                />
+              )}
 
-          {selectedOption === "Others" && <OTHERS />}
+              {/* OTHERS */}
+
+              {selectedOption === "Others" && (
+                <OTHERS
+                  selectedProduct={selectedProduct}
+                  selectedCompany={selectedCompany}
+                  PlateNo={values.transportVehiclePlateNo}
+                />
+              )}
+            </Box>
+          </Paper>
         </Grid>
         <Grid item xs={12}>
           <Paper sx={{ p: 2, mt: 1 }}>
